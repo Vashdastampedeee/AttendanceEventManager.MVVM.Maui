@@ -3,7 +3,7 @@
     x:Class="EventManager.Views.Event"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Event">
+    Title="Event Setter">
     <VerticalStackLayout>
         <Label
             HorizontalOptions="Center"
