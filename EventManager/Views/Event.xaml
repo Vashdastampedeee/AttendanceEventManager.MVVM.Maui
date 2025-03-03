@@ -7,9 +7,9 @@
     <VerticalStackLayout>
         <Grid Padding="10" ColumnSpacing="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.25*" />
                 <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <SearchBar
                 Grid.Column="0"
@@ -19,14 +19,14 @@
                 PlaceholderColor="Black" />
             <Button
                 Grid.Column="1"
-                FontFamily="Roboto"
+                FontFamily="IconButtons"
                 FontSize="Small"
-                Text="Add" />
+                Text="&#xE801; Add" />
             <Button
                 Grid.Column="2"
-                FontFamily="Roboto"
+                FontFamily="IconButtons"
                 FontSize="Small"
-                Text="Refresh" />
+                Text="&#xE800; Refresh" />
         </Grid>
     </VerticalStackLayout>
 </ContentPage>
