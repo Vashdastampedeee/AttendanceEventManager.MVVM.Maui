@@ -4,10 +4,86 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Dashboard">
-    <VerticalStackLayout>
-        <Label
+
+    <Grid>
+
+        <VerticalStackLayout
             HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
+            Spacing="40"
+            VerticalOptions="Center">
+
+            <Border StrokeShape="RoundRectangle 20" StrokeThickness="2">
+                <HorizontalStackLayout Padding="30" Spacing="5">
+                    <Image
+                        HeightRequest="40"
+                        Source="Present1.png"
+                        WidthRequest="40" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Title"
+                        Text="Present:"
+                        TextTransform="Uppercase"
+                        VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+
+            </Border>
+            <Border StrokeShape="RoundRectangle 20" StrokeThickness="2">
+                <HorizontalStackLayout Padding="30" Spacing="5">
+                    <Image
+                        HeightRequest="40"
+                        Source="Absent1.png"
+                        WidthRequest="40" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Title"
+                        Text="Absent:"
+                        TextTransform="Uppercase"
+                        VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+
+            </Border>
+            <Border StrokeShape="RoundRectangle 20" StrokeThickness="2">
+                <HorizontalStackLayout Padding="30" Spacing="5">
+                    <Image
+                        HeightRequest="40"
+                        Source="Total1.png"
+                        WidthRequest="40" />
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Title"
+                        Text="Total:"
+                        TextTransform="Uppercase"
+                        VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+
+            </Border>
+
+
+        </VerticalStackLayout>
+
+        <AbsoluteLayout>
+
+
+            <Button
+                AbsoluteLayout.LayoutBounds="285,480"
+                BackgroundColor="Black"
+                BorderColor="Black"
+                CornerRadius="30"
+                FontFamily="IconButtons"
+                FontSize="Title"
+                HeightRequest="60"
+                Text="&#xF0B0;"
+                TextColor="White"
+                WidthRequest="60" />
+
+        </AbsoluteLayout>
+    </Grid>
+
+
+
+
 </ContentPage>
