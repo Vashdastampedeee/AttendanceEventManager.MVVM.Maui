@@ -22,10 +22,12 @@
                 Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
+                HeightRequest="55"
                 StrokeShape="RoundRectangle 5">
                 <SearchBar
                     FontFamily="Roboto"
                     FontSize="Small"
+                    HeightRequest="30"
                     Placeholder="Search"
                     PlaceholderColor="Black" />
             </Border>

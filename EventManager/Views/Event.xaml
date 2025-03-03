@@ -11,11 +11,12 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Border StrokeShape="RoundRectangle 5">
+            <Border HeightRequest="55" StrokeShape="RoundRectangle 5">
                 <SearchBar
                     Grid.Column="0"
                     FontFamily="Roboto"
                     FontSize="Small"
+                    HeightRequest="30"
                     Placeholder="Search"
                     PlaceholderColor="Black" />
             </Border>
