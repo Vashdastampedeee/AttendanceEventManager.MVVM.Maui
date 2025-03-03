@@ -40,6 +40,7 @@
             BackgroundColor="Black"
             HeightRequest="130"
             Stroke="Black"
+            StrokeShape="RoundRectangle 10"
             StrokeThickness="5"
             WidthRequest="130">
             <Image Aspect="AspectFit" Source="blank_id.png" />
@@ -54,11 +55,15 @@
             FontSize="Small"
             HorizontalTextAlignment="Center"
             Text="Business Unit:" />
+
         <Entry
             ClearButtonVisibility="WhileEditing"
             FontFamily="Roboto"
             FontSize="Small"
+            HorizontalTextAlignment="Center"
             Placeholder="Scan ID Number"
-            PlaceholderColor="Black" />
+            PlaceholderColor="Black"
+            WidthRequest="200" />
+
     </VerticalStackLayout>
 </ContentPage>

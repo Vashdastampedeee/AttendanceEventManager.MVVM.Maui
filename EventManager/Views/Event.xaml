@@ -11,12 +11,15 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <SearchBar
-                Grid.Column="0"
-                FontFamily="Roboto"
-                FontSize="Small"
-                Placeholder="Search"
-                PlaceholderColor="Black" />
+            <Border StrokeShape="RoundRectangle 5">
+                <SearchBar
+                    Grid.Column="0"
+                    FontFamily="Roboto"
+                    FontSize="Small"
+                    Placeholder="Search"
+                    PlaceholderColor="Black" />
+            </Border>
+
             <Button
                 Grid.Column="1"
                 FontFamily="IconButtons"

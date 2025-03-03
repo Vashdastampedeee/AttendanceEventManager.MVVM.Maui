@@ -21,7 +21,8 @@
             <Border
                 Grid.Row="1"
                 Grid.Column="0"
-                Grid.ColumnSpan="3">
+                Grid.ColumnSpan="3"
+                StrokeShape="RoundRectangle 5">
                 <SearchBar
                     FontFamily="Roboto"
                     FontSize="Small"
