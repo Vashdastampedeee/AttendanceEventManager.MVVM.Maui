@@ -4,52 +4,76 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Logs History">
-    <VerticalStackLayout>
-        <Grid
-            Padding="10"
-            ColumnSpacing="5"
-            RowSpacing="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Border
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                HeightRequest="55"
-                StrokeShape="RoundRectangle 5">
-                <SearchBar
-                    FontFamily="Roboto"
+    <Grid>
+        <VerticalStackLayout>
+            <Grid
+                Padding="10"
+                ColumnSpacing="5"
+                RowSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    HeightRequest="55"
+                    StrokeShape="RoundRectangle 5">
+                    <SearchBar
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        HeightRequest="30"
+                        Placeholder="Search"
+                        PlaceholderColor="Black" />
+                </Border>
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    FontFamily="IconButtons"
                     FontSize="Small"
-                    HeightRequest="30"
-                    Placeholder="Search"
-                    PlaceholderColor="Black" />
+                    Text="&#xF0B0; Filter" />
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    FontFamily="IconButtons"
+                    FontSize="Small"
+                    Text="&#xE800; Refresh" />
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    FontFamily="IconButtons"
+                    FontSize="Small"
+                    Text="&#xE802; Export" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <AbsoluteLayout>
+            <Border
+                AbsoluteLayout.LayoutBounds="1,1,80,80"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                HeightRequest="50"
+                Stroke="Transparent"
+                StrokeShape="Ellipse"
+                WidthRequest="50">
+                <Border.Shadow>
+                    <Shadow
+                        Brush="DarkSlateGrey"
+                        Opacity="0.7"
+                        Offset="1,1" />
+                </Border.Shadow>
+                <Button
+                    FontFamily="IconButtons"
+                    FontSize="Title"
+                    Text="&#xE802;" />
             </Border>
-            <Button
-                Grid.Row="0"
-                Grid.Column="0"
-                FontFamily="IconButtons"
-                FontSize="Small"
-                Text="&#xF0B0; Filter" />
-            <Button
-                Grid.Row="0"
-                Grid.Column="1"
-                FontFamily="IconButtons"
-                FontSize="Small"
-                Text="&#xE800; Refresh" />
-            <Button
-                Grid.Row="0"
-                Grid.Column="2"
-                FontFamily="IconButtons"
-                FontSize="Small"
-                Text="&#xE802; Export" />
-        </Grid>
-    </VerticalStackLayout>
+        </AbsoluteLayout>
+    </Grid>
+
 
 </ContentPage>

@@ -4,33 +4,56 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Event Setter">
-    <VerticalStackLayout>
-        <Grid Padding="10" ColumnSpacing="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Border HeightRequest="55" StrokeShape="RoundRectangle 5">
-                <SearchBar
-                    Grid.Column="0"
-                    FontFamily="Roboto"
-                    FontSize="Small"
-                    HeightRequest="30"
-                    Placeholder="Search"
-                    PlaceholderColor="Black" />
-            </Border>
+    <Grid>
+        <VerticalStackLayout>
+            <Grid Padding="10" ColumnSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border HeightRequest="55" StrokeShape="RoundRectangle 5">
+                    <SearchBar
+                        Grid.Column="0"
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        HeightRequest="30"
+                        Placeholder="Search"
+                        PlaceholderColor="Black" />
+                </Border>
 
-            <Button
-                Grid.Column="1"
-                FontFamily="IconButtons"
-                FontSize="Small"
-                Text="&#xE801; Event" />
-            <Button
-                Grid.Column="2"
-                FontFamily="IconButtons"
-                FontSize="Small"
-                Text="&#xE800; Refresh" />
-        </Grid>
-    </VerticalStackLayout>
+                <Button
+                    Grid.Column="1"
+                    FontFamily="IconButtons"
+                    FontSize="Small"
+                    Text="&#xE801; Event" />
+                <Button
+                    Grid.Column="2"
+                    FontFamily="IconButtons"
+                    FontSize="Small"
+                    Text="&#xE800; Refresh" />
+            </Grid>
+        </VerticalStackLayout>
+        <AbsoluteLayout>
+            <Border
+                AbsoluteLayout.LayoutBounds="1,1,80,80"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                HeightRequest="55"
+                Stroke="Transparent"
+                StrokeShape="Ellipse"
+                WidthRequest="55">
+                <Border.Shadow>
+                    <Shadow
+                        Brush="DarkSlateGray"
+                        Opacity="0.7"
+                        Offset="1,1" />
+                </Border.Shadow>
+                <Button
+                    FontFamily="IconButtons"
+                    FontSize="Title"
+                    Text="&#xF271;" />
+            </Border>
+        </AbsoluteLayout>
+    </Grid>
+
 </ContentPage>

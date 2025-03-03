@@ -66,19 +66,25 @@
         </VerticalStackLayout>
 
         <AbsoluteLayout>
-
-            <Button
+            <Border
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="Black"
-                BorderColor="Black"
-                CornerRadius="30"
-                FontFamily="IconButtons"
-                FontSize="Title"
                 HeightRequest="50"
-                Text="&#xF0B0;"
-                TextColor="White"
-                WidthRequest="50" />
+                Stroke="Transparent"
+                StrokeShape="Ellipse"
+                WidthRequest="50">
+                <Border.Shadow>
+                    <Shadow
+                        Brush="DarkSlateGrey"
+                        Opacity="0.7"
+                        Offset="1,1" />
+                </Border.Shadow>
+                <Button
+                    FontFamily="IconButtons"
+                    FontSize="Title"
+                    Text="&#xF0B0;" />
+            </Border>
+
 
         </AbsoluteLayout>
     </Grid>
