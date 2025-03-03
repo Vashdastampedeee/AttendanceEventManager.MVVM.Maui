@@ -21,7 +21,7 @@
                 Grid.Column="1"
                 FontFamily="IconButtons"
                 FontSize="Small"
-                Text="&#xE801; Add" />
+                Text="&#xE801; Event" />
             <Button
                 Grid.Column="2"
                 FontFamily="IconButtons"
