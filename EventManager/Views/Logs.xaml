@@ -5,28 +5,47 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Logs History">
     <VerticalStackLayout>
-        <Grid Padding="10" ColumnSpacing="5">
+        <Grid
+            Padding="10"
+            ColumnSpacing="5"
+            RowSpacing="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.25*" />
+                <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <SearchBar
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Border
+                Grid.Row="1"
                 Grid.Column="0"
-                FontFamily="Roboto"
-                FontSize="Small"
-                Placeholder="Search"
-                PlaceholderColor="Black" />
+                Grid.ColumnSpan="3">
+                <SearchBar
+                    FontFamily="Roboto"
+                    FontSize="Small"
+                    Placeholder="Search"
+                    PlaceholderColor="Black" />
+            </Border>
             <Button
+                Grid.Row="0"
+                Grid.Column="0"
+                FontFamily="IconButtons"
+                FontSize="Small"
+                Text="&#xF0B0; Filter" />
+            <Button
+                Grid.Row="0"
                 Grid.Column="1"
-                FontFamily="Roboto"
+                FontFamily="IconButtons"
                 FontSize="Small"
-                Text="Refresh" />
+                Text="&#xE800; Refresh" />
             <Button
+                Grid.Row="0"
                 Grid.Column="2"
-                FontFamily="Roboto"
+                FontFamily="IconButtons"
                 FontSize="Small"
-                Text="Export" />
+                Text="&#xE802; Export" />
         </Grid>
     </VerticalStackLayout>
 
