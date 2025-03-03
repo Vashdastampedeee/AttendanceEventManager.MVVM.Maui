@@ -67,18 +67,18 @@
 
         <AbsoluteLayout>
 
-
             <Button
-                AbsoluteLayout.LayoutBounds="285,480"
+                AbsoluteLayout.LayoutBounds="1,1,80,80"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
                 BackgroundColor="Black"
                 BorderColor="Black"
                 CornerRadius="30"
                 FontFamily="IconButtons"
                 FontSize="Title"
-                HeightRequest="60"
+                HeightRequest="50"
                 Text="&#xF0B0;"
                 TextColor="White"
-                WidthRequest="60" />
+                WidthRequest="50" />
 
         </AbsoluteLayout>
     </Grid>
