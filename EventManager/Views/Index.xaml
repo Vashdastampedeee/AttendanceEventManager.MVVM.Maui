@@ -4,10 +4,61 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Home">
-    <VerticalStackLayout>
+    <VerticalStackLayout
+        HorizontalOptions="Center"
+        Spacing="12.5"
+        VerticalOptions="Center">
+        <Image
+            Aspect="AspectFill"
+            HeightRequest="65"
+            Source="event_image_placeholder.jpg"
+            WidthRequest="90" />
         <Label
-            HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" />
+            FontAttributes="Bold"
+            FontFamily="Roboto"
+            FontSize="Title"
+            HorizontalTextAlignment="Center"
+            Text="Set Event Name" />
+        <Label
+            FontAttributes="Bold"
+            FontFamily="Roboto"
+            FontSize="Subtitle"
+            HorizontalTextAlignment="Center"
+            Text="Set Date" />
+        <Label
+            FontAttributes="Bold"
+            FontFamily="Roboto"
+            FontSize="Subtitle"
+            HorizontalTextAlignment="Center"
+            Text="Set Time" />
+        <Label
+            FontFamily="Roboto"
+            FontSize="Medium"
+            HorizontalTextAlignment="Center"
+            Text="ID Number:" />
+        <Border
+            BackgroundColor="Black"
+            HeightRequest="130"
+            Stroke="Black"
+            StrokeThickness="5"
+            WidthRequest="130">
+            <Image Aspect="AspectFit" Source="blank_id.png" />
+        </Border>
+        <Label
+            FontFamily="Roboto"
+            FontSize="Small"
+            HorizontalTextAlignment="Center"
+            Text="Name:" />
+        <Label
+            FontFamily="Roboto"
+            FontSize="Small"
+            HorizontalTextAlignment="Center"
+            Text="Business Unit:" />
+        <Entry
+            ClearButtonVisibility="WhileEditing"
+            FontFamily="Roboto"
+            FontSize="Small"
+            Placeholder="Scan ID Number"
+            PlaceholderColor="Black" />
     </VerticalStackLayout>
 </ContentPage>
