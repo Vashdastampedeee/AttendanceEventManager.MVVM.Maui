@@ -57,14 +57,20 @@
             HorizontalTextAlignment="Center"
             Text="Business Unit:" />
 
-        <controls:RemoveVisualEntry
-            ClearButtonVisibility="WhileEditing"
-            FontFamily="Roboto"
-            FontSize="Small"
-            HorizontalTextAlignment="Center"
-            Placeholder="Scan ID Number"
-            PlaceholderColor="Black"
-            WidthRequest="200" />
+        <Border StrokeShape="RoundRectangle 5">
+            <Border.Shadow>
+                <Shadow Opacity="0.8" Offset="1,1" />
+            </Border.Shadow>
+            <controls:RemoveVisualEntry
+                ClearButtonVisibility="WhileEditing"
+                FontFamily="Roboto"
+                FontSize="Small"
+                HorizontalTextAlignment="Center"
+                Placeholder="Scan ID Number"
+                PlaceholderColor="Black"
+                WidthRequest="200" />
+        </Border>
+
 
     </VerticalStackLayout>
 </ContentPage>
