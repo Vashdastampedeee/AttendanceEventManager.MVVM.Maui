@@ -3,6 +3,7 @@
     x:Class="EventManager.Views.Index"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:EventManager.Controls"
     Title="Home">
     <VerticalStackLayout
         HorizontalOptions="Center"
@@ -56,7 +57,7 @@
             HorizontalTextAlignment="Center"
             Text="Business Unit:" />
 
-        <Entry
+        <controls:RemoveVisualEntry
             ClearButtonVisibility="WhileEditing"
             FontFamily="Roboto"
             FontSize="Small"
