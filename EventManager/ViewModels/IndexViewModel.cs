@@ -70,7 +70,7 @@ namespace EventManager.ViewModels
             {
                 BarcodeNumber = string.Empty;
                 IdNumber =$"ID Number: {scannedEmployee.IdNumber}";
-                IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto);
+                IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
                 Name = $"Name {scannedEmployee.Name}";
                 BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
                 Color = Colors.Green;
