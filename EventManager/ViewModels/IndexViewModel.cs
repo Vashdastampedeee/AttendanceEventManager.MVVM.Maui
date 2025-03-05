@@ -16,6 +16,7 @@ namespace EventManager.ViewModels
     public partial class IndexViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
+        private readonly BeepService beepService;
 
         [ObservableProperty] private string idNumber;
         [ObservableProperty] private ImageSource idPhoto;
@@ -25,10 +26,12 @@ namespace EventManager.ViewModels
         [ObservableProperty] private Color color;
         [ObservableProperty] private bool isEntryFocused;
 
-        public IndexViewModel(DatabaseService databaseServiceInjection)
+        public IndexViewModel(DatabaseService databaseServiceInjection, BeepService beepServiceInjection)
         {
             databaseService = databaseServiceInjection;
+            beepService = beepServiceInjection;
             InitializeElementProperty();
+            Task.Run(async () => beepService.InitBeep()); 
         }
         private void InitializeElementProperty()
         {
@@ -65,6 +68,8 @@ namespace EventManager.ViewModels
             }
 
             var scannedEmployee = await databaseService.GetEmployeeIdNumber(barcodeIdNumber);
+
+            beepService.PlayBeep();
 
             if (scannedEmployee != null)
             {
