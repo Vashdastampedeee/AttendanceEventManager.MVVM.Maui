@@ -24,6 +24,7 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 		builder.Services.AddSingleton<DatabaseService>();
+		builder.Services.AddSingleton<BeepService>();
 		builder.Services.AddSingleton<IndexViewModel>();
 
 		return builder.Build();
