@@ -4,7 +4,17 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:EventManager.Controls"
-    Title="Home">
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:EventManager.ViewModels"
+    x:Name="ThisPage"
+    Title="Home"
+    x:DataType="viewmodels:IndexViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
+            Command="{Binding PageAppearingCommand}"
+            EventName="Appearing" />
+    </ContentPage.Behaviors>
     <VerticalStackLayout
         HorizontalOptions="Center"
         Spacing="12.5"
@@ -36,26 +46,26 @@
             FontFamily="Roboto"
             FontSize="Medium"
             HorizontalTextAlignment="Center"
-            Text="ID Number:" />
+            Text="{Binding IdNumber}" />
         <Border
-            BackgroundColor="Black"
+            BackgroundColor="{Binding Color}"
             HeightRequest="130"
-            Stroke="Black"
+            Stroke="{Binding Color}"
             StrokeShape="RoundRectangle 10"
             StrokeThickness="5"
             WidthRequest="130">
-            <Image Aspect="AspectFit" Source="blank_id.png" />
+            <Image Aspect="AspectFit" Source="{Binding IdPhoto}" />
         </Border>
         <Label
             FontFamily="Roboto"
             FontSize="Small"
             HorizontalTextAlignment="Center"
-            Text="Name:" />
+            Text="{Binding Name}" />
         <Label
             FontFamily="Roboto"
             FontSize="Small"
             HorizontalTextAlignment="Center"
-            Text="Business Unit:" />
+            Text="{Binding BusinessUnit}" />
 
         <Border StrokeShape="RoundRectangle 5">
             <Border.Shadow>
@@ -68,7 +78,16 @@
                 HorizontalTextAlignment="Center"
                 Placeholder="Scan ID Number"
                 PlaceholderColor="Black"
-                WidthRequest="200" />
+                Text="{Binding BarcodeNumber, Mode=TwoWay}"
+                WidthRequest="200">
+                <controls:RemoveVisualEntry.Behaviors>
+                    <controls:FocusEntry BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}" IsFocused="{Binding IsEntryFocused, Mode=TwoWay}" />
+                    <toolkit:EventToCommandBehavior
+                        BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
+                        Command="{Binding ScanEmployeeIdCommand}"
+                        EventName="Completed" />
+                </controls:RemoveVisualEntry.Behaviors>
+            </controls:RemoveVisualEntry>
         </Border>
 
 
