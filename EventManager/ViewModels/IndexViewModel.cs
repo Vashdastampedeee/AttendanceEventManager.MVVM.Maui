@@ -79,7 +79,6 @@ namespace EventManager.ViewModels
                 Name = $"Name {scannedEmployee.Name}";
                 BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
                 Color = Colors.Green;
-                await SetFocusEntry();
             }
             else 
             {
@@ -89,8 +88,9 @@ namespace EventManager.ViewModels
                 Name = "Name: Not Found";
                 BusinessUnit = "Business Unit: Not Found";
                 Color = Colors.Red;
-                await SetFocusEntry();
             }
+
+            await SetFocusEntry();
         }
 
     }
