@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using EventManager.Models;
 using SQLite;
 
 namespace EventManager.Services
@@ -12,7 +13,7 @@ namespace EventManager.Services
     public class DatabaseService
     {
         private readonly SQLiteAsyncConnection databaseConnection;
-        private const string DatabaseFileName = "dbtest.db";
+        private const string databaseFileName = "dbtest.db";
 
         public DatabaseService()
         {
@@ -23,8 +24,8 @@ namespace EventManager.Services
 
         private string GetDatabasePath()
         {
-            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string dbPath = Path.Combine(folderPath, DatabaseFileName);
+            string folderPath = FileSystem.AppDataDirectory;
+            string dbPath = Path.Combine(folderPath, databaseFileName);
 
             Debug.WriteLine($"[DatabaseService] Checking if database exists at: {dbPath}");
 
@@ -56,6 +57,13 @@ namespace EventManager.Services
             }
 
             return dbPath;
+        }
+
+        public async Task<Employee?> GetEmployeeIdNumber(string idNumber)
+        {
+            var query = "SELECT * FROM employee WHERE IdNumber = ?";
+            var employees = await databaseConnection.QueryAsync<Employee>(query, idNumber);
+            return employees.FirstOrDefault();
         }
     }
 }
