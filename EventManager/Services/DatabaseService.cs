@@ -78,7 +78,16 @@ namespace EventManager.Services
         {
             var query = "SELECT * FROM employee WHERE IdNumber = ?";
             var employees = await databaseConnection.QueryAsync<Employee>(query, idNumber);
+            Debug.WriteLine($"[DatabaseService] ID Number {idNumber}");
             return employees.FirstOrDefault();
+        }
+
+        public async Task InsertIntoAttendanceLogs(string idNumber, string name, string businessUnit, string status)
+        {
+            string timeStamp = DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt");
+            string query = "INSERT INTO attendancelog (IdNumber, Name, BusinessUnit, Status, Timestamp) VALUES (?,?,?,?,?)";
+            await databaseConnection.ExecuteAsync(query, idNumber, name, businessUnit, status, timeStamp);
+            Debug.WriteLine($"[DatabaseService] Attendance log inserted: {idNumber}, {name}, {businessUnit}, {status} ,{timeStamp}");
         }
     }
 }
