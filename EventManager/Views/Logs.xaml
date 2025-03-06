@@ -3,41 +3,81 @@
     x:Class="EventManager.Views.Logs"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Logs History">
+    xmlns:models="clr-namespace:EventManager.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:EventManager.ViewModels"
+    x:Name="ThisPage"
+    Title="Logs History"
+    x:DataType="viewmodels:LogsViewModel">
+
     <Grid>
-        <VerticalStackLayout>
-            <Grid
-                Padding="10"
-                ColumnSpacing="5"
-                RowSpacing="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.7*" />
-                    <ColumnDefinition Width="0.15*" />
-                    <ColumnDefinition Width="0.15*" />
-                </Grid.ColumnDefinitions>
-                <Border
-                    Grid.Column="0"
-                    HeightRequest="55"
-                    StrokeShape="RoundRectangle 5">
-                    <SearchBar
-                        FontFamily="Roboto"
-                        FontSize="Small"
-                        HeightRequest="30"
-                        Placeholder="Search"
-                        PlaceholderColor="Black" />
-                </Border>
-                <Button
-                    Grid.Column="1"
-                    FontFamily="IconButtons"
-                    FontSize="Medium"
-                    Text="&#xF0B0;" />
-                <Button
-                    Grid.Column="2"
-                    FontFamily="IconButtons"
-                    FontSize="Medium"
-                    Text="&#xE800;" />
-            </Grid>
-        </VerticalStackLayout>
+        <ScrollView>
+            <VerticalStackLayout>
+                <Grid
+                    Padding="10"
+                    ColumnSpacing="5"
+                    RowSpacing="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.7*" />
+                        <ColumnDefinition Width="0.15*" />
+                        <ColumnDefinition Width="0.15*" />
+                    </Grid.ColumnDefinitions>
+                    <Border
+                        Grid.Column="0"
+                        HeightRequest="55"
+                        StrokeShape="RoundRectangle 5">
+                        <SearchBar
+                            FontFamily="Roboto"
+                            FontSize="Small"
+                            HeightRequest="30"
+                            IsEnabled="{Binding IsEnabled}"
+                            Placeholder="Search"
+                            PlaceholderColor="Black" />
+                    </Border>
+                    <Button
+                        Grid.Column="1"
+                        FontFamily="IconButtons"
+                        FontSize="Medium"
+                        IsEnabled="{Binding IsEnabled}"
+                        Text="&#xF0B0;" />
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding LoadAttendanceLogsCommand}"
+                        FontFamily="IconButtons"
+                        FontSize="Medium"
+                        IsEnabled="{Binding IsEnabled}"
+                        Text="&#xE800;" />
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding AttendanceLogs}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:AttendanceLog">
+                            <Border
+                                Margin="5"
+                                Padding="10"
+                                StrokeShape="RectangleRound 20">
+                                <VerticalStackLayout>
+                                    <Label FontSize="Small" Text="{Binding IdNumber}" />
+                                    <Label FontSize="Small" Text="{Binding Name}" />
+                                    <Label FontSize="Small" Text="{Binding BusinessUnit}" />
+                                    <Label FontSize="Small" Text="{Binding Status}" />
+                                    <Label FontSize="Small" Text="{Binding Timestamp}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <AbsoluteLayout>
+            <ActivityIndicator
+                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                IsRunning="{Binding IsBusyIndicator}"
+                IsVisible="{Binding IsBusyIndicator}" />
+        </AbsoluteLayout>
 
         <AbsoluteLayout>
             <Border
@@ -56,6 +96,7 @@
                 <Button
                     FontFamily="IconButtons"
                     FontSize="Title"
+                    IsEnabled="{Binding IsEnabled}"
                     Text="&#xE802;" />
             </Border>
         </AbsoluteLayout>
