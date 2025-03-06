@@ -31,6 +31,7 @@ namespace EventManager.ViewModels
             databaseService = databaseServiceInjection;
             beepService = beepServiceInjection;
             InitializeElementProperty();
+            Task.Run(async () => beepService.InitBeep()); 
         }
         private void InitializeElementProperty()
         {
@@ -54,7 +55,6 @@ namespace EventManager.ViewModels
         public async Task PageAppearing()
         {
             Debug.WriteLine("[IndexViewModel] Page Appearing");
-            await beepService.InitBeep();
             await SetFocusEntry();
         }
 
