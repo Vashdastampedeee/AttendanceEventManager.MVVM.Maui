@@ -31,7 +31,12 @@ namespace EventManager.ViewModels
             databaseService = databaseServiceInjection;
             beepService = beepServiceInjection;
             InitializeElementProperty();
-            Task.Run(async () => await beepService.InitBeep()); 
+            InitializeAsyncMethods();
+        }
+        private async void InitializeAsyncMethods()
+        {
+            await databaseService.InitializeTablesAsync();
+            await beepService.InitBeep();
         }
         private void InitializeElementProperty()
         {
