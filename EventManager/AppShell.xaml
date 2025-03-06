@@ -7,7 +7,7 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:EventManager.Views"
     Title="EventManager"
-    Shell.FlyoutBackdrop="DarkSlateGrey"
+    Shell.FlyoutBackdrop="Transparent"
     Shell.FlyoutBehavior="Flyout"
     Shell.NavBarHasShadow="True">
 
