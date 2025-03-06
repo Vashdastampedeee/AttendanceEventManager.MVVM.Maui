@@ -84,6 +84,7 @@ namespace EventManager.ViewModels
                 Name = $"Name {scannedEmployee.Name}";
                 BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
                 Color = Colors.Green;
+                await databaseService.InsertIntoAttendanceLogs(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, "SUCCESS");
             }
             else 
             {
@@ -93,6 +94,7 @@ namespace EventManager.ViewModels
                 Name = "Name: Not Found";
                 BusinessUnit = "Business Unit: Not Found";
                 Color = Colors.Red;
+                await databaseService.InsertIntoAttendanceLogs(barcodeIdNumber, "", "", "NOT FOUND");
             }
 
             await SetFocusEntry();
