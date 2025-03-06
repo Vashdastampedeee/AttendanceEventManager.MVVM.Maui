@@ -67,26 +67,39 @@ namespace EventManager.ViewModels
         public async Task ScanEmployeeId()
         {
             string barcodeIdNumber = BarcodeNumber.Trim();
-            if(string.IsNullOrEmpty(barcodeIdNumber) || string.IsNullOrWhiteSpace(barcodeIdNumber))
+            if (string.IsNullOrEmpty(barcodeIdNumber) || string.IsNullOrWhiteSpace(barcodeIdNumber))
             {
                 return;
             }
 
             var scannedEmployee = await databaseService.GetEmployeeIdNumber(barcodeIdNumber);
-
+            bool isAlreadyScanned = await databaseService.IsEmployeeAlreadyScanned(barcodeIdNumber);
             beepService.PlayBeep();
 
             if (scannedEmployee != null)
             {
-                BarcodeNumber = string.Empty;
-                IdNumber =$"ID Number: {scannedEmployee.IdNumber}";
-                IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
-                Name = $"Name {scannedEmployee.Name}";
-                BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
-                Color = Colors.Green;
-                await databaseService.InsertIntoAttendanceLogs(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, "SUCCESS");
+                if (isAlreadyScanned)
+                {
+                    BarcodeNumber = string.Empty;
+                    IdNumber = "ALREADY SCANNED";
+                    IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
+                    Name = $"Name {scannedEmployee.Name}";
+                    BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
+                    Color = Colors.Red;
+                }
+                else
+                {
+                    // Employee not scanned - proceed with log insertion
+                    BarcodeNumber = string.Empty;
+                    IdNumber = $"ID Number: {scannedEmployee.IdNumber}";
+                    IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
+                    Name = $"Name {scannedEmployee.Name}";
+                    BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
+                    Color = Colors.Green;
+                    await databaseService.InsertIntoAttendanceLogs(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, "SUCCESS");
+                }
             }
-            else 
+            else
             {
                 BarcodeNumber = string.Empty;
                 IdNumber = $"ID Number: {barcodeIdNumber} Not Found";

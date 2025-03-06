@@ -89,5 +89,21 @@ namespace EventManager.Services
             await databaseConnection.ExecuteAsync(query, idNumber, name, businessUnit, status, timeStamp);
             Debug.WriteLine($"[DatabaseService] Attendance log inserted: {idNumber}, {name}, {businessUnit}, {status} ,{timeStamp}");
         }
+
+        public async Task<List<AttendanceLog>> GetAllAttendanceLogs()
+        {
+            string query = "SELECT * FROM attendancelog ORDER BY Timestamp DESC";
+            var logs = await databaseConnection.QueryAsync<AttendanceLog>(query);
+            Debug.WriteLine($"[DatabaseService] All attendance logs: {logs.Count}");
+            return logs;
+        }
+
+        public async Task<bool> IsEmployeeAlreadyScanned(string idNumber)
+        {
+            string query = "SELECT COUNT(*) FROM attendancelog WHERE IdNumber = ?";
+            var result = await databaseConnection.ExecuteScalarAsync<int>(query, idNumber);
+            return result > 0;
+        }
+
     }
 }
