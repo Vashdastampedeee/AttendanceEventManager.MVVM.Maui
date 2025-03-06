@@ -31,7 +31,7 @@ namespace EventManager.Services
         {
             if (player != null && isInitialized)
             {
-                Debug.WriteLine("[BeepServive] Beep sound is playing");
+                Debug.WriteLine("[BeepService] Beep sound is playing");
                 player.Play();
             }
         }
