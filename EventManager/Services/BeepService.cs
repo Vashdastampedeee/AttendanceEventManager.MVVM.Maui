@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,19 +12,28 @@ namespace EventManager.Services
     public class BeepService
     {
         private IAudioPlayer player;
+        private bool isInitialized = false;
 
         public async Task InitBeep()
         {
-            if (player == null)
+
+            if (!isInitialized)
             {
+                Debug.WriteLine("[BeepService] Player is initialized");
                 var stream = await FileSystem.OpenAppPackageFileAsync("barcodeSfx.mp3");
                 player = AudioManager.Current.CreatePlayer(stream);
+                isInitialized = true;
             }
+            
         }
 
         public void PlayBeep()
         {
-            player.Play();
+            if (player != null && isInitialized)
+            {
+                Debug.WriteLine("[BeepServive] Beep sound is playing");
+                player.Play();
+            }
         }
 
     }
