@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using EventManager.Services;
 using EventManager.ViewModels;
+using EventManager.Views;
 using Microsoft.Extensions.Logging;
 
 namespace EventManager;
@@ -26,6 +27,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<DatabaseService>();
 		builder.Services.AddSingleton<BeepService>();
 		builder.Services.AddSingleton<IndexViewModel>();
+		builder.Services.AddSingleton<LogsViewModel>();
 
 		return builder.Build();
 	}
