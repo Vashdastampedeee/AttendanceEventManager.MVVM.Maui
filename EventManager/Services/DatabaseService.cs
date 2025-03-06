@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EventManager.Models;
 using SQLite;
+using Microsoft.Maui.Storage;
 
 namespace EventManager.Services
 {
@@ -20,6 +21,20 @@ namespace EventManager.Services
             string dbPath = GetDatabasePath();
             databaseConnection = new SQLiteAsyncConnection(dbPath);
             Debug.WriteLine($"[DatabaseService] Database initialized at: {dbPath}");
+        }
+
+        public async Task InitializeTablesAsync()
+        {
+            if (!Preferences.Get("DatabaseInitialize", false))
+            {
+                Debug.WriteLine("[DatabaseService] Creating tables");
+                await databaseConnection.CreateTableAsync<AttendanceLog>();
+                Preferences.Set("DatabaseInitialize", true);
+            }
+            else
+            {
+                Debug.WriteLine("[DatabaseService] Tables already created");
+            }
         }
 
         private string GetDatabasePath()
