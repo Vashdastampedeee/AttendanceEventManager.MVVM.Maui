@@ -46,7 +46,7 @@ namespace EventManager.ViewModels
         {
             Debug.WriteLine("[IndexViewModel] Focus Set To Entry");
             IsEntryFocused = false;
-            await Task.Delay(100);
+            await Task.Delay(50);
             IsEntryFocused = true;
         }
 
