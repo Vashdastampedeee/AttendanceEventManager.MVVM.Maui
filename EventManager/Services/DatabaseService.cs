@@ -90,12 +90,10 @@ namespace EventManager.Services
             Debug.WriteLine($"[DatabaseService] Attendance log inserted: {idNumber}, {name}, {businessUnit}, {status} ,{timeStamp}");
         }
 
-        public async Task<List<AttendanceLog>> GetAllAttendanceLogs()
+        public async Task<List<AttendanceLog>> GetAttendanceLogsPaginated(int startIndex, int pageSize)
         {
-            string query = "SELECT * FROM attendancelog ORDER BY Timestamp DESC";
-            var logs = await databaseConnection.QueryAsync<AttendanceLog>(query);
-            Debug.WriteLine($"[DatabaseService] All attendance logs: {logs.Count}");
-            return logs;
+            string query = "SELECT * FROM attendancelog ORDER BY Timestamp DESC LIMIT ? OFFSET ?";
+            return await databaseConnection.QueryAsync<AttendanceLog>(query, pageSize, startIndex);
         }
 
         public async Task<bool> IsEmployeeAlreadyScanned(string idNumber)

@@ -89,7 +89,6 @@ namespace EventManager.ViewModels
                 }
                 else
                 {
-                    // Employee not scanned - proceed with log insertion
                     BarcodeNumber = string.Empty;
                     IdNumber = $"ID Number: {scannedEmployee.IdNumber}";
                     IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);

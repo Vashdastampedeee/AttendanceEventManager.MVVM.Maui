@@ -15,7 +15,11 @@ namespace EventManager.ViewModels
     public partial class LogsViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
-        
+        private const int PageSize = 10; 
+        private int lastLoadedIndex = 0;
+        private bool isLoadingMoreLogs;
+        private bool isAllLogsDataLoaded;
+
         [ObservableProperty]
         private ObservableCollection<AttendanceLog> attendanceLogs = new();
 
@@ -25,7 +29,8 @@ namespace EventManager.ViewModels
         [ObservableProperty]
         private bool isEnabled;
 
-        private bool isLoadOnce;
+        [ObservableProperty]
+        private bool isLoadingDataIndicator;
 
         public LogsViewModel(DatabaseService databaseServiceInjection) 
         {
@@ -34,32 +39,45 @@ namespace EventManager.ViewModels
         [RelayCommand]
         private async Task OnNavigatedTo()
         {
-            if (!isLoadOnce)
+            if (AttendanceLogs.Count == 0)
             {
                 await LoadAttendanceLogs();
-                isLoadOnce = true;
             }
         }
 
         [RelayCommand]
         public async Task LoadAttendanceLogs()
         {
-            IsEnabled = false;
-            IsBusyIndicator = true;
-            var logs = await databaseService.GetAllAttendanceLogs();
-          
-
-            if (logs != null)
+            if (isLoadingMoreLogs || isAllLogsDataLoaded)
             {
-                AttendanceLogs.Clear();
+                return;
+            }
+
+            isLoadingMoreLogs = true;
+            IsEnabled = false;
+            IsBusyIndicator = AttendanceLogs.Count == 0; 
+            IsLoadingDataIndicator = AttendanceLogs.Count > 0; 
+            var logs = await databaseService.GetAttendanceLogsPaginated(lastLoadedIndex, PageSize);
+
+            if (logs.Any())
+            {
                 await Task.Delay(1000);
                 foreach (var log in logs)
                 {
                     AttendanceLogs.Add(log);
                 }
+                lastLoadedIndex += logs.Count; 
             }
+
+            if (logs.Count < PageSize)
+            {
+                isAllLogsDataLoaded = true;
+            }
+
             IsEnabled = true;
             IsBusyIndicator = false;
+            IsLoadingDataIndicator = false;
+            isLoadingMoreLogs = false;
         }
 
     }
