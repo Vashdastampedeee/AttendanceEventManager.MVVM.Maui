@@ -31,12 +31,6 @@ namespace EventManager.ViewModels
             databaseService = databaseServiceInjection;
             beepService = beepServiceInjection;
             InitializeElementProperty();
-            InitializeAsyncMethods();
-        }
-        private async void InitializeAsyncMethods()
-        {
-            await databaseService.InitializeTablesAsync();
-            await beepService.InitBeep();
         }
         private void InitializeElementProperty()
         {
@@ -61,6 +55,8 @@ namespace EventManager.ViewModels
         {
             Debug.WriteLine("[IndexViewModel] Page Appearing");
             await SetFocusEntry();
+            await databaseService.InitializeTablesAsync();
+            await beepService.InitializeBeepSound();
         }
 
         [RelayCommand]
