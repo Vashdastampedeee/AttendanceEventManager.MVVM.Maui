@@ -9,6 +9,12 @@
     x:Name="ThisPage"
     Title="Logs History"
     x:DataType="viewmodels:LogsViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
+            Command="{Binding NavigatedToCommand}"
+            EventName="NavigatedTo" />
+    </ContentPage.Behaviors>
 
     <Grid>
         <ScrollView>

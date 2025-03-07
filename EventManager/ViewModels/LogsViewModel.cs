@@ -28,7 +28,11 @@ namespace EventManager.ViewModels
         public LogsViewModel(DatabaseService databaseServiceInjection) 
         {
             databaseService = databaseServiceInjection;
-            LoadAttendanceLogs();
+        }
+        [RelayCommand]
+        private async Task OnNavigatedTo()
+        {
+            await LoadAttendanceLogs();
         }
 
         [RelayCommand]
