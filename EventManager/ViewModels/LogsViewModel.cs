@@ -25,6 +25,8 @@ namespace EventManager.ViewModels
         [ObservableProperty]
         private bool isEnabled;
 
+        private bool isLoadOnce;
+
         public LogsViewModel(DatabaseService databaseServiceInjection) 
         {
             databaseService = databaseServiceInjection;
@@ -32,7 +34,11 @@ namespace EventManager.ViewModels
         [RelayCommand]
         private async Task OnNavigatedTo()
         {
-            await LoadAttendanceLogs();
+            if (!isLoadOnce)
+            {
+                await LoadAttendanceLogs();
+                isLoadOnce = true;
+            }
         }
 
         [RelayCommand]
