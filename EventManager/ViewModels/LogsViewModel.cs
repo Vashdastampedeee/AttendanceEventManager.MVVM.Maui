@@ -80,5 +80,16 @@ namespace EventManager.ViewModels
             isLoadingMoreLogs = false;
         }
 
+        [RelayCommand]
+        public async Task RefreshLogs()
+        {
+            Debug.WriteLine("[LogsViewModel] - refreshing logs");
+
+            lastLoadedIndex = 0;
+            isAllLogsDataLoaded = false;
+            AttendanceLogs.Clear();
+            await LoadAttendanceLogs();
+        }
+
     }
 }
