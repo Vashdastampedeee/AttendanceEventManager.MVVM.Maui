@@ -57,7 +57,7 @@ namespace EventManager.ViewModels
         }
 
         [RelayCommand]
-        public async Task PageAppearing()
+        public async Task OnNavigatedTo()
         {
             Debug.WriteLine("[IndexViewModel] Page Appearing");
             await SetFocusEntry();

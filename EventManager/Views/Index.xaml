@@ -12,8 +12,8 @@
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
             BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
-            Command="{Binding PageAppearingCommand}"
-            EventName="Appearing" />
+            Command="{Binding NavigatedToCommand}"
+            EventName="NavigatedTo" />
     </ContentPage.Behaviors>
     <VerticalStackLayout
         HorizontalOptions="Center"
