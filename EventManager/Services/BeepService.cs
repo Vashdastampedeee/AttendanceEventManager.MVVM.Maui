@@ -14,7 +14,7 @@ namespace EventManager.Services
         private IAudioPlayer player;
         private bool isInitialized = false;
 
-        public async Task InitBeep()
+        public async Task InitializeBeepSound()
         {
 
             if (!isInitialized)
