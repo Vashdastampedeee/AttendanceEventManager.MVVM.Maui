@@ -52,7 +52,7 @@
                 Text="&#xF0B0;" />
             <Button
                 Grid.Column="2"
-                Command="{Binding LoadAttendanceLogsCommand}"
+                Command="{Binding RefreshLogsCommand}"
                 FontFamily="IconButtons"
                 FontSize="Medium"
                 IsEnabled="{Binding IsEnabled}"
@@ -96,8 +96,8 @@
         <ActivityIndicator
             Grid.RowSpan="2"
             HorizontalOptions="Center"
-            IsRunning="{Binding IsBusyIndicator}"
-            IsVisible="{Binding IsBusyIndicator}"
+            IsRunning="{Binding IsBusyPageIndicator}"
+            IsVisible="{Binding IsBusyPageIndicator}"
             VerticalOptions="Center" />
 
 
