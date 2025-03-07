@@ -24,7 +24,7 @@ namespace EventManager.ViewModels
         private ObservableCollection<AttendanceLog> attendanceLogs = new();
 
         [ObservableProperty]
-        private bool isBusyIndicator;
+        private bool isBusyPageIndicator;
 
         [ObservableProperty]
         private bool isEnabled;
@@ -55,7 +55,7 @@ namespace EventManager.ViewModels
 
             isLoadingMoreLogs = true;
             IsEnabled = false;
-            IsBusyIndicator = AttendanceLogs.Count == 0; 
+            IsBusyPageIndicator = AttendanceLogs.Count == 0; 
             IsLoadingDataIndicator = AttendanceLogs.Count > 0; 
             var logs = await databaseService.GetAttendanceLogsPaginated(lastLoadedIndex, PageSize);
 
@@ -75,7 +75,7 @@ namespace EventManager.ViewModels
             }
 
             IsEnabled = true;
-            IsBusyIndicator = false;
+            IsBusyPageIndicator = false;
             IsLoadingDataIndicator = false;
             isLoadingMoreLogs = false;
         }
