@@ -1,9 +1,12 @@
+using EventManager.ViewModels;
+
 namespace EventManager.Views;
 
 public partial class Event : ContentPage
 {
-	public Event()
+	public Event(EventViewModel eventViewModel)
 	{
 		InitializeComponent();
+		BindingContext = eventViewModel;
 	}
 }

@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Maui;
 using EventManager.Services;
 using EventManager.ViewModels;
+using EventManager.ViewModels.Popups;
 using EventManager.Views;
+using EventManager.Views.Popups;
 using Microsoft.Extensions.Logging;
 
 namespace EventManager;
@@ -28,6 +30,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<BeepService>();
 		builder.Services.AddSingleton<IndexViewModel>();
 		builder.Services.AddSingleton<LogsViewModel>();
+		builder.Services.AddSingleton<EventViewModel>();
+		builder.Services.AddTransientPopup<AddEvent, AddEventViewModel>();
 
 		return builder.Build();
 	}
