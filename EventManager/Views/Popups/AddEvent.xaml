@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="EventManager.Views.Popups.AddEvent"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="True">
+
+    <Grid
+        Padding="20"
+        ColumnSpacing="10"
+        RowSpacing="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Image
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            Aspect="AspectFit"
+            HeightRequest="100"
+            Source="event_image_placeholder.jpg" />
+        <StackLayout Grid.Row="1" Grid.ColumnSpan="2">
+            <Label Text="EVENT NAME" />
+            <Entry Placeholder="Enter Event Name" PlaceholderColor="Black" />
+        </StackLayout>
+        <StackLayout Grid.Row="2" Grid.ColumnSpan="2">
+            <Label Text="EVENT CATEGORY" />
+            <Picker Title="Pick Event Category" TextColor="Black">
+                <Picker.Items>
+                    <x:String>Company Event</x:String>
+                    <x:String>Orientation</x:String>
+                    <x:String>Seminar</x:String>
+                    <x:String>Training</x:String>
+                </Picker.Items>
+            </Picker>
+        </StackLayout>
+
+        <StackLayout Grid.Row="3" Grid.ColumnSpan="3">
+            <Label Text="DATE" />
+            <DatePicker />
+        </StackLayout>
+
+        <StackLayout Grid.Row="4" Grid.Column="0">
+            <Label Text="FROM" />
+            <TimePicker />
+        </StackLayout>
+        <StackLayout Grid.Row="4" Grid.Column="1">
+            <Label Text="TO" />
+            <TimePicker />
+        </StackLayout>
+
+
+        <Button
+            Grid.Row="5"
+            Grid.Column="0"
+            Text="Upload Img" />
+        <Button
+            Grid.Row="5"
+            Grid.Column="1"
+            Text="Add Event" />
+    </Grid>
+
+
+</toolkit:Popup>
