@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Maui.Core;
+﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EventManager.Services;
@@ -15,6 +10,10 @@ namespace EventManager.ViewModels
     {
         private readonly DatabaseService databaseService;
         private readonly IPopupService popupService;
+
+        [ObservableProperty]
+        private bool isBusy;
+        public bool IsNotBusy => !IsBusy;
         public EventViewModel(DatabaseService databaseServiceInjection, IPopupService popupServiceInjection) 
         {
             popupService = popupServiceInjection;
@@ -22,9 +21,18 @@ namespace EventManager.ViewModels
         }
 
         [RelayCommand]
-        public void AddEventPopup()
+        public async Task AddEventPopup()
         {
+            if (IsBusy) return;
+            IsBusy = true;
+            OnPropertyChanged(nameof(IsNotBusy));
+
+            await Task.Delay(1500);
+
             popupService.ShowPopup<AddEventViewModel>();
+
+            IsBusy = false;
+            OnPropertyChanged(nameof(IsNotBusy));
         }
     }
 }

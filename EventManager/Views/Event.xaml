@@ -3,9 +3,15 @@
     x:Class="EventManager.Views.Event"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:EventManager.Converters"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
     Title="Event Setter"
     x:DataType="viewmodel:EventViewModel">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBooleanConverters x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid>
         <VerticalStackLayout>
             <Grid Padding="10" ColumnSpacing="5">
@@ -39,22 +45,32 @@
             <Border
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
+                BackgroundColor="#512BD4"
                 HeightRequest="54"
                 Stroke="Transparent"
                 StrokeShape="Ellipse"
                 WidthRequest="54">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="DarkSlateGray"
-                        Opacity="0.7"
-                        Offset="1,1" />
-                </Border.Shadow>
-                <Button
-                    Command="{Binding AddEventPopupCommand}"
-                    FontFamily="IconButtons"
-                    FontSize="Title"
-                    Text="&#xF271;" />
+
+                <Grid>
+                    <Button
+                        BackgroundColor="Transparent"
+                        Command="{Binding AddEventPopupCommand}"
+                        FontFamily="IconButtons"
+                        FontSize="Title"
+                        IsEnabled="{Binding IsNotBusy}"
+                        IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        Text="&#xF271;" />
+
+                    <ActivityIndicator
+                        HeightRequest="25"
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"
+                        WidthRequest="25"
+                        Color="White" />
+                </Grid>
+
             </Border>
+
         </AbsoluteLayout>
     </Grid>
 
