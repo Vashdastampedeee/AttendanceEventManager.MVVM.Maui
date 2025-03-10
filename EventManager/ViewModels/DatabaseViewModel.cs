@@ -9,6 +9,7 @@ using System.Globalization;
 using EventManager.ViewModels.Popups;
 using Mopups.Services;
 using EventManager.Views.Popups;
+using EventManager.Utilities;
 
 namespace EventManager.ViewModels
 {
@@ -31,10 +32,6 @@ namespace EventManager.ViewModels
             this.fileSaver = fileSaver;
             this.databaseService = databaseService;
             this.sqlSyncService = sqlServerService;
-        }
-        private static async Task ShowToast(string message, ToastDuration duration)
-        {
-            await Toast.Make(message, duration, 14).Show();
         }
 
         [RelayCommand]
@@ -66,7 +63,7 @@ namespace EventManager.ViewModels
                 if (!File.Exists(dbPath))
                 {
                     Debug.WriteLine("[DatabaseViewModel] Database file not found.");
-                    await ShowToast("Database file not found!", ToastDuration.Long);
+                    await ToastHelper.ShowToast("Database file not found!", ToastDuration.Long);
                     return;
                 }
 
@@ -77,12 +74,12 @@ namespace EventManager.ViewModels
                 {
                     string filePath = fileSaverResult.FilePath;
                     Debug.WriteLine($"[DatabaseViewModel] File saved at: {filePath}");
-                    await ShowToast($"Database exported: \n {filePath}", ToastDuration.Long);
+                    await ToastHelper.ShowToast($"Database exported: \n {filePath}", ToastDuration.Long);
                 }
                 else
                 {
                     Debug.WriteLine($"[DatabaseViewModel] Error saving file: {fileSaverResult.Exception?.Message}");
-                    await ShowToast($"Export failed: {fileSaverResult.Exception?.Message}", ToastDuration.Long);
+                    await ToastHelper.ShowToast($"Export failed: {fileSaverResult.Exception?.Message}", ToastDuration.Long);
                 }
                 IsExportBusy = false;
                 OnPropertyChanged(nameof(IsExportNotBusy));
@@ -90,7 +87,7 @@ namespace EventManager.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"[DatabaseViewModel] Exception: {ex.Message}");
-                await ShowToast($"Error: {ex.Message}", ToastDuration.Long);
+                await ToastHelper.ShowToast($"Error: {ex.Message}", ToastDuration.Long);
             }
         }
    

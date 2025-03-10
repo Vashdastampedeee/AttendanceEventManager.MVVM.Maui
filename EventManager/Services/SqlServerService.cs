@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using EventManager.Models;
+using EventManager.Utilities;
 using EventManager.ViewModels.Popups;
 using EventManager.Views.Popups;
 using Microsoft.Data.SqlClient;
@@ -61,7 +62,10 @@ namespace EventManager.Services
                             await syncDataViewModel.UpdateProgress($"Fetching {count}/{totalEmployees} employees...");
                         }
 
-                        await database.InsertAllAsync(employees);
+                        await database.RunInTransactionAsync(tran =>
+                        {
+                            tran.InsertAll(employees);
+                        });
 
                         await syncDataViewModel.UpdateProgress("Saving data to local database...");
                     }
@@ -77,6 +81,7 @@ namespace EventManager.Services
             {
                 await Task.Delay(500);
                 await MopupService.Instance.PopAsync();
+                await ToastHelper.ShowToast($"SQL Server sync succesful!", ToastDuration.Long);
             }
         }
 
