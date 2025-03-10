@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopup:PopupPage
+    x:Class="EventManager.Views.Popups.SyncData"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mopup="clr-namespace:Mopups.Pages;assembly=Mopups"
+    xmlns:viewmodels="clr-namespace:EventManager.ViewModels.Popups"
+    x:DataType="viewmodels:SyncDataViewModel"
+    CloseWhenBackgroundIsClicked="False">
+
+    <Border
+        BackgroundColor="LightGray"
+        HeightRequest="150"
+        StrokeShape="RoundRectangle 20"
+        WidthRequest="300">
+        <VerticalStackLayout
+            Padding="20"
+            HorizontalOptions="Center"
+            Spacing="10"
+            VerticalOptions="Center">
+            <ActivityIndicator IsRunning="True" />
+            <Label
+                FontSize="Small"
+                HorizontalTextAlignment="Center"
+                Text="{Binding StatusMessage}" />
+        </VerticalStackLayout>
+    </Border>
+
+
+</mopup:PopupPage>

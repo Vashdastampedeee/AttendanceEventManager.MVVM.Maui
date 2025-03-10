@@ -6,6 +6,9 @@ using CommunityToolkit.Mvvm.Input;
 using EventManager.Services;
 using CommunityToolkit.Maui.Core;
 using System.Globalization;
+using EventManager.ViewModels.Popups;
+using Mopups.Services;
+using EventManager.Views.Popups;
 
 namespace EventManager.ViewModels
 {
@@ -13,25 +16,50 @@ namespace EventManager.ViewModels
     {
         private readonly IFileSaver fileSaver;
         private readonly DatabaseService databaseService;
+        private readonly SqlServerService sqlSyncService;
 
         [ObservableProperty]
-        private bool isBusy;
-        public bool IsNotBusy => !IsBusy;
+        private bool isSyncBusy;
+        public bool IsSyncNotBusy => !IsSyncBusy;
 
-        public DatabaseViewModel(IFileSaver fileSaver, DatabaseService databaseService)
+        [ObservableProperty]
+        private bool isExportBusy;
+        public bool IsExportNotBusy => !IsExportBusy;
+
+        public DatabaseViewModel(IFileSaver fileSaver, DatabaseService databaseService, SqlServerService sqlServerService)
         {
             this.fileSaver = fileSaver;
             this.databaseService = databaseService;
+            this.sqlSyncService = sqlServerService;
         }
+        private static async Task ShowToast(string message, ToastDuration duration)
+        {
+            await Toast.Make(message, duration, 14).Show();
+        }
+
+        [RelayCommand]
+        public async Task SyncEmployees()
+        {
+            if (IsSyncBusy) return;
+            IsSyncBusy = true;
+            OnPropertyChanged(nameof(IsSyncNotBusy));
+
+            await Task.Delay(1000);
+            await sqlSyncService.SyncEmployeesFromSQLServer();
+          
+            IsSyncBusy = false;
+            OnPropertyChanged(nameof(IsSyncNotBusy));
+        }
+
 
         [RelayCommand]
         public async Task ExportDatabase()
         {
             try
             {
-                if (IsBusy) return;
-                IsBusy = true;
-                OnPropertyChanged(nameof(IsNotBusy));
+                if (IsExportBusy) return;
+                IsExportBusy = true;
+                OnPropertyChanged(nameof(IsExportNotBusy));
                 await Task.Delay(1000);
                 string dbPath = databaseService.GetDatabasePath();
 
@@ -49,15 +77,15 @@ namespace EventManager.ViewModels
                 {
                     string filePath = fileSaverResult.FilePath;
                     Debug.WriteLine($"[DatabaseViewModel] File saved at: {filePath}");
-                    await ShowToast($"Database exported: {filePath}", ToastDuration.Long);
+                    await ShowToast($"Database exported: \n {filePath}", ToastDuration.Long);
                 }
                 else
                 {
                     Debug.WriteLine($"[DatabaseViewModel] Error saving file: {fileSaverResult.Exception?.Message}");
                     await ShowToast($"Export failed: {fileSaverResult.Exception?.Message}", ToastDuration.Long);
                 }
-                IsBusy = false;
-                OnPropertyChanged(nameof(IsNotBusy));
+                IsExportBusy = false;
+                OnPropertyChanged(nameof(IsExportNotBusy));
             }
             catch (Exception ex)
             {
@@ -65,9 +93,6 @@ namespace EventManager.ViewModels
                 await ShowToast($"Error: {ex.Message}", ToastDuration.Long);
             }
         }
-        private async Task ShowToast(string message, ToastDuration duration)
-        {
-            await Toast.Make(message, duration, 14).Show();
-        }
+   
     }
 }

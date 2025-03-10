@@ -37,6 +37,11 @@ namespace EventManager.Services
             }
         }
 
+        public SQLiteAsyncConnection GetDatabaseConnection()
+        {
+            return databaseConnection;
+        }
+
         public string GetDatabasePath()
         {
             string folderPath = FileSystem.AppDataDirectory;
@@ -74,6 +79,14 @@ namespace EventManager.Services
             return dbPath;
         }
 
+        public async Task DeleteAllEmployeesData()
+        {
+            await databaseConnection.DeleteAllAsync<Employee>();
+            await databaseConnection.ExecuteAsync("DELETE FROM sqlite_sequence WHERE name='employee'");
+            await databaseConnection.ExecuteAsync("UPDATE sqlite_sequence SET seq = 0 WHERE name='employee'");
+            Debug.WriteLine("[DatabaseService] All employee records deleted.");
+        }
+
         public async Task<Employee?> GetEmployeeIdNumber(string idNumber)
         {
             var query = "SELECT * FROM employee WHERE IdNumber = ?";
@@ -82,7 +95,14 @@ namespace EventManager.Services
             return employees.FirstOrDefault();
         }
 
-        public async Task InsertIntoAttendanceLogs(string idNumber, string name, string businessUnit, string status)
+        public async Task<bool> IsEmployeeAlreadyScanned(string idNumber)
+        {
+            string query = "SELECT COUNT(*) FROM attendancelog WHERE IdNumber = ?";
+            var result = await databaseConnection.ExecuteScalarAsync<int>(query, idNumber);
+            return result > 0;
+        }
+
+        public async Task InsertAttendanceLog(string idNumber, string name, string businessUnit, string status)
         {
             string timeStamp = DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt");
             string query = "INSERT INTO attendancelog (IdNumber, Name, BusinessUnit, Status, Timestamp) VALUES (?,?,?,?,?)";
@@ -94,13 +114,6 @@ namespace EventManager.Services
         {
             string query = "SELECT * FROM attendancelog ORDER BY Timestamp DESC LIMIT ? OFFSET ?";
             return await databaseConnection.QueryAsync<AttendanceLog>(query, pageSize, startIndex);
-        }
-
-        public async Task<bool> IsEmployeeAlreadyScanned(string idNumber)
-        {
-            string query = "SELECT COUNT(*) FROM attendancelog WHERE IdNumber = ?";
-            var result = await databaseConnection.ExecuteScalarAsync<int>(query, idNumber);
-            return result > 0;
         }
 
     }

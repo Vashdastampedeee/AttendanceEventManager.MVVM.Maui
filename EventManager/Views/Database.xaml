@@ -13,12 +13,35 @@
             FontSize="Small"
             HorizontalTextAlignment="Center"
             Text="Sync Microsoft SQL Server Database" />
-        <Button
-            FontAttributes="Bold"
-            FontFamily="IconButtons"
-            FontSize="Small"
-            MaximumWidthRequest="160"
-            Text="&#xE800; Sync Database" />
+
+        <Border
+            BackgroundColor="#512BD4"
+            HeightRequest="50"
+            Stroke="Transparent"
+            StrokeShape="RoundRectangle 10"
+            WidthRequest="160">
+
+            <Grid>
+                <Button
+                    BackgroundColor="Transparent"
+                    Command="{Binding SyncEmployeesCommand}"
+                    FontAttributes="Bold"
+                    FontFamily="IconButtons"
+                    FontSize="Small"
+                    IsEnabled="{Binding IsSyncNotBusy}"
+                    IsVisible="{Binding IsSyncBusy, Converter={StaticResource InverseBoolConverter}}"
+                    MaximumWidthRequest="160"
+                    Text="&#xE800; Sync Database" />
+
+                <ActivityIndicator
+                    HeightRequest="25"
+                    IsRunning="{Binding IsSyncBusy}"
+                    IsVisible="{Binding IsSyncBusy}"
+                    WidthRequest="25"
+                    Color="White" />
+            </Grid>
+
+        </Border>
 
         <Label
             FontAttributes="Bold"
@@ -40,15 +63,15 @@
                     FontAttributes="Bold"
                     FontFamily="IconButtons"
                     FontSize="Small"
-                    IsEnabled="{Binding IsNotBusy}"
-                    IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                    IsEnabled="{Binding IsExportNotBusy}"
+                    IsVisible="{Binding IsExportBusy, Converter={StaticResource InverseBoolConverter}}"
                     MaximumWidthRequest="160"
                     Text="&#xE802; Export Database" />
 
                 <ActivityIndicator
                     HeightRequest="25"
-                    IsRunning="{Binding IsBusy}"
-                    IsVisible="{Binding IsBusy}"
+                    IsRunning="{Binding IsExportBusy}"
+                    IsVisible="{Binding IsExportBusy}"
                     WidthRequest="25"
                     Color="White" />
             </Grid>
