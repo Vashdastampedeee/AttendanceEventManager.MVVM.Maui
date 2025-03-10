@@ -3,15 +3,10 @@
     x:Class="EventManager.Views.Event"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converters="clr-namespace:EventManager.Converters"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
     Title="Event Setter"
     x:DataType="viewmodel:EventViewModel">
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:InverseBooleanConverters x:Key="InverseBoolConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
+
     <Grid>
         <VerticalStackLayout>
             <Grid Padding="10" ColumnSpacing="5">

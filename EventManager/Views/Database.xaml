@@ -26,12 +26,33 @@
             FontSize="Small"
             HorizontalTextAlignment="Center"
             Text="Export SQLite Database" />
-        <Button
-            Command="{Binding ExportDatabaseCommand}"
-            FontAttributes="Bold"
-            FontFamily="IconButtons"
-            FontSize="Small"
-            MaximumWidthRequest="160"
-            Text="&#xE802; Export Database" />
+        <Border
+            BackgroundColor="#512BD4"
+            HeightRequest="50"
+            Stroke="Transparent"
+            StrokeShape="RoundRectangle 10"
+            WidthRequest="160">
+
+            <Grid>
+                <Button
+                    BackgroundColor="Transparent"
+                    Command="{Binding ExportDatabaseCommand}"
+                    FontAttributes="Bold"
+                    FontFamily="IconButtons"
+                    FontSize="Small"
+                    IsEnabled="{Binding IsNotBusy}"
+                    IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                    MaximumWidthRequest="160"
+                    Text="&#xE802; Export Database" />
+
+                <ActivityIndicator
+                    HeightRequest="25"
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}"
+                    WidthRequest="25"
+                    Color="White" />
+            </Grid>
+
+        </Border>
     </VerticalStackLayout>
 </ContentPage>
