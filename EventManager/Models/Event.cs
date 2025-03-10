@@ -15,9 +15,10 @@ namespace EventManager.Models
         public string EventName { get; set; }
         public string EventCategory { get; set; }
         public byte[] EventImage { get; set; }
-        public bool isSelected { get; set; }
         public string EventDate { get; set; }
         public string EventFromTime { get; set; }
         public string EventToTime { get; set; }
+        public bool isSelected { get; set; }
+        public string FormattedTime => $"{EventFromTime} - {EventToTime}";
     }
 }

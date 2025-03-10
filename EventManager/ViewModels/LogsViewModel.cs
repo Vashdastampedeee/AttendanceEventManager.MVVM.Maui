@@ -15,7 +15,7 @@ namespace EventManager.ViewModels
     public partial class LogsViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
-        private const int PageSize = 10; 
+        private const int pageSize = 10; 
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreLogs;
         private bool isAllLogsDataLoaded;
@@ -57,7 +57,7 @@ namespace EventManager.ViewModels
             IsEnabled = false;
             IsBusyPageIndicator = AttendanceLogs.Count == 0; 
             IsLoadingDataIndicator = AttendanceLogs.Count > 0; 
-            var logs = await databaseService.GetAttendanceLogsPaginated(lastLoadedIndex, PageSize);
+            var logs = await databaseService.GetAttendanceLogsPaginated(lastLoadedIndex, pageSize);
 
             if (logs.Any())
             {
@@ -69,7 +69,7 @@ namespace EventManager.ViewModels
                 lastLoadedIndex += logs.Count; 
             }
 
-            if (logs.Count < PageSize)
+            if (logs.Count < pageSize)
             {
                 isAllLogsDataLoaded = true;
             }

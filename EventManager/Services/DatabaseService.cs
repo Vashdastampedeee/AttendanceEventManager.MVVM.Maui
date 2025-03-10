@@ -29,6 +29,7 @@ namespace EventManager.Services
             {
                 Debug.WriteLine("[DatabaseService] Creating tables");
                 await databaseConnection.CreateTableAsync<AttendanceLog>();
+                await databaseConnection.CreateTableAsync<Event>();
                 Preferences.Set("DatabaseInitialize", true);
             }
             else
@@ -114,6 +115,19 @@ namespace EventManager.Services
         {
             string query = "SELECT * FROM attendancelog ORDER BY Timestamp DESC LIMIT ? OFFSET ?";
             return await databaseConnection.QueryAsync<AttendanceLog>(query, pageSize, startIndex);
+        }
+
+        public async Task InsertIntoEvent(string eventName, string eventCategory, byte[] eventImage, string eventDate, string eventFromTime, string eventToTime)
+        {
+            string query = "INSERT INTO event (EventName, EventCategory, EventImage, EventDate, EventFromTime, EventToTime, isSelected) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            await databaseConnection.ExecuteAsync(query, eventName, eventCategory, eventImage, eventDate, eventFromTime, eventToTime, false);
+            Debug.WriteLine($"[DatabaseService] Event inserted: {eventName}, {eventCategory}, {eventImage?.Length ?? 0} {eventDate}, {eventFromTime} - {eventToTime}");
+        }
+
+        public async Task<List<Event>> GetEventsPaginated(int startIndex, int pageSize)
+        {
+            string query = "SELECT * FROM event ORDER BY Id DESC LIMIT ? OFFSET ?";
+            return await databaseConnection.QueryAsync<Event>(query, pageSize, startIndex);
         }
 
     }
