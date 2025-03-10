@@ -1,9 +1,12 @@
+using EventManager.ViewModels;
+
 namespace EventManager.Views;
 
 public partial class Database : ContentPage
 {
-	public Database()
+	public Database(DatabaseViewModel databaseViewModel)
 	{
 		InitializeComponent();
+		BindingContext = databaseViewModel;
 	}
 }

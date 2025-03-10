@@ -37,7 +37,7 @@ namespace EventManager.Services
             }
         }
 
-        private string GetDatabasePath()
+        public string GetDatabasePath()
         {
             string folderPath = FileSystem.AppDataDirectory;
             string dbPath = Path.Combine(folderPath, databaseFileName);

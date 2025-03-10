@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Storage;
 using EventManager.Services;
 using EventManager.ViewModels;
 using EventManager.ViewModels.Popups;
@@ -31,7 +32,9 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IndexViewModel>();
 		builder.Services.AddSingleton<LogsViewModel>();
 		builder.Services.AddSingleton<EventViewModel>();
-		builder.Services.AddTransientPopup<AddEvent, AddEventViewModel>();
+		builder.Services.AddSingleton<DatabaseViewModel>();
+        builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
+        builder.Services.AddTransientPopup<AddEvent, AddEventViewModel>();
 
 		return builder.Build();
 	}
