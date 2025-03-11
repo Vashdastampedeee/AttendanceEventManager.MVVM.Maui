@@ -38,17 +38,17 @@ namespace EventManager.ViewModels.Popups
         {
             if (string.IsNullOrEmpty(EventName))
             {
-                await ToastHelper.ShowToast("Event Name is required!", ToastDuration.Long);
+                await ToastHelper.ShowToast("Event Name is required!", ToastDuration.Short);
                 return;
             }
             if (string.IsNullOrEmpty(SelectedCategory))
             {
-                await ToastHelper.ShowToast("Event Category is required!", ToastDuration.Long);
+                await ToastHelper.ShowToast("Event Category is required!", ToastDuration.Short);
                 return;
             }
             if (FromTime == TimeSpan.Zero || ToTime == TimeSpan.Zero)
             {
-                await ToastHelper.ShowToast("Event Time is required!");
+                await ToastHelper.ShowToast("Event Time is required!", ToastDuration.Short);
                 return;
             }
 
@@ -59,6 +59,7 @@ namespace EventManager.ViewModels.Popups
             await databaseService.InsertEvent(EventName, SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
 
             await MopupService.Instance.PopAsync();
+            await ToastHelper.ShowToast("Event Added", ToastDuration.Short);
 
             await eventViewModel.RefreshEvents();
         }
