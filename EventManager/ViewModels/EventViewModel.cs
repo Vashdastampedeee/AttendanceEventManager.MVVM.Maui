@@ -1,8 +1,14 @@
-﻿using CommunityToolkit.Maui.Core;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DocumentFormat.OpenXml.Wordprocessing;
+using EventManager.Models;
 using EventManager.Services;
 using EventManager.ViewModels.Popups;
+using EventManager.Views.Popups;
+using Mopups.Services;
 
 namespace EventManager.ViewModels
 {
@@ -11,28 +17,109 @@ namespace EventManager.ViewModels
         private readonly DatabaseService databaseService;
         private readonly IPopupService popupService;
 
+        private const int pageSize = 5;
+        private int lastLoadedIndex = 0;
+        private bool isLoadingMoreEvents;
+        private bool isAllEventsDataLoaded;
+
+        [ObservableProperty]
+        private ObservableCollection<Event> events = new();
+
+        [ObservableProperty]
+        private bool isBusyPageIndicator;
+
+        [ObservableProperty]
+        private bool isEnabled;
+
+        [ObservableProperty]
+        private bool isLoadingDataIndicator;
+
         [ObservableProperty]
         private bool isBusy;
         public bool IsNotBusy => !IsBusy;
-        public EventViewModel(DatabaseService databaseServiceInjection, IPopupService popupServiceInjection) 
+        public EventViewModel(DatabaseService databaseService)
         {
-            popupService = popupServiceInjection;
-            databaseService = databaseServiceInjection;
+            this.databaseService = databaseService;
+        }
+
+        [RelayCommand]
+        private async Task OnNavigatedTo()
+        {
+            if (Events.Count == 0)
+            {
+                await LoadEventsData();
+            }
         }
 
         [RelayCommand]
         public async Task AddEventPopup()
         {
-            if (IsBusy) return;
-            IsBusy = true;
-            OnPropertyChanged(nameof(IsNotBusy));
+            async Task ExecuteAdd()
+            {
+                var addEventViewModel = new AddEventViewModel(databaseService);
+                var addEvent = new AddEvent(addEventViewModel);
 
-            await Task.Delay(1500);
+                if (IsBusy) return;
+                IsBusy = true;
+                OnPropertyChanged(nameof(IsNotBusy));
 
-            popupService.ShowPopup<AddEventViewModel>();
+                await Task.Delay(500);
+                await MopupService.Instance.PushAsync(addEvent);
 
-            IsBusy = false;
-            OnPropertyChanged(nameof(IsNotBusy));
+                IsBusy = false;
+                OnPropertyChanged(nameof(IsNotBusy));
+            }
+
+            await ExecuteAdd();
+    
+        }
+        [RelayCommand]
+        public async Task LoadEventsData()
+        {
+            if (isLoadingMoreEvents || isAllEventsDataLoaded)
+            {
+                return;
+            }
+
+            isLoadingMoreEvents = true;
+            IsEnabled = false;
+            IsBusyPageIndicator = Events.Count == 0;
+            IsLoadingDataIndicator = Events.Count > 0;
+
+            var events = await databaseService.GetEventsPaginated(lastLoadedIndex, pageSize);
+
+            if (events.Any())
+            {
+                await Task.Delay(1000);
+
+                foreach (var eventdata in events)
+                {
+                    Events.Add(eventdata);
+                }
+
+                lastLoadedIndex += events.Count();
+            }
+
+            if (events.Count < pageSize)
+            {
+                isAllEventsDataLoaded = true;
+            }
+
+            IsEnabled = true;
+            IsBusyPageIndicator = false;
+            IsLoadingDataIndicator = false;
+            isLoadingMoreEvents = false;
+        }
+
+        [RelayCommand]
+        public async Task RefreshEvents()
+        {
+            Debug.WriteLine("[EventViewModel] - refereshing events");
+
+            lastLoadedIndex = 0;
+            isAllEventsDataLoaded = false;
+            Events.Clear();
+            await LoadEventsData();
         }
     }
 }
