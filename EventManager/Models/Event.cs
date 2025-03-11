@@ -20,5 +20,8 @@ namespace EventManager.Models
         public string EventToTime { get; set; }
         public bool isSelected { get; set; }
         public string FormattedTime => $"{EventFromTime} - {EventToTime}";
+
+        [Ignore]
+        public bool IsDefaultVisible { get; set; }
     }
 }
