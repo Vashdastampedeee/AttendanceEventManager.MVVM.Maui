@@ -39,8 +39,6 @@ public static class MauiProgram
 		builder.Services.AddSingleton<EventViewModel>();
 		builder.Services.AddSingleton<DatabaseViewModel>();
 
-
-        builder.Services.AddTransientPopup<AddEvent, AddEventViewModel>();
         builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
 
         return builder.Build();
