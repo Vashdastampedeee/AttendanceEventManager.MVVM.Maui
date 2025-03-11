@@ -20,6 +20,7 @@ namespace EventManager.ViewModels
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreEvents;
         private bool isAllEventsDataLoaded;
+        private bool isRefreshEvent;
 
         [ObservableProperty]
         private ObservableCollection<Event> events = new();
@@ -89,8 +90,11 @@ namespace EventManager.ViewModels
 
             if (events.Any())
             {
-                await Task.Delay(1000);
-
+                if(!isRefreshEvent)
+                {
+                    await Task.Delay(1000);
+                }
+   
                 foreach (var eventData in events)
                 {
                     eventData.IsDefaultVisible = eventData.isSelected;  
@@ -105,6 +109,7 @@ namespace EventManager.ViewModels
                 isAllEventsDataLoaded = true;
             }
 
+            isRefreshEvent = false;
             IsEnabled = true;
             IsBusyPageIndicator = false;
             IsLoadingDataIndicator = false;
@@ -117,6 +122,7 @@ namespace EventManager.ViewModels
 
             lastLoadedIndex = 0;
             isAllEventsDataLoaded = false;
+            isRefreshEvent = true;
             Events.Clear();
             await LoadEventsData();
         }
