@@ -23,66 +23,71 @@ namespace EventManager.Services
 
         public async Task SyncEmployeesFromSQLServer()
         {
-
-            var syncDataViewModel = new SyncDataViewModel();
-            var syncData = new SyncData(syncDataViewModel);
-
-            await MopupService.Instance.PushAsync(syncData); 
-
-            try
+            async Task ExecuteSync()
             {
-                using (var sqlConn = new SqlConnection(sqlServerConnStr))
+                var syncDataViewModel = new SyncDataViewModel();
+                var syncData = new SyncData(syncDataViewModel);
+
+                await MopupService.Instance.PushAsync(syncData);
+
+                try
                 {
-                    await sqlConn.OpenAsync();
-                    await syncDataViewModel.UpdateProgress("Connected to server...");
-
-                    await databaseService.DeleteAllEmployeesData();
-                    await syncDataViewModel.UpdateProgress("Clearing old employee data...");
-
-                    int totalEmployees = await GetTotalEmployees(sqlConn);
-                    await syncDataViewModel.UpdateProgress($"Total employees to fetch: {totalEmployees}...");
-
-                    using (var sqlCmd = new SqlCommand(GetEmployeeQuery(), sqlConn))
-                    using (var reader = await sqlCmd.ExecuteReaderAsync())
+                    using (var sqlConn = new SqlConnection(sqlServerConnStr))
                     {
-                        var employees = new List<Employee>();
-                        int count = 0;
+                        await sqlConn.OpenAsync();
+                        await syncDataViewModel.UpdateProgress("Connected to server...");
 
-                        while (await reader.ReadAsync())
+                        await databaseService.DeleteAllEmployeesData();
+                        await syncDataViewModel.UpdateProgress("Clearing old employee data...");
+
+                        int totalEmployees = await GetTotalEmployees(sqlConn);
+                        await syncDataViewModel.UpdateProgress($"Total employees to fetch: {totalEmployees}...");
+
+                        using (var sqlCmd = new SqlCommand(GetEmployeeQuery(), sqlConn))
+                        using (var reader = await sqlCmd.ExecuteReaderAsync())
                         {
-                            employees.Add(new Employee
+                            var employees = new List<Employee>();
+                            int count = 0;
+
+                            while (await reader.ReadAsync())
                             {
-                                IdNumber = reader["IDNo"].ToString(),
-                                Name = reader["EmpName"].ToString(),
-                                BusinessUnit = reader["BusinessUnit"].ToString(),
-                                IdPhoto = reader["Photo"] as byte[]
+                                employees.Add(new Employee
+                                {
+                                    IdNumber = reader["IDNo"].ToString(),
+                                    Name = reader["EmpName"].ToString(),
+                                    BusinessUnit = reader["BusinessUnit"].ToString(),
+                                    IdPhoto = reader["Photo"] as byte[]
+                                });
+
+                                count++;
+                                await syncDataViewModel.UpdateProgress($"Fetching {count}/{totalEmployees} employees...");
+                            }
+
+                            await database.RunInTransactionAsync(tran =>
+                            {
+                                tran.InsertAll(employees);
                             });
 
-                            count++;
-                            await syncDataViewModel.UpdateProgress($"Fetching {count}/{totalEmployees} employees...");
+                            await syncDataViewModel.UpdateProgress("Saving data to local database...");
                         }
-
-                        await database.RunInTransactionAsync(tran =>
-                        {
-                            tran.InsertAll(employees);
-                        });
-
-                        await syncDataViewModel.UpdateProgress("Saving data to local database...");
                     }
+
+                    await syncDataViewModel.UpdateProgress("Sync completed successfully!");
                 }
-                    
-                await syncDataViewModel.UpdateProgress("Sync completed successfully!");
+                catch (Exception ex)
+                {
+                    await syncDataViewModel.UpdateProgress($"Error: {ex.Message}");
+                }
+                finally
+                {
+                    await Task.Delay(500);
+                    await MopupService.Instance.PopAsync();
+                    await ToastHelper.ShowToast($"SQL Server sync succesful!", ToastDuration.Long);
+                }
             }
-            catch (Exception ex)
-            {
-                await syncDataViewModel.UpdateProgress($"Error: {ex.Message}");
-            }
-            finally
-            {
-                await Task.Delay(500);
-                await MopupService.Instance.PopAsync();
-                await ToastHelper.ShowToast($"SQL Server sync succesful!", ToastDuration.Long);
-            }
+
+            await ExecuteSync();
+
         }
 
         private async Task<int> GetTotalEmployees(SqlConnection sqlConn)
