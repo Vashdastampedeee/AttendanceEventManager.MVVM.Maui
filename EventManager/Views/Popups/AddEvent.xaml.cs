@@ -1,8 +1,8 @@
 namespace EventManager.Views.Popups;
-using CommunityToolkit.Maui.Views;
 using EventManager.ViewModels.Popups;
+using Mopups.Pages;
 
-public partial class AddEvent : Popup
+public partial class AddEvent : PopupPage
 {
 	public AddEvent(AddEventViewModel addEventViewModel)
 	{
