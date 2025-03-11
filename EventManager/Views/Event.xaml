@@ -76,6 +76,7 @@
                                     FontAttributes="Bold"
                                     FontSize="Medium"
                                     HorizontalTextAlignment="End"
+                                    IsVisible="{Binding IsDefaultVisible}"
                                     Text="Default" />
                             </FlexLayout>
 
@@ -87,9 +88,15 @@
                             </StackLayout>
 
                             <StackLayout Orientation="Horizontal" Spacing="5">
-                                <Button Text="Use" />
+                                <Button
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=UseSelectedEventCommand}"
+                                    CommandParameter="{Binding Id}"
+                                    Text="Use" />
                                 <Button Text="Edit" />
-                                <Button Text="Delete" />
+                                <Button
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=DeleteSelectedEventCommand}"
+                                    CommandParameter="{Binding Id}"
+                                    Text="Delete" />
                             </StackLayout>
 
                         </VerticalStackLayout>

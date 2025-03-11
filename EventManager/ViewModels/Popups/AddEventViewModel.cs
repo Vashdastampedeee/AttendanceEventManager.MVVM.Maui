@@ -17,6 +17,7 @@ namespace EventManager.ViewModels.Popups
     public partial class AddEventViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
+        private readonly EventViewModel eventViewModel;
 
         [ObservableProperty] private string eventName;
         [ObservableProperty] private string selectedCategory;
@@ -26,9 +27,10 @@ namespace EventManager.ViewModels.Popups
         [ObservableProperty] private ImageSource eventImagePreview = "event_image_placeholder.jpg";
         [ObservableProperty] private bool isToTimeEnabled;
         private byte[] eventImageData;
-        public AddEventViewModel(DatabaseService databaseService)
+        public AddEventViewModel(DatabaseService databaseService, EventViewModel eventViewModel)
         {
             this.databaseService = databaseService;
+            this.eventViewModel = eventViewModel;
         }
 
         [RelayCommand]
@@ -55,7 +57,10 @@ namespace EventManager.ViewModels.Popups
             string formattedToTime = DateTime.Today.Add(ToTime).ToString("hh:mm tt");
 
             await databaseService.InsertEvent(EventName, SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
+
             await MopupService.Instance.PopAsync();
+
+            await eventViewModel.RefreshEvents();
         }
 
         [RelayCommand]

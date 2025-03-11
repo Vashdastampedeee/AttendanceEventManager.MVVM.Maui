@@ -15,7 +15,6 @@ namespace EventManager.ViewModels
     public partial class EventViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
-        private readonly IPopupService popupService;
 
         private const int pageSize = 5;
         private int lastLoadedIndex = 0;
@@ -56,7 +55,7 @@ namespace EventManager.ViewModels
         {
             async Task ExecuteAdd()
             {
-                var addEventViewModel = new AddEventViewModel(databaseService);
+                var addEventViewModel = new AddEventViewModel(databaseService, this);
                 var addEvent = new AddEvent(addEventViewModel);
 
                 if (IsBusy) return;
@@ -92,9 +91,10 @@ namespace EventManager.ViewModels
             {
                 await Task.Delay(1000);
 
-                foreach (var eventdata in events)
+                foreach (var eventData in events)
                 {
-                    Events.Add(eventdata);
+                    eventData.IsDefaultVisible = eventData.isSelected;  
+                    Events.Add(eventData);
                 }
 
                 lastLoadedIndex += events.Count();
@@ -110,7 +110,6 @@ namespace EventManager.ViewModels
             IsLoadingDataIndicator = false;
             isLoadingMoreEvents = false;
         }
-
         [RelayCommand]
         public async Task RefreshEvents()
         {
@@ -120,6 +119,18 @@ namespace EventManager.ViewModels
             isAllEventsDataLoaded = false;
             Events.Clear();
             await LoadEventsData();
+        }
+        [RelayCommand]
+        private async Task DeleteSelectedEvent(int eventId)
+        {
+            await databaseService.DeleteSelectedEvent(eventId);
+            await RefreshEvents();
+        }
+        [RelayCommand]
+        private async Task UseSelectedEvent(int eventId)
+        {
+            await databaseService.UseSelectedEvent(eventId);
+            await RefreshEvents();
         }
     }
 }
