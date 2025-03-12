@@ -102,12 +102,12 @@ namespace EventManager.Services
             return result > 0;
         }
 
-        public async Task InsertAttendanceLog(string idNumber, string name, string businessUnit, string status)
+        public async Task InsertAttendanceLog(string idNumber, string name, string businessUnit, string status, string eventName, string eventCategory, string eventDate, string eventTime)
         {
             string timeStamp = DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt");
-            string query = "INSERT INTO attendancelog (IdNumber, Name, BusinessUnit, Status, Timestamp) VALUES (?,?,?,?,?)";
-            await databaseConnection.ExecuteAsync(query, idNumber, name, businessUnit, status, timeStamp);
-            Debug.WriteLine($"[DatabaseService] Attendance log inserted: {idNumber}, {name}, {businessUnit}, {status} ,{timeStamp}");
+            string query = "INSERT INTO attendancelog (IdNumber, Name, BusinessUnit, Status, EventName, EventCategory, EventDate, EventTime, Timestamp) VALUES (?,?,?,?,?,?,?,?,?)";
+            await databaseConnection.ExecuteAsync(query, idNumber, name, businessUnit, status, eventName, eventCategory, eventDate, eventTime, timeStamp);
+            Debug.WriteLine($"[DatabaseService] Attendance log inserted: {idNumber}, {name}, {businessUnit}, {status}, {eventName}, {eventCategory}, {eventDate}, {eventTime} ,{timeStamp}");
         }
 
         public async Task<List<AttendanceLog>> GetAttendanceLogsPaginated(int startIndex, int pageSize)

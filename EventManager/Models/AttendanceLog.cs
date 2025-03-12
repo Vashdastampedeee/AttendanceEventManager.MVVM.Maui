@@ -17,6 +17,11 @@ namespace EventManager.Models
         public string BusinessUnit { get; set; }
         public string Status { get; set; }
         public string Timestamp { get; set; }
+        public string EventName { get; set; }
+        public string EventCategory { get; set; }
+        public string EventDate { get; set; }
+        public string EventTime { get; set; }
+
 
     }
 }
