@@ -68,18 +68,34 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AttendanceLog">
+
                     <Border
                         Margin="5"
                         Padding="10"
                         StrokeShape="RectangleRound 20">
-                        <VerticalStackLayout>
-                            <Label FontSize="Small" Text="{Binding IdNumber}" />
-                            <Label FontSize="Small" Text="{Binding Name}" />
-                            <Label FontSize="Small" Text="{Binding BusinessUnit}" />
-                            <Label FontSize="Small" Text="{Binding Status}" />
-                            <Label FontSize="Small" Text="{Binding Timestamp}" />
-                        </VerticalStackLayout>
+                        <ScrollView Orientation="Horizontal">
+                            <HorizontalStackLayout Spacing="35">
+                                <VerticalStackLayout>
+                                    <Label FontSize="Small" Text="{Binding IdNumber}" />
+                                    <Label FontSize="Small" Text="{Binding Name}" />
+                                    <Label FontSize="Small" Text="{Binding BusinessUnit}" />
+                                    <Label FontSize="Small" Text="{Binding Status}" />
+                                    <Label FontSize="Small" Text="{Binding Timestamp}" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout IsVisible="True">
+                                    <Label FontSize="Small" Text="{Binding EventName}" />
+                                    <Label FontSize="Small" Text="{Binding EventCategory}" />
+                                    <Label FontSize="Small" Text="{Binding EventDate}" />
+                                    <Label FontSize="Small" Text="{Binding EventTime}" />
+
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+
+                        </ScrollView>
                     </Border>
+
+
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 
