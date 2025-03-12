@@ -20,28 +20,27 @@
         Spacing="12.5"
         VerticalOptions="Center">
         <Image
-            Aspect="AspectFill"
-            HeightRequest="65"
-            Source="event_image_placeholder.jpg"
-            WidthRequest="90" />
+            Aspect="AspectFit"
+            Source="{Binding EventImage, Mode=TwoWay}"
+            WidthRequest="150" />
         <Label
             FontAttributes="Bold"
             FontFamily="Roboto"
             FontSize="Title"
             HorizontalTextAlignment="Center"
-            Text="Set Event Name" />
+            Text="{Binding EventName}" />
         <Label
             FontAttributes="Bold"
             FontFamily="Roboto"
             FontSize="Subtitle"
             HorizontalTextAlignment="Center"
-            Text="Set Date" />
+            Text="{Binding EventDate}" />
         <Label
             FontAttributes="Bold"
             FontFamily="Roboto"
             FontSize="Subtitle"
             HorizontalTextAlignment="Center"
-            Text="Set Time" />
+            Text="{Binding EventTime}" />
         <Label
             FontFamily="Roboto"
             FontSize="Medium"

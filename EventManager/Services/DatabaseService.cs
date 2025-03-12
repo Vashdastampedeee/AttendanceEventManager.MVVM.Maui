@@ -147,7 +147,7 @@ namespace EventManager.Services
             await databaseConnection.ExecuteAsync(query, eventName, eventCategory, eventImage, eventDate, eventFromTime, eventToTime, eventId);
             Debug.WriteLine($"[DatabaseService] Event Updated: {eventName}, {eventCategory}, {eventImage?.Length ?? 0}, {eventDate}, {eventFromTime}, {eventToTime} Where Id = {eventId}");
         }
-        public async Task<Event> GetEventById(int eventId)
+        public async Task<Event?> GetEventById(int eventId)
         {
             string query = "SELECT * FROM event WHERE Id = ?";
             var eventList = await databaseConnection.QueryAsync<Event>(query, eventId);
@@ -157,6 +157,12 @@ namespace EventManager.Services
         {
             await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 0");
             await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 1 WHERE Id =?", eventId);
+        }
+        public async Task<Event?> GetSelectedEvent()
+        {
+            string query = "SELECT * FROM event WHERE isSelected = 1";
+            var eventList = await databaseConnection.QueryAsync<Event>(query);
+            return eventList.FirstOrDefault();
         }
 
     }

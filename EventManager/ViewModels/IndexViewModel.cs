@@ -18,6 +18,11 @@ namespace EventManager.ViewModels
         private readonly DatabaseService databaseService;
         private readonly BeepService beepService;
 
+        [ObservableProperty] private string eventName;
+        [ObservableProperty] private string eventDate;
+        [ObservableProperty] private string eventTime;
+        [ObservableProperty] private ImageSource eventImage;
+
         [ObservableProperty] private string idNumber;
         [ObservableProperty] private ImageSource idPhoto;
         [ObservableProperty] private string name;
@@ -40,7 +45,7 @@ namespace EventManager.ViewModels
             Name = "Name:";
             BusinessUnit = "Business Unit:";
             BarcodeNumber = string.Empty;
-            Color = Colors.Black;   
+            Color = Colors.Black;
         }
         public async Task SetFocusEntry()
         {
@@ -49,7 +54,6 @@ namespace EventManager.ViewModels
             await Task.Delay(50);
             IsEntryFocused = true;
         }
-
         [RelayCommand]
         public async Task OnNavigatedTo()
         {
@@ -57,8 +61,8 @@ namespace EventManager.ViewModels
             await SetFocusEntry();
             await databaseService.InitializeTablesAsync();
             await beepService.InitializeBeepSound();
+            await LoadSelectedEvent();
         }
-
         [RelayCommand]
         public async Task ScanEmployeeId()
         {
@@ -104,9 +108,26 @@ namespace EventManager.ViewModels
                 Color = Colors.Red;
                 await databaseService.InsertAttendanceLog(barcodeIdNumber, "", "", "NOT FOUND");
             }
-
             await SetFocusEntry();
         }
-
+        private async Task LoadSelectedEvent()
+        {
+            var selectedEvent = await databaseService.GetSelectedEvent();
+            if (selectedEvent != null)
+            {
+                EventName = selectedEvent.EventName;
+                EventDate = selectedEvent.EventDate;
+                EventTime = selectedEvent.FormattedTime;
+                EventImage = ImageHelper.ConvertBytesToImage(selectedEvent.EventImage);
+            }
+            else
+            {
+                await Task.Delay(50);
+                EventName = "Set Event Name";
+                EventDate = "Set Event Date";
+                EventTime = "Set Event Time";
+                EventImage = ImageSource.FromFile("event_image_placeholder.jpg");
+            }
+        }
     }
 }
