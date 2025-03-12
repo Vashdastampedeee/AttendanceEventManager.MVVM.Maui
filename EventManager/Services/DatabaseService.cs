@@ -141,7 +141,18 @@ namespace EventManager.Services
             await databaseConnection.ExecuteAsync("DELETE FROM event WHERE Id = ?", eventId);
             Debug.WriteLine($"[DatabaseService] Delete event: {eventId}");
         }
-
+        public async Task UpdateSelectedEvent(int eventId, string eventName, string eventCategory, byte[] eventImage, string eventDate, string eventFromTime, string eventToTime)
+        {
+            string query = "UPDATE event SET EventName = ?, EventCategory = ?, EventImage = ?, EventDate = ?, EventFromTime = ?, EventToTime = ? WHERE Id = ?";
+            await databaseConnection.ExecuteAsync(query, eventName, eventCategory, eventImage, eventDate, eventFromTime, eventToTime, eventId);
+            Debug.WriteLine($"[DatabaseService] Event Updated: {eventName}, {eventCategory}, {eventImage?.Length ?? 0}, {eventDate}, {eventFromTime}, {eventToTime} Where Id = {eventId}");
+        }
+        public async Task<Event> GetEventById(int eventId)
+        {
+            string query = "SELECT * FROM event WHERE Id = ?";
+            var eventList = await databaseConnection.QueryAsync<Event>(query, eventId);
+            return eventList.FirstOrDefault();
+        }
         public async Task UseSelectedEvent(int eventId)
         {
             await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 0");

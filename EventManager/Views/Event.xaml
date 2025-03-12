@@ -92,7 +92,10 @@
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=UseSelectedEventCommand}"
                                     CommandParameter="{Binding Id}"
                                     Text="Use" />
-                                <Button Text="Edit" />
+                                <Button
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=EditSelectedEventCommand}"
+                                    CommandParameter="{Binding Id}"
+                                    Text="Edit" />
                                 <Button
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=DeleteSelectedEventCommand}"
                                     CommandParameter="{Binding Id}"

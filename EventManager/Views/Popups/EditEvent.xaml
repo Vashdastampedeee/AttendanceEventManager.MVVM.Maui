@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopup:PopupPage
+    x:Class="EventManager.Views.Popups.EditEvent"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mopup="clr-namespace:Mopups.Pages;assembly=Mopups"
+    xmlns:viewmodel="clr-namespace:EventManager.ViewModels.Popups"
+    Title="EditEvent"
+    x:DataType="viewmodel:EditEventViewModel"
+    BackgroundInputTransparent="True"
+    CloseWhenBackgroundIsClicked="True">
+
+    <Border
+        BackgroundColor="LightGray"
+        HeightRequest="500"
+        StrokeShape="RoundRectangle 20"
+        WidthRequest="260">
+        <VerticalStackLayout HorizontalOptions="Center">
+            <Grid
+                Padding="20"
+                ColumnSpacing="10"
+                RowSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Image
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    Aspect="AspectFit"
+                    HeightRequest="100"
+                    Source="{Binding EventImagePreview}"
+                    WidthRequest="100" />
+                <StackLayout Grid.Row="1" Grid.ColumnSpan="2">
+                    <Label Text="EVENT NAME" />
+                    <Entry
+                        Placeholder="Enter Event Name"
+                        PlaceholderColor="Black"
+                        Text="{Binding EventName, Mode=TwoWay}" />
+                </StackLayout>
+                <StackLayout Grid.Row="2" Grid.ColumnSpan="2">
+                    <Label Text="EVENT CATEGORY" />
+                    <Picker
+                        Title="Pick Event Category"
+                        SelectedItem="{Binding SelectedCategory}"
+                        TextColor="Black">
+                        <Picker.Items>
+                            <x:String>Company Event</x:String>
+                            <x:String>Orientation</x:String>
+                            <x:String>Seminar</x:String>
+                            <x:String>Training</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </StackLayout>
+
+                <StackLayout Grid.Row="3" Grid.ColumnSpan="3">
+                    <Label Text="DATE" />
+                    <DatePicker Date="{Binding EventDate}" MinimumDate="{Binding MinimumEventData}" />
+                </StackLayout>
+
+                <StackLayout Grid.Row="4" Grid.Column="0">
+                    <Label Text="FROM" />
+                    <TimePicker Time="{Binding FromTime, Mode=TwoWay}" />
+                </StackLayout>
+                <StackLayout Grid.Row="4" Grid.Column="1">
+                    <Label Text="TO" />
+                    <TimePicker IsEnabled="{Binding IsToTimeEnabled}" Time="{Binding ToTime, Mode=TwoWay}" />
+                </StackLayout>
+
+                <Button
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    Command="{Binding UploadImageCommand}"
+                    Text="Upload Img" />
+                <Button
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Command="{Binding SubmitEditCommand}"
+                    Text="Update" />
+            </Grid>
+        </VerticalStackLayout>
+
+
+    </Border>
+</mopup:PopupPage>

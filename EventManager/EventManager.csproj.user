@@ -3,7 +3,7 @@
   <PropertyGroup>
     <IsFirstTimeProjectOpen>False</IsFirstTimeProjectOpen>
     <ActiveDebugFramework>net9.0-android</ActiveDebugFramework>
-    <ActiveDebugProfile>alps PDA (Android 9.0 - API 28)</ActiveDebugProfile>
+    <ActiveDebugProfile>CHAINWAY C66 (Android 11.0 - API 30)</ActiveDebugProfile>
     <SelectedPlatformGroup>PhysicalDevice</SelectedPlatformGroup>
     <DefaultDevice>pixel_5_-_api_34</DefaultDevice>
   </PropertyGroup>
@@ -12,6 +12,9 @@
   </PropertyGroup>
   <ItemGroup>
     <MauiXaml Update="Views\Popups\AddEvent.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
+    <MauiXaml Update="Views\Popups\EditEvent.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
     <MauiXaml Update="Views\Popups\SyncData.xaml">
