@@ -46,7 +46,7 @@ namespace EventManager.ViewModels.Popups
                 await ToastHelper.ShowToast("Event Category is required!", ToastDuration.Short);
                 return;
             }
-            if (FromTime == TimeSpan.Zero || ToTime == TimeSpan.Zero)
+            if (FromTime == TimeSpan.Zero)
             {
                 await ToastHelper.ShowToast("Event Time is required!", ToastDuration.Short);
                 return;
