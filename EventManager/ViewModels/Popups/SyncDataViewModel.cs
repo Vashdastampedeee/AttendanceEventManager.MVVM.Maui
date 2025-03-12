@@ -7,7 +7,7 @@ namespace EventManager.ViewModels.Popups
     public partial class SyncDataViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string statusMessage = "Initializing...";
+        private string statusMessage = "Connecting...";
 
         [ObservableProperty]
         private bool isBusy;

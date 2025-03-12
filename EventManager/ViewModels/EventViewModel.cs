@@ -127,6 +127,13 @@ namespace EventManager.ViewModels
             await LoadEventsData();
         }
         [RelayCommand]
+        private async Task EditSelectedEvent(int eventId)
+        {
+            var editEventViewModel = new EditEventViewModel(databaseService, this, eventId);
+            var editEvent = new EditEvent(editEventViewModel);
+            await MopupService.Instance.PushAsync(editEvent);
+        }
+        [RelayCommand]
         private async Task DeleteSelectedEvent(int eventId)
         {
             await databaseService.DeleteSelectedEvent(eventId);

@@ -14,6 +14,9 @@
     <MauiXaml Update="Views\Popups\AddEvent.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
+    <MauiXaml Update="Views\Popups\EditEvent.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
     <MauiXaml Update="Views\Popups\SyncData.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>

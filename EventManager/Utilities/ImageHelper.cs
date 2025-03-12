@@ -9,7 +9,7 @@ namespace EventManager.Utilities
 {
     public static class ImageHelper
     {
-        public static ImageSource ConvertBytesToImage(byte[] imageSource, int width = 130, int height = 130)
+        public static ImageSource ConvertBytesToImage(byte[] imageSource, int width = 130, int height =130)
         {
             if (imageSource == null || imageSource.Length == 0)
             {
@@ -47,6 +47,14 @@ namespace EventManager.Utilities
             image.Encode(SKEncodedImageFormat.Png, 100).SaveTo(outputStream);
             return outputStream.ToArray();
         }
+        public static ImageSource ConvertBytesToImage(byte[] imageSource)
+        {
+            if (imageSource == null || imageSource.Length == 0)
+            {
+                return "event_image_placeholder.jpg"; 
+            }
 
+            return ImageSource.FromStream(() => new MemoryStream(imageSource));
+        }
     }
 }

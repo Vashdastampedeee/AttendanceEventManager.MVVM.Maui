@@ -3,38 +3,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EventManager.Services;
 using EventManager.Utilities;
-using Microsoft.IdentityModel.Tokens;
 using Mopups.Services;
 
 namespace EventManager.ViewModels.Popups
 {
-    public partial class AddEventViewModel : ObservableObject
+    public partial class EditEventViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
         private readonly EventViewModel eventViewModel;
+        private readonly int eventId;
+        private byte[] eventImageData;
 
         [ObservableProperty] private string eventName;
         [ObservableProperty] private string selectedCategory;
-        [ObservableProperty] private DateTime eventDate = DateTime.Today;
+        [ObservableProperty] private DateTime minimumEventData = DateTime.Today;
+        [ObservableProperty] private DateTime eventDate;
         [ObservableProperty] private TimeSpan fromTime;
         [ObservableProperty] private TimeSpan toTime;
-        [ObservableProperty] private ImageSource eventImagePreview = "event_image_placeholder.jpg";
         [ObservableProperty] private bool isToTimeEnabled;
-        private byte[] eventImageData;
-        public AddEventViewModel(DatabaseService databaseService, EventViewModel eventViewModel)
+        [ObservableProperty] private ImageSource eventImagePreview = "event_image_placeholder.jpg";
+
+        public EditEventViewModel(DatabaseService databaseService, EventViewModel eventViewModel ,int eventId)
         {
             this.databaseService = databaseService;
             this.eventViewModel = eventViewModel;
+            this.eventId = eventId;
+            LoadEventData();
+        }
+
+        private async void LoadEventData()
+        {
+            var selectedEvent = await databaseService.GetEventById(eventId);
+            if (selectedEvent != null)
+            {
+                EventName = selectedEvent.EventName;
+                SelectedCategory = selectedEvent.EventCategory;
+                EventDate = DateTime.Parse(selectedEvent.EventDate);
+                FromTime = DateTime.Parse(selectedEvent.EventFromTime).TimeOfDay;
+                ToTime = DateTime.Parse(selectedEvent.EventToTime).TimeOfDay;
+                eventImageData = selectedEvent.EventImage;
+                EventImagePreview = ImageHelper.ConvertBytesToImage(eventImageData);
+            }
         }
 
         [RelayCommand]
-        private async Task SubmitEvent()
+        private async Task SubmitEdit()
         {
             if (string.IsNullOrEmpty(EventName))
             {
@@ -56,10 +74,10 @@ namespace EventManager.ViewModels.Popups
             string formattedFromTime = DateTime.Today.Add(FromTime).ToString("hh:mm tt");
             string formattedToTime = DateTime.Today.Add(ToTime).ToString("hh:mm tt");
 
-            await databaseService.InsertEvent(EventName, SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
-
+            await databaseService.UpdateSelectedEvent(eventId, EventName, SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
             await MopupService.Instance.PopAsync();
-            await ToastHelper.ShowToast("Event Added", ToastDuration.Short);
+
+            await ToastHelper.ShowToast("Event Updated", ToastDuration.Short);
 
             await eventViewModel.RefreshEvents();
         }
@@ -82,16 +100,12 @@ namespace EventManager.ViewModels.Popups
                     await stream.CopyToAsync(memoryStream);
                     eventImageData = memoryStream.ToArray();
                 }
-                else
-                {
-                    eventImageData = await File.ReadAllBytesAsync("event_image_placeholder.jpg");
-                }
 
                 EventImagePreview = ImageSource.FromStream(() => new MemoryStream(eventImageData));
             }
             catch (Exception ex)
             {
-
+                System.Diagnostics.Debug.WriteLine($"[EditEventViewModel] Error: {ex.Message}");
             }
         }
 
@@ -119,6 +133,5 @@ namespace EventManager.ViewModels.Popups
                 ToTime = FromTime.Add(TimeSpan.FromHours(1));
             }
         }
-
     }
 }

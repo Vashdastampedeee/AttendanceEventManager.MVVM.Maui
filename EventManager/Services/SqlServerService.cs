@@ -14,7 +14,7 @@ namespace EventManager.Services
     {
         private readonly SQLiteAsyncConnection database;
         private readonly DatabaseService databaseService;
-        private readonly string sqlServerConnStr = "Server=192.168.4.11;Database=TimeKeeping;User Id=WMS;Password=WMS@dmin;TrustServerCertificate=True;";
+        private readonly string sqlServerConnStr = "Server=192.168.4.11,1433;Database=TimeKeeping;User Id=WMS;Password=WMS@dmin;TrustServerCertificate=True;";
         public SqlServerService(DatabaseService databaseService) 
         {
             database = databaseService.GetDatabaseConnection();
@@ -73,16 +73,17 @@ namespace EventManager.Services
                     }
 
                     await syncDataViewModel.UpdateProgress("Sync completed successfully!");
+                    await ToastHelper.ShowToast($"SQL Server sync succesful!", ToastDuration.Long);
                 }
                 catch (Exception ex)
                 {
-                    await syncDataViewModel.UpdateProgress($"Error: {ex.Message}");
+                    await syncDataViewModel.UpdateProgress($"Sql server connection failed!");
+                    await ToastHelper.ShowToast($"SQL Server sync failed!", ToastDuration.Long);
                 }
                 finally
                 {
                     await Task.Delay(500);
                     await MopupService.Instance.PopAsync();
-                    await ToastHelper.ShowToast($"SQL Server sync succesful!", ToastDuration.Long);
                 }
             }
 
@@ -101,7 +102,7 @@ namespace EventManager.Services
 
         private string GetEmployeeQuery()
         {
-            return @"SELECT
+            return @"SELECT 
                 IDNo, 
                 EmpName = CONCAT(LastName, ', ', FirstName, 
                     CASE WHEN TRIM(MiddleName) = '' OR MiddleName IS NULL THEN '' ELSE ' ' END, 
