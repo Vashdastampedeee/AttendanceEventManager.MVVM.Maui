@@ -66,7 +66,10 @@
             HorizontalTextAlignment="Center"
             Text="{Binding BusinessUnit}" />
 
-        <Border StrokeShape="RoundRectangle 5">
+        <Border
+            HeightRequest="40"
+            StrokeShape="RoundRectangle 5"
+            WidthRequest="200">
             <Border.Shadow>
                 <Shadow Opacity="0.8" Offset="1,1" />
             </Border.Shadow>
@@ -77,8 +80,7 @@
                 HorizontalTextAlignment="Center"
                 Placeholder="Scan ID Number"
                 PlaceholderColor="Black"
-                Text="{Binding BarcodeNumber, Mode=TwoWay}"
-                WidthRequest="200">
+                Text="{Binding BarcodeNumber, Mode=TwoWay}">
                 <controls:RemoveVisualEntry.Behaviors>
                     <controls:FocusEntry BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}" IsFocused="{Binding IsEntryFocused, Mode=TwoWay}" />
                     <toolkit:EventToCommandBehavior
