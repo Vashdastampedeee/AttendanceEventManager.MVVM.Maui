@@ -19,8 +19,8 @@
                 ColumnSpacing="10"
                 RowSpacing="10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
