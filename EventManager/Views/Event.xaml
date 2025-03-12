@@ -110,11 +110,24 @@
         </CollectionView>
 
         <AbsoluteLayout Grid.Row="1">
-            <ActivityIndicator
+            <Border
                 AbsoluteLayout.LayoutBounds="0.5, 0.95, AutoSize, AutoSize"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                IsRunning="{Binding IsLoadingDataIndicator}"
-                IsVisible="{Binding IsLoadingDataIndicator}" />
+                BackgroundColor="#512BD4"
+                HeightRequest="50"
+                IsVisible="{Binding IsLoadingDataIndicator}"
+                Stroke="Transparent"
+                StrokeShape="Ellipse"
+                WidthRequest="50">
+
+                <ActivityIndicator
+                    HeightRequest="25"
+                    IsRunning="{Binding IsLoadingDataIndicator}"
+                    IsVisible="{Binding IsLoadingDataIndicator}"
+                    WidthRequest="25"
+                    Color="White" />
+
+            </Border>
         </AbsoluteLayout>
 
         <ActivityIndicator
