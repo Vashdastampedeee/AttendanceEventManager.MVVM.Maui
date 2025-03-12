@@ -43,6 +43,7 @@
             </Border>
             <Button
                 Grid.Column="1"
+                Command="{Binding FilterEventsCommand}"
                 FontFamily="IconButtons"
                 FontSize="Medium"
                 Text="&#xF0B0;" />

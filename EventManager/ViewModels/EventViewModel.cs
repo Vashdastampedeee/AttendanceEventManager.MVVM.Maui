@@ -145,5 +145,12 @@ namespace EventManager.ViewModels
             await databaseService.UseSelectedEvent(eventId);
             await RefreshEvents();
         }
+        [RelayCommand]
+        public async Task FilterEvents()
+        {
+            var filterEventViewModel = new FilterEventViewModel();
+            var filterEvent = new FilterEvent(filterEventViewModel);
+            await MopupService.Instance.PushAsync(filterEvent);
+        }
     }
 }

@@ -59,10 +59,10 @@ namespace EventManager.ViewModels
         public async Task OnNavigatedTo()
         {
             Debug.WriteLine("[IndexViewModel] Page Appearing");
-            await SetFocusEntry();
             await databaseService.InitializeTablesAsync();
-            await beepService.InitializeBeepSound();
             await LoadSelectedEvent();
+            await SetFocusEntry();
+            await beepService.InitializeBeepSound();
         }
         [RelayCommand]
         public async Task ScanEmployeeId()
