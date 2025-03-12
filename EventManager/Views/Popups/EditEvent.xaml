@@ -52,15 +52,9 @@
                     <Label Text="EVENT CATEGORY" />
                     <Picker
                         Title="Pick Event Category"
+                        ItemsSource="{Binding CategoryOptions}"
                         SelectedItem="{Binding SelectedCategory}"
-                        TextColor="Black">
-                        <Picker.Items>
-                            <x:String>Company Event</x:String>
-                            <x:String>Orientation</x:String>
-                            <x:String>Seminar</x:String>
-                            <x:String>Training</x:String>
-                        </Picker.Items>
-                    </Picker>
+                        TextColor="Black" />
                 </StackLayout>
 
                 <StackLayout Grid.Row="3" Grid.ColumnSpan="3">

@@ -18,6 +18,7 @@ namespace EventManager.ViewModels.Popups
     {
         private readonly DatabaseService databaseService;
         private readonly EventViewModel eventViewModel;
+        public List<string> CategoryOptions { get; } = new() {"Company Event", "Orientation", "Seminar", "Training" };
 
         [ObservableProperty] private string eventName;
         [ObservableProperty] private string selectedCategory;

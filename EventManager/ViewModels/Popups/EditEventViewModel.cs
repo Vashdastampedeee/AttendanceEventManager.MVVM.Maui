@@ -18,6 +18,7 @@ namespace EventManager.ViewModels.Popups
         private readonly EventViewModel eventViewModel;
         private readonly int eventId;
         private byte[] eventImageData;
+        public List<string> CategoryOptions { get; } = new() {"Company Event", "Orientation", "Seminar", "Training" };
 
         [ObservableProperty] private string eventName;
         [ObservableProperty] private string selectedCategory;
