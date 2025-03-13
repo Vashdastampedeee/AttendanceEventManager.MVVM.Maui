@@ -39,7 +39,8 @@ namespace EventManager.ViewModels
         [ObservableProperty]
         private bool isBusy;
         public bool IsNotBusy => !IsBusy;
-
+        [ObservableProperty]
+        private bool isFiltering;
         [ObservableProperty]
         private string selectedCategory = "ALL";
         [ObservableProperty]
@@ -101,7 +102,11 @@ namespace EventManager.ViewModels
 
             if (IsSearching)
             {
-                events = await databaseService.SearchEvents(SearchText.Trim(), lastLoadedIndex, pageSize);
+                events = await databaseService.SearchEvents(SearchText, lastLoadedIndex, pageSize);
+            }
+            else if (IsFiltering)
+            {
+                events = await databaseService.SetFilterEvents(SelectedCategory, SelectedOrder == "Latest", lastLoadedIndex, pageSize);
             }
             else
             {
@@ -143,6 +148,7 @@ namespace EventManager.ViewModels
 
             SearchText = string.Empty; 
             IsSearching = false;
+            IsFiltering = false;
             isAllEventsDataLoaded = false;
             lastLoadedIndex = 0;
 
@@ -175,16 +181,18 @@ namespace EventManager.ViewModels
             var filterEvent = new FilterEvent(filterEventViewModel);
             await MopupService.Instance.PushAsync(filterEvent);
         }
+        [RelayCommand]
         public async Task ApplyFilterEvents(EventFilter eventFilter)
         {
+            isAllEventsDataLoaded = false; 
+            lastLoadedIndex = 0; 
+            IsFiltering = true;
 
             SelectedCategory = eventFilter.Category;
             SelectedOrder = eventFilter.Order ? "Latest" : "Oldest";
-            IsBusyPageIndicator = true;
-            var filteredEvents = await databaseService.SetFilterEvents(eventFilter.Category, eventFilter.Order);
-            Events = new ObservableCollection<Event>(filteredEvents);
-            IsNoDataVisible = Events.Count == 0;
-            IsBusyPageIndicator = false;
+
+            Events.Clear();
+            await LoadEventsData();
         }
         [RelayCommand]
         public async Task SearchEvents()

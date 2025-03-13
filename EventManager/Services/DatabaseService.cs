@@ -164,10 +164,9 @@ namespace EventManager.Services
             var eventList = await databaseConnection.QueryAsync<Event>(query);
             return eventList.FirstOrDefault();
         }
-        public async Task<List<Event>> SetFilterEvents(string category, bool sortByOrder)
+        public async Task<List<Event>> SetFilterEvents(string category, bool sortByOrder, int startIndex, int pageSize)
         {
             string query = "SELECT * FROM event";
-
             List<object> parameters = new List<object>();
 
             if (!string.IsNullOrEmpty(category) && category != "ALL")
@@ -177,9 +176,14 @@ namespace EventManager.Services
             }
 
             query += sortByOrder ? " ORDER BY Id DESC" : " ORDER BY Id ASC";
+            query += " LIMIT ? OFFSET ?";
+
+            parameters.Add(pageSize);
+            parameters.Add(startIndex);
 
             return await databaseConnection.QueryAsync<Event>(query, parameters.ToArray());
         }
+
         public async Task<List<Event>> SearchEvents(string searchText, int startIndex, int pageSize)
         {
             string query = "SELECT * FROM event WHERE EventName LIKE ? OR EventCategory LIKE ? OR EventDate LIKE ? OR EventFromTime LIKE ? OR EventToTime LIKE ? ORDER BY Id DESC LIMIT ? OFFSET ?";
