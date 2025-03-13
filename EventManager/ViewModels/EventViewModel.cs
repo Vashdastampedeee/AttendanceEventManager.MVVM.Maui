@@ -26,6 +26,9 @@ namespace EventManager.ViewModels
         private ObservableCollection<Event> events = new();
 
         [ObservableProperty]
+        private bool isNoDataVisible;
+
+        [ObservableProperty]
         private bool isBusyPageIndicator;
 
         [ObservableProperty]
@@ -37,6 +40,11 @@ namespace EventManager.ViewModels
         [ObservableProperty]
         private bool isBusy;
         public bool IsNotBusy => !IsBusy;
+
+        [ObservableProperty]
+        private string selectedCategory = "ALL";
+        [ObservableProperty]
+        private string selectedOrder = "Latest";
         public EventViewModel(DatabaseService databaseService)
         {
             this.databaseService = databaseService;
@@ -114,6 +122,7 @@ namespace EventManager.ViewModels
             IsBusyPageIndicator = false;
             IsLoadingDataIndicator = false;
             isLoadingMoreEvents = false;
+            IsNoDataVisible = Events.Count == 0;
         }
         [RelayCommand]
         public async Task RefreshEvents()
@@ -148,9 +157,20 @@ namespace EventManager.ViewModels
         [RelayCommand]
         public async Task FilterEvents()
         {
-            var filterEventViewModel = new FilterEventViewModel();
+            var filterEventViewModel = new FilterEventViewModel(databaseService, this, SelectedCategory, SelectedOrder);
             var filterEvent = new FilterEvent(filterEventViewModel);
             await MopupService.Instance.PushAsync(filterEvent);
+        }
+        public async Task ApplyFilterEvents(EventFilter eventFilter)
+        {
+
+            SelectedCategory = eventFilter.Category;
+            SelectedOrder = eventFilter.Order ? "Latest" : "Oldest";
+            IsBusyPageIndicator = true;
+            var filteredEvents = await databaseService.SetFilterEvents(eventFilter.Category, eventFilter.Order);
+            Events = new ObservableCollection<Event>(filteredEvents);
+            IsNoDataVisible = Events.Count == 0;
+            IsBusyPageIndicator = false;
         }
     }
 }

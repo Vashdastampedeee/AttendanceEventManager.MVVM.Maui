@@ -4,7 +4,9 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+    xmlns:viewmodel="clr-namespace:EventManager.ViewModels.Popups"
     Title="FilterEvent"
+    x:DataType="viewmodel:FilterEventViewModel"
     CloseWhenBackgroundIsClicked="True">
     <Border
         BackgroundColor="LightGray"
@@ -21,18 +23,17 @@
                 VerticalOptions="Center" />
 
             <Label Text="Category" />
-            <Picker />
+            <Picker
+                Title="Filter Category"
+                ItemsSource="{Binding CategoryOptions}"
+                SelectedItem="{Binding SelectedCategory}" />
             <Label Text="Sort By" />
-            <Picker />
+            <Picker
+                Title="Filter Order"
+                ItemsSource="{Binding OrderOption}"
+                SelectedItem="{Binding SelectedOrder}" />
 
-            <Grid ColumnSpacing="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Text="Apply" />
-                <Button Grid.Column="1" Text="Clear" />
-            </Grid>
+            <Button Command="{Binding ApplyFilterCommand}" Text="Apply" />
 
         </VerticalStackLayout>
     </Border>

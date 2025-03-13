@@ -60,6 +60,16 @@
             ItemsSource="{Binding Events}"
             RemainingItemsThreshold="1"
             RemainingItemsThresholdReachedCommand="{Binding LoadEventsDataCommand}">
+
+            <CollectionView.EmptyView>
+                <Label
+                    FontSize="Small"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsNoDataVisible}"
+                    Text="No events found"
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Event">
                     <Border

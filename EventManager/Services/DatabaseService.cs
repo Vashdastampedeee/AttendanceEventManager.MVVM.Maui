@@ -165,5 +165,21 @@ namespace EventManager.Services
             return eventList.FirstOrDefault();
         }
 
+        public async Task<List<Event>> SetFilterEvents(string category, bool sortByOrder)
+        {
+            string query = "SELECT * FROM event";
+
+            List<object> parameters = new List<object>();
+
+            if (!string.IsNullOrEmpty(category) && category != "ALL")
+            {
+                query += " WHERE EventCategory = ?";
+                parameters.Add(category);
+            }
+
+            query += sortByOrder ? " ORDER BY Id DESC" : " ORDER BY Id ASC";
+
+            return await databaseConnection.QueryAsync<Event>(query, parameters.ToArray());
+        }
     }
 }
