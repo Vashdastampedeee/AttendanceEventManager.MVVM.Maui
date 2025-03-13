@@ -90,7 +90,7 @@
                             <FlexLayout JustifyContent="SpaceBetween">
                                 <Image
                                     Aspect="AspectFit"
-                                    Source="{Binding EventImage, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}, TargetNullValue='event_image_placeholder.jpg'}"
+                                    Source="{Binding EventImage, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"
                                     WidthRequest="120" />
                                 <Label
                                     FontAttributes="Bold"
