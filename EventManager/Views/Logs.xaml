@@ -46,6 +46,7 @@
             </Border>
             <Button
                 Grid.Column="1"
+                Command="{Binding FilterLogsCommand}"
                 FontFamily="IconButtons"
                 FontSize="Medium"
                 IsEnabled="{Binding IsEnabled}"

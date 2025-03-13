@@ -9,6 +9,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EventManager.Models;
 using EventManager.Services;
+using EventManager.ViewModels.Popups;
+using EventManager.Views.Popups;
+using Mopups.Services;
 
 namespace EventManager.ViewModels
 {
@@ -89,6 +92,13 @@ namespace EventManager.ViewModels
             isAllLogsDataLoaded = false;
             AttendanceLogs.Clear();
             await LoadAttendanceLogs();
+        }
+        [RelayCommand]
+        public async Task FilterLogs()
+        {
+            var filterLogViewModel = new FilterLogViewModel();
+            var filterLog = new FilterLog(filterLogViewModel);
+            await MopupService.Instance.PushAsync(filterLog);
         }
 
     }

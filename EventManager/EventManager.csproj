@@ -108,6 +108,9 @@
 	  <MauiXaml Update="Views\Popups\EditEvent.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Popups\FilterLog.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\SyncData.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
