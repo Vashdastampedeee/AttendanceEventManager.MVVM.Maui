@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage
+    x:Class="EventManager.Views.Popups.FilterLog"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+    Title="FilterLog"
+    CloseWhenBackgroundIsClicked="True">
+    <Border
+        BackgroundColor="LightGray"
+        HeightRequest="470"
+        StrokeShape="RoundRectangle 20"
+        WidthRequest="250">
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Label
+                Padding="5"
+                FontFamily="Roboto"
+                FontSize="Medium"
+                HorizontalOptions="Start"
+                Text="Filter Logs"
+                VerticalOptions="Center" />
+
+            <Label Text="By Event Name" />
+            <Picker Title="Filter Event Name" />
+            <Label Text="By Event Category" />
+            <Picker Title="Filter Event Category" />
+            <Label Text="By Event Date" />
+            <Picker Title="Filter Date" />
+            <Label Text="By Event Time" />
+            <Picker Title="Filter Time" />
+
+            <Button Text="Apply" />
+
+        </VerticalStackLayout>
+    </Border>
+</mopups:PopupPage>
