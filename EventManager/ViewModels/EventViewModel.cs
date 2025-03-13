@@ -3,7 +3,6 @@ using System.Diagnostics;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DocumentFormat.OpenXml.Wordprocessing;
 using EventManager.Models;
 using EventManager.Services;
 using EventManager.ViewModels.Popups;
@@ -45,6 +44,10 @@ namespace EventManager.ViewModels
         private string selectedCategory = "ALL";
         [ObservableProperty]
         private string selectedOrder = "Latest";
+        [ObservableProperty]
+        private string searchText; 
+        [ObservableProperty]
+        private bool isSearching;   
         public EventViewModel(DatabaseService databaseService)
         {
             this.databaseService = databaseService;
@@ -83,7 +86,7 @@ namespace EventManager.ViewModels
         }
         [RelayCommand]
         public async Task LoadEventsData()
-        {
+        {            
             if (isLoadingMoreEvents || isAllEventsDataLoaded)
             {
                 return;
@@ -94,7 +97,16 @@ namespace EventManager.ViewModels
             IsBusyPageIndicator = Events.Count == 0;
             IsLoadingDataIndicator = Events.Count > 0;
 
-            var events = await databaseService.GetEventsPaginated(lastLoadedIndex, pageSize);
+            List<Event> events;
+
+            if (IsSearching)
+            {
+                events = await databaseService.SearchEvents(SearchText.Trim(), lastLoadedIndex, pageSize);
+            }
+            else
+            {
+                events = await databaseService.GetEventsPaginated(lastLoadedIndex, pageSize);
+            }
 
             if (events.Any())
             {
@@ -129,9 +141,11 @@ namespace EventManager.ViewModels
         {
             Debug.WriteLine("[EventViewModel] - refereshing events");
 
-            lastLoadedIndex = 0;
+            SearchText = string.Empty; 
+            IsSearching = false;
             isAllEventsDataLoaded = false;
-            isRefreshEvent = true;
+            lastLoadedIndex = 0;
+
             Events.Clear();
             await LoadEventsData();
         }
@@ -171,6 +185,16 @@ namespace EventManager.ViewModels
             Events = new ObservableCollection<Event>(filteredEvents);
             IsNoDataVisible = Events.Count == 0;
             IsBusyPageIndicator = false;
+        }
+        [RelayCommand]
+        public async Task SearchEvents()
+        {
+            isAllEventsDataLoaded = false;
+            lastLoadedIndex = 0; 
+            IsSearching = !string.IsNullOrEmpty(SearchText); 
+
+            Events.Clear();
+            await LoadEventsData();
         }
     }
 }

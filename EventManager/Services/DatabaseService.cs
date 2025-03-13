@@ -164,7 +164,6 @@ namespace EventManager.Services
             var eventList = await databaseConnection.QueryAsync<Event>(query);
             return eventList.FirstOrDefault();
         }
-
         public async Task<List<Event>> SetFilterEvents(string category, bool sortByOrder)
         {
             string query = "SELECT * FROM event";
@@ -181,5 +180,14 @@ namespace EventManager.Services
 
             return await databaseConnection.QueryAsync<Event>(query, parameters.ToArray());
         }
+        public async Task<List<Event>> SearchEvents(string searchText, int startIndex, int pageSize)
+        {
+            string query = "SELECT * FROM event WHERE EventName LIKE ? OR EventCategory LIKE ? OR EventDate LIKE ? OR EventFromTime LIKE ? OR EventToTime LIKE ? ORDER BY Id DESC LIMIT ? OFFSET ?";
+
+            string searchPattern = $"%{searchText}%"; // ✅ Adds wildcard for partial matching
+
+            return await databaseConnection.QueryAsync<Event>(query, searchPattern, searchPattern, searchPattern, searchPattern, searchPattern, pageSize, startIndex);
+        }
+
     }
 }
