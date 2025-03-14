@@ -166,7 +166,12 @@
                 Stroke="Transparent"
                 StrokeShape="Ellipse"
                 WidthRequest="54">
-
+                <Border.Shadow>
+                    <Shadow
+                        Brush="DarkSlateGrey"
+                        Opacity="0.7"
+                        Offset="1,1" />
+                </Border.Shadow>
                 <Grid>
                     <Button
                         BackgroundColor="Transparent"
