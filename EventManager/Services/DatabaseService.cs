@@ -192,6 +192,68 @@ namespace EventManager.Services
 
             return await databaseConnection.QueryAsync<Event>(query, searchPattern, searchPattern, searchPattern, searchPattern, searchPattern, pageSize, startIndex);
         }
+        public async Task<List<string>> GetDistinctLogValues(string columnName)
+        {
+            string query = $"SELECT DISTINCT {columnName} FROM attendancelog ORDER BY {columnName} ASC";
+            var results = await databaseConnection.QueryScalarsAsync<string>(query);
+            return results.Where(value => !string.IsNullOrEmpty(value)).ToList();
+        }
+
+        public async Task<List<string>> GetFilteredCategories(string eventName)
+        {
+            string query = "SELECT DISTINCT EventCategory FROM attendancelog WHERE EventName = ? ORDER BY EventCategory ASC";
+            var result = await databaseConnection.QueryScalarsAsync<string>(query, eventName);
+            return result.Where(value => !string.IsNullOrEmpty(value)).ToList();
+        }
+
+        public async Task<List<string>> GetFilteredDates(string eventName, string eventCategory)
+        {
+            string query = "SELECT DISTINCT EventDate FROM attendancelog WHERE EventName = ? AND EventCategory = ? ORDER BY EventDate ASC";
+            var result = await databaseConnection.QueryScalarsAsync<string>(query, eventName, eventCategory);
+            return result.Where(value => !string.IsNullOrEmpty(value)).ToList();
+        }
+
+        public async Task<List<string>> GetFilteredTimes(string eventName, string eventCategory, string eventDate)
+        {
+            string query = "SELECT DISTINCT EventTime FROM attendancelog WHERE EventName = ? AND EventCategory = ? AND EventDate = ? ORDER BY EventTime ASC";
+            var result = await databaseConnection.QueryScalarsAsync<string>(query, eventName, eventCategory, eventDate);
+            return result.Where(value => !string.IsNullOrEmpty(value)).ToList();
+        }
+
+        public async Task<List<AttendanceLog>> GetFilteredLogs(LogFilter filter, int startIndex, int pageSize)
+        {
+            string query = "SELECT * FROM attendancelog WHERE 1=1";
+            List<object> parameters = new List<object>();
+
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                query += " AND EventName = ?";
+                parameters.Add(filter.Name);
+            }
+            if (!string.IsNullOrEmpty(filter.Category))
+            {
+                query += " AND EventCategory = ?";
+                parameters.Add(filter.Category);
+            }
+            if (!string.IsNullOrEmpty(filter.Date))
+            {
+                query += " AND EventDate = ?";
+                parameters.Add(filter.Date);
+            }
+            if (!string.IsNullOrEmpty(filter.Time))
+            {
+                query += " AND EventTime = ?";
+                parameters.Add(filter.Time);
+            }
+
+            query += " ORDER BY Timestamp DESC LIMIT ? OFFSET ?";
+            parameters.Add(pageSize);
+            parameters.Add(startIndex);
+
+            return await databaseConnection.QueryAsync<AttendanceLog>(query, parameters.ToArray());
+        }
+
+
 
     }
 }

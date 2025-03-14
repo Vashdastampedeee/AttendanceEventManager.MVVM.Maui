@@ -4,7 +4,9 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+    xmlns:viewmodel="clr-namespace:EventManager.ViewModels.Popups"
     Title="FilterLog"
+    x:DataType="viewmodel:FilterLogViewModel"
     CloseWhenBackgroundIsClicked="True">
     <Border
         BackgroundColor="LightGray"
@@ -21,15 +23,27 @@
                 VerticalOptions="Center" />
 
             <Label Text="By Event Name" />
-            <Picker Title="Filter Event Name" />
+            <Picker
+                Title="Filter Event Name"
+                ItemsSource="{Binding EventNames}"
+                SelectedItem="{Binding SelectedName, Mode=TwoWay}" />
             <Label Text="By Event Category" />
-            <Picker Title="Filter Event Category" />
+            <Picker
+                Title="Filter Event Category"
+                ItemsSource="{Binding EventCategories}"
+                SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
             <Label Text="By Event Date" />
-            <Picker Title="Filter Date" />
+            <Picker
+                Title="Filter Date"
+                ItemsSource="{Binding EventDates}"
+                SelectedItem="{Binding SelectedDate, Mode=TwoWay}" />
             <Label Text="By Event Time" />
-            <Picker Title="Filter Time" />
+            <Picker
+                Title="Filter Time"
+                ItemsSource="{Binding EventTimes}"
+                SelectedItem="{Binding SelectedTime, Mode=TwoWay}" />
 
-            <Button Text="Apply" />
+            <Button Command="{Binding ApplyLogFilterCommand}" Text="Apply" />
 
         </VerticalStackLayout>
     </Border>

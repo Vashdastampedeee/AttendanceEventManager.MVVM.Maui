@@ -38,6 +38,11 @@ namespace EventManager.ViewModels
         [ObservableProperty]
         private bool isLoadingDataIndicator;
 
+        [ObservableProperty]
+        private bool isFiltering;
+
+        private LogFilter selectedFilter;
+
         public LogsViewModel(DatabaseService databaseServiceInjection) 
         {
             databaseService = databaseServiceInjection;
@@ -54,12 +59,9 @@ namespace EventManager.ViewModels
             {
                 await LoadAttendanceLogs();
             }
-            else
+            else if(lastActiveEventName != activeEvent.EventName)
             {
-                if (lastActiveEventName != activeEvent.EventName)
-                {
-                    await RefreshLogs();
-                }
+                await RefreshLogs();
             }
             lastActiveEventName = activeEvent.EventName;
         }
@@ -80,8 +82,18 @@ namespace EventManager.ViewModels
             isLoadingMoreLogs = true;
             IsEnabled = false;
             IsBusyPageIndicator = AttendanceLogs.Count == 0; 
-            IsLoadingDataIndicator = AttendanceLogs.Count > 0; 
-            var logs = await databaseService.GetAttendanceLogsPaginated(activeEvent.EventName, activeEvent.EventCategory, activeEvent.EventDate, activeEvent.FormattedTime, lastLoadedIndex, pageSize);
+            IsLoadingDataIndicator = AttendanceLogs.Count > 0;
+
+            List<AttendanceLog> logs;
+            if (IsFiltering)
+            {
+                logs = await databaseService.GetFilteredLogs(selectedFilter, lastLoadedIndex, pageSize);
+            }
+            else
+            {
+                logs = await databaseService.GetAttendanceLogsPaginated(activeEvent.EventName, activeEvent.EventCategory, activeEvent.EventDate, activeEvent.FormattedTime, lastLoadedIndex, pageSize);
+
+            }
 
             if (logs.Any())
             {
@@ -111,6 +123,9 @@ namespace EventManager.ViewModels
 
             lastLoadedIndex = 0;
             isAllLogsDataLoaded = false;
+            IsFiltering = false;
+            selectedFilter = null;
+
             AttendanceLogs.Clear();
             await LoadAttendanceLogs();
         }
@@ -118,9 +133,19 @@ namespace EventManager.ViewModels
         public async Task FilterLogs()
         {
             var activeEvent = await databaseService.GetSelectedEvent();
-            var filterLogViewModel = new FilterLogViewModel(activeEvent.EventName,activeEvent.EventCategory,activeEvent.EventDate,activeEvent.FormattedTime);
+            var filterLogViewModel = new FilterLogViewModel(databaseService, this);
             var filterLog = new FilterLog(filterLogViewModel);
             await MopupService.Instance.PushAsync(filterLog);
+        }
+        public async Task ApplyFilterLogs(LogFilter filter)
+        {
+            isAllLogsDataLoaded = false;
+            lastLoadedIndex = 0;
+            IsFiltering = true;
+            selectedFilter = filter;
+
+            AttendanceLogs.Clear();
+            await LoadAttendanceLogs();
         }
 
     }
