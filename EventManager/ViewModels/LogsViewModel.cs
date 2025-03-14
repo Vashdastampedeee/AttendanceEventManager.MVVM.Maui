@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EventManager.Models;
@@ -20,6 +22,7 @@ namespace EventManager.ViewModels
     public partial class LogsViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
+        private readonly IFileSaver fileSaverService;
         private const int pageSize = 10; 
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreLogs;
@@ -39,13 +42,20 @@ namespace EventManager.ViewModels
         private bool isLoadingDataIndicator;
 
         [ObservableProperty]
+        private bool isBusy;
+        public bool IsNotBusy => !IsBusy;
+
+        [ObservableProperty]
         private bool isFiltering;
 
         private LogFilter selectedFilter;
 
-        public LogsViewModel(DatabaseService databaseServiceInjection) 
+
+
+        public LogsViewModel(DatabaseService databaseService, IFileSaver fileSaverService) 
         {
-            databaseService = databaseServiceInjection;
+            this.databaseService = databaseService;
+            this.fileSaverService = fileSaverService;
         }
         [RelayCommand]
         private async Task OnNavigatedTo()
@@ -146,6 +156,93 @@ namespace EventManager.ViewModels
 
             AttendanceLogs.Clear();
             await LoadAttendanceLogs();
+        }
+
+        [RelayCommand]
+        public async Task ExportFilteredLogs()
+        {
+            if (selectedFilter == null)
+            {
+                await ToastHelper.ShowToast("No filter applied!", ToastDuration.Short);
+                return;
+            }
+
+            var logs = await databaseService.GetFilteredLogsForExport(selectedFilter);
+
+            if (logs.Count == 0)
+            {
+                await ToastHelper.ShowToast("No data available for export!", ToastDuration.Short);
+                return;
+            }
+
+            try
+            {
+                IsBusy = true;
+                OnPropertyChanged(nameof(IsNotBusy));
+
+                await Task.Delay(500);
+
+                string fileName = $"ExportedLogs({DateTime.Now}).xlsx";
+                var fileResult = await fileSaverService.SaveAsync(fileName, new MemoryStream(), CancellationToken.None);
+
+                if (!fileResult.IsSuccessful)
+                {
+                    Debug.WriteLine($"[LogsViewModel] Error saving file: {fileResult.Exception?.Message}");
+                    await ToastHelper.ShowToast($"Export failed: {fileResult.Exception?.Message}", ToastDuration.Long);
+                    return;
+                }
+
+                string filePath = fileResult.FilePath;
+
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Attendance Logs");
+
+                    worksheet.Cell(1, 1).Value = "EventName";
+                    worksheet.Cell(1, 2).Value = "Category";
+                    worksheet.Cell(1, 3).Value = "Date";
+                    worksheet.Cell(1, 4).Value = "Time";
+                    worksheet.Cell(1, 5).Value = "ID Number";
+                    worksheet.Cell(1, 6).Value = "Name";
+                    worksheet.Cell(1, 7).Value = "Business Unit";
+                    worksheet.Cell(1, 8).Value = "Status";
+                    worksheet.Cell(1, 9).Value = "Timestamp";
+
+                    int row = 2;
+                    foreach (var log in logs)
+                    {
+                        worksheet.Cell(row, 1).Value = log.EventName;
+                        worksheet.Cell(row, 2).Value = log.EventCategory;
+                        worksheet.Cell(row, 3).Value = log.EventDate;
+                        worksheet.Cell(row, 4).Value = log.EventTime;
+                        worksheet.Cell(row, 5).Value = log.IdNumber;
+                        worksheet.Cell(row, 6).Value = log.Name;
+                        worksheet.Cell(row, 7).Value = log.BusinessUnit;
+                        worksheet.Cell(row, 8).Value = log.Status;
+                        worksheet.Cell(row, 9).Value = log.Timestamp;
+                        row++;
+                    }
+
+                    worksheet.Columns().AdjustToContents();
+
+                    using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        workbook.SaveAs(stream);
+                    }
+                }
+
+                await ToastHelper.ShowToast($"Export successful!\nFile saved: {filePath}", ToastDuration.Long);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LogsViewModel] Export Error: {ex.Message}");
+                await ToastHelper.ShowToast("Export failed!", ToastDuration.Short);
+            }
+            finally
+            {
+                IsBusy = false;
+                OnPropertyChanged(nameof(IsNotBusy));
+            }
         }
 
     }

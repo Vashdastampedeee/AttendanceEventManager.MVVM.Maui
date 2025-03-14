@@ -130,11 +130,11 @@
             IsVisible="{Binding IsBusyPageIndicator}"
             VerticalOptions="Center" />
 
-
         <AbsoluteLayout Grid.RowSpan="2">
             <Border
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
+                BackgroundColor="#512BD4"
                 HeightRequest="50"
                 Stroke="Transparent"
                 StrokeShape="Ellipse"
@@ -145,11 +145,22 @@
                         Opacity="0.7"
                         Offset="1,1" />
                 </Border.Shadow>
-                <Button
-                    FontFamily="IconButtons"
-                    FontSize="Title"
-                    IsEnabled="{Binding IsEnabled}"
-                    Text="&#xE802;" />
+                <Grid>
+                    <Button
+                        Command="{Binding ExportFilteredLogsCommand}"
+                        FontFamily="IconButtons"
+                        FontSize="Title"
+                        IsEnabled="{Binding IsNotBusy}"
+                        IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        Text="&#xE802;" />
+                    <ActivityIndicator
+                        HeightRequest="25"
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"
+                        WidthRequest="25"
+                        Color="White" />
+                </Grid>
+
             </Border>
         </AbsoluteLayout>
     </Grid>

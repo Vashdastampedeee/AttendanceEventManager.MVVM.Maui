@@ -253,7 +253,36 @@ namespace EventManager.Services
             return await databaseConnection.QueryAsync<AttendanceLog>(query, parameters.ToArray());
         }
 
+        public async Task<List<AttendanceLog>> GetFilteredLogsForExport(LogFilter filter)
+        {
+            string query = "SELECT * FROM attendancelog WHERE 1=1";
+            List<object> parameters = new List<object>();
 
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                query += " AND EventName = ?";
+                parameters.Add(filter.Name);
+            }
+            if (!string.IsNullOrEmpty(filter.Category))
+            {
+                query += " AND EventCategory = ?";
+                parameters.Add(filter.Category);
+            }
+            if (!string.IsNullOrEmpty(filter.Date))
+            {
+                query += " AND EventDate = ?";
+                parameters.Add(filter.Date);
+            }
+            if (!string.IsNullOrEmpty(filter.Time))
+            {
+                query += " AND EventTime = ?";
+                parameters.Add(filter.Time);
+            }
+
+            query += " ORDER BY Timestamp DESC";
+
+            return await databaseConnection.QueryAsync<AttendanceLog>(query, parameters.ToArray());
+        }
 
     }
 }
