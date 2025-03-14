@@ -5,10 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EventManager.Models;
 using EventManager.Services;
+using EventManager.Utilities;
 using EventManager.ViewModels.Popups;
 using EventManager.Views.Popups;
 using Mopups.Services;
@@ -22,6 +24,7 @@ namespace EventManager.ViewModels
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreLogs;
         private bool isAllLogsDataLoaded;
+        private string lastActiveEventName;
 
         [ObservableProperty]
         private ObservableCollection<AttendanceLog> attendanceLogs = new();
@@ -42,12 +45,24 @@ namespace EventManager.ViewModels
         [RelayCommand]
         private async Task OnNavigatedTo()
         {
+            await ConditionalOnNavigated();
+        }
+        private async Task ConditionalOnNavigated()
+        {
+            var activeEvent = await databaseService.GetSelectedEvent();
             if (AttendanceLogs.Count == 0)
             {
                 await LoadAttendanceLogs();
             }
+            else
+            {
+                if (lastActiveEventName != activeEvent.EventName)
+                {
+                    await RefreshLogs();
+                }
+            }
+            lastActiveEventName = activeEvent.EventName;
         }
-
         [RelayCommand]
         public async Task LoadAttendanceLogs()
         {
@@ -56,11 +71,17 @@ namespace EventManager.ViewModels
                 return;
             }
 
+            var activeEvent = await databaseService.GetSelectedEvent();
+            if (activeEvent == null)
+            {
+                await ToastHelper.ShowToast("No active event!", ToastDuration.Short);
+                return;
+            }
             isLoadingMoreLogs = true;
             IsEnabled = false;
             IsBusyPageIndicator = AttendanceLogs.Count == 0; 
             IsLoadingDataIndicator = AttendanceLogs.Count > 0; 
-            var logs = await databaseService.GetAttendanceLogsPaginated(lastLoadedIndex, pageSize);
+            var logs = await databaseService.GetAttendanceLogsPaginated(activeEvent.EventName, activeEvent.EventCategory, activeEvent.EventDate, activeEvent.FormattedTime, lastLoadedIndex, pageSize);
 
             if (logs.Any())
             {
@@ -96,7 +117,8 @@ namespace EventManager.ViewModels
         [RelayCommand]
         public async Task FilterLogs()
         {
-            var filterLogViewModel = new FilterLogViewModel();
+            var activeEvent = await databaseService.GetSelectedEvent();
+            var filterLogViewModel = new FilterLogViewModel(activeEvent.EventName,activeEvent.EventCategory,activeEvent.EventDate,activeEvent.FormattedTime);
             var filterLog = new FilterLog(filterLogViewModel);
             await MopupService.Instance.PushAsync(filterLog);
         }

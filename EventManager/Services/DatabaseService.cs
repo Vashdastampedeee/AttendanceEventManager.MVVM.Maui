@@ -110,10 +110,10 @@ namespace EventManager.Services
             Debug.WriteLine($"[DatabaseService] Attendance log inserted: {idNumber}, {name}, {businessUnit}, {status}, {eventName}, {eventCategory}, {eventDate}, {eventTime} ,{timeStamp}");
         }
 
-        public async Task<List<AttendanceLog>> GetAttendanceLogsPaginated(int startIndex, int pageSize)
+        public async Task<List<AttendanceLog>> GetAttendanceLogsPaginated(string eventName, string eventCategory, string eventDate, string eventTime, int startIndex, int pageSize)
         {
-            string query = "SELECT * FROM attendancelog ORDER BY Timestamp DESC LIMIT ? OFFSET ?";
-            return await databaseConnection.QueryAsync<AttendanceLog>(query, pageSize, startIndex);
+            string query = "SELECT * FROM attendancelog WHERE EventName = ? AND EventCategory = ? AND EventDate = ? AND EventTime = ? ORDER BY Timestamp DESC LIMIT ? OFFSET ?";
+            return await databaseConnection.QueryAsync<AttendanceLog>(query, eventName, eventCategory, eventDate, eventTime, pageSize, startIndex);
         }
 
         public async Task InsertEvent(string eventName, string eventCategory, byte[] eventImage, string eventDate, string eventFromTime, string eventToTime)
@@ -188,7 +188,7 @@ namespace EventManager.Services
         {
             string query = "SELECT * FROM event WHERE EventName LIKE ? OR EventCategory LIKE ? OR EventDate LIKE ? OR EventFromTime LIKE ? OR EventToTime LIKE ? ORDER BY Id DESC LIMIT ? OFFSET ?";
 
-            string searchPattern = $"%{searchText}%"; // ✅ Adds wildcard for partial matching
+            string searchPattern = $"%{searchText}%";
 
             return await databaseConnection.QueryAsync<Event>(query, searchPattern, searchPattern, searchPattern, searchPattern, searchPattern, pageSize, startIndex);
         }
