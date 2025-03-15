@@ -72,11 +72,12 @@
 
             <CollectionView.EmptyView>
                 <Label
+                    FontAttributes="Italic"
                     FontSize="Small"
-                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
                     IsVisible="{Binding IsNoDataVisible}"
                     Text="No events found"
-                    VerticalOptions="Center" />
+                    VerticalTextAlignment="Center" />
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>

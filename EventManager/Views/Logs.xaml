@@ -67,6 +67,16 @@
             RemainingItemsThreshold="1"
             RemainingItemsThresholdReachedCommand="{Binding LoadAttendanceLogsCommand}">
 
+            <CollectionView.EmptyView>
+                <Label
+                    FontAttributes="Italic"
+                    FontSize="Small"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="{Binding IsNoDataVisible}"
+                    Text="No attendance logs found"
+                    VerticalTextAlignment="Center" />
+            </CollectionView.EmptyView>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AttendanceLog">
 

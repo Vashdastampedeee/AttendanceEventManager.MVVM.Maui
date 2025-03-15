@@ -34,6 +34,9 @@ namespace EventManager.ViewModels
         private ObservableCollection<AttendanceLog> attendanceLogs = new();
 
         [ObservableProperty]
+        private bool isNoDataVisible;
+
+        [ObservableProperty]
         private bool isBusyPageIndicator;
 
         [ObservableProperty]
@@ -137,6 +140,7 @@ namespace EventManager.ViewModels
             IsBusyPageIndicator = false;
             IsLoadingDataIndicator = false;
             isLoadingMoreLogs = false;
+            IsNoDataVisible = AttendanceLogs.Count == 0;
         }
 
         [RelayCommand]
