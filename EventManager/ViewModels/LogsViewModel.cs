@@ -24,11 +24,11 @@ namespace EventManager.ViewModels
         private readonly DatabaseService databaseService;
         private readonly IFileSaver fileSaverService;
         private FilterLogViewModel filterLogViewModel;
-        private const int pageSize = 10; 
+        private const int pageSize = 10;
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreLogs;
         private bool isAllLogsDataLoaded;
-        private string lastActiveEventName;
+        private int lastActiveEventId;
 
         [ObservableProperty]
         private ObservableCollection<AttendanceLog> attendanceLogs = new();
@@ -56,7 +56,7 @@ namespace EventManager.ViewModels
 
 
 
-        public LogsViewModel(DatabaseService databaseService, IFileSaver fileSaverService) 
+        public LogsViewModel(DatabaseService databaseService, IFileSaver fileSaverService)
         {
             this.databaseService = databaseService;
             this.fileSaverService = fileSaverService;
@@ -72,13 +72,13 @@ namespace EventManager.ViewModels
 
             if (activeEvent == null)
             {
-                selectedFilter = null; 
-                lastActiveEventName = null;
+                selectedFilter = null;
                 IsNoDataVisible = AttendanceLogs.Count == 0;
-                return; 
+                return;
             }
 
-            if (selectedFilter == null || selectedFilter.Name != activeEvent.EventName)
+            if (selectedFilter == null || selectedFilter.Name != activeEvent.EventName || selectedFilter.Category != activeEvent.EventCategory ||
+                selectedFilter.Date != activeEvent.EventDate || selectedFilter.Time != activeEvent.EventCategory)
             {
                 selectedFilter = new LogFilter
                 {
@@ -89,7 +89,7 @@ namespace EventManager.ViewModels
                 };
             }
 
-            if (lastActiveEventName != activeEvent.EventName)
+            if (lastActiveEventId != activeEvent.Id)
             {
                 await RefreshLogs();
             }
@@ -97,7 +97,8 @@ namespace EventManager.ViewModels
             {
                 await LoadAttendanceLogs();
             }
-            lastActiveEventName = activeEvent.EventName;
+            lastActiveEventId = activeEvent.Id;
+      
         }
         [RelayCommand]
         public async Task LoadAttendanceLogs()
@@ -184,10 +185,7 @@ namespace EventManager.ViewModels
             }
 
             var activeEvent = await databaseService.GetSelectedEvent();
-            if (filterLogViewModel == null)
-            {
-                filterLogViewModel = new FilterLogViewModel(databaseService, this);
-            }
+            var filterLogViewModel = new FilterLogViewModel(databaseService, this, selectedFilter);
             var filterLog = new FilterLog(filterLogViewModel);
             await MopupService.Instance.PushAsync(filterLog);
         }
