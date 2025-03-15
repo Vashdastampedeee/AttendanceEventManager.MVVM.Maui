@@ -19,6 +19,7 @@ namespace EventManager.ViewModels.Popups
     {
         private readonly DatabaseService databaseService;
         private readonly LogsViewModel logsViewModel;
+        private LogFilter logFilter;
 
         [ObservableProperty]
         private string selectedName;
@@ -44,17 +45,42 @@ namespace EventManager.ViewModels.Popups
         [ObservableProperty] 
         private ObservableCollection<string> eventTimes = new();
 
-        public FilterLogViewModel(DatabaseService databaseService, LogsViewModel logsViewModel) 
+        public FilterLogViewModel(DatabaseService databaseService, LogsViewModel logsViewModel, LogFilter logFilter) 
         {
             this.logsViewModel = logsViewModel;
             this.databaseService = databaseService;
-            LoadEventNames();
+            this.logFilter = logFilter;
+            Task.Run(async () => await LoadDefaultValues());
         }
 
-        private async void LoadEventNames()
+        private async Task LoadEventNames()
         {
             var names = await databaseService.GetDistinctLogValues("EventName");
             EventNames = new ObservableCollection<string>(names);
+        }
+
+        private async Task LoadDefaultValues()
+        {
+            if (logFilter == null) 
+            {
+                return;
+            }
+
+            await LoadEventNames();
+
+            SelectedName = logFilter.Name;
+  
+            var categories = await databaseService.GetFilteredCategories(SelectedName);
+            EventCategories = new ObservableCollection<string>(categories);
+            SelectedCategory = logFilter.Category;
+
+            var dates = await databaseService.GetFilteredDates(SelectedName, SelectedCategory);
+            EventDates = new ObservableCollection<string>(dates);
+            SelectedDate = logFilter.Date;
+
+            var times = await databaseService.GetFilteredTimes(SelectedName, SelectedCategory, SelectedDate);
+            EventTimes = new ObservableCollection<string>(times);
+            SelectedTime = logFilter.Time;
         }
 
         partial void OnSelectedNameChanged(string value)
