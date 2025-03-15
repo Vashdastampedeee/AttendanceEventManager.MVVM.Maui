@@ -57,7 +57,7 @@ namespace EventManager.ViewModels.Popups
             string formattedFromTime = DateTime.Today.Add(FromTime).ToString("hh:mm tt");
             string formattedToTime = DateTime.Today.Add(ToTime).ToString("hh:mm tt");
 
-            await databaseService.InsertEvent(EventName, SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
+            await databaseService.InsertEvent(EventName.Trim(), SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
 
             await MopupService.Instance.PopAsync();
             await ToastHelper.ShowToast("Event Added", ToastDuration.Short);
