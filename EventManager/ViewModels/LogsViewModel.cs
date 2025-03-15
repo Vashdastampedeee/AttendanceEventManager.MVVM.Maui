@@ -23,6 +23,7 @@ namespace EventManager.ViewModels
     {
         private readonly DatabaseService databaseService;
         private readonly IFileSaver fileSaverService;
+        private FilterLogViewModel filterLogViewModel;
         private const int pageSize = 10; 
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreLogs;
@@ -65,6 +66,18 @@ namespace EventManager.ViewModels
         private async Task ConditionalOnNavigated()
         {
             var activeEvent = await databaseService.GetSelectedEvent();
+
+            if (selectedFilter == null || selectedFilter.Name != activeEvent.EventName)
+            {
+                selectedFilter = new LogFilter
+                {
+                    Name = activeEvent.EventName,
+                    Category = activeEvent.EventCategory,
+                    Date = activeEvent.EventDate,
+                    Time = activeEvent.FormattedTime
+                };
+            }
+
             if (AttendanceLogs.Count == 0)
             {
                 await LoadAttendanceLogs();
@@ -134,7 +147,15 @@ namespace EventManager.ViewModels
             lastLoadedIndex = 0;
             isAllLogsDataLoaded = false;
             IsFiltering = false;
-            selectedFilter = null;
+
+            var activeEvent = await databaseService.GetSelectedEvent();
+            selectedFilter = new LogFilter
+            {
+                Name = activeEvent.EventName,
+                Category = activeEvent.EventCategory,
+                Date = activeEvent.EventDate,
+                Time = activeEvent.FormattedTime
+            };
 
             AttendanceLogs.Clear();
             await LoadAttendanceLogs();
@@ -143,7 +164,10 @@ namespace EventManager.ViewModels
         public async Task FilterLogs()
         {
             var activeEvent = await databaseService.GetSelectedEvent();
-            var filterLogViewModel = new FilterLogViewModel(databaseService, this);
+            if (filterLogViewModel == null)
+            {
+                filterLogViewModel = new FilterLogViewModel(databaseService, this);
+            }
             var filterLog = new FilterLog(filterLogViewModel);
             await MopupService.Instance.PushAsync(filterLog);
         }
