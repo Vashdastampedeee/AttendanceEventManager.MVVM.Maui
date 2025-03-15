@@ -40,6 +40,7 @@
                     FontFamily="Roboto"
                     FontSize="Small"
                     HeightRequest="30"
+                    IsEnabled="{Binding IsEnabled}"
                     Placeholder="Search"
                     PlaceholderColor="Black"
                     SearchCommand="{Binding SearchEventsCommand}"
@@ -55,12 +56,14 @@
                 Command="{Binding FilterEventsCommand}"
                 FontFamily="IconButtons"
                 FontSize="Medium"
+                IsEnabled="{Binding IsEnabled}"
                 Text="&#xF0B0;" />
             <Button
                 Grid.Column="2"
                 Command="{Binding RefreshEventsCommand}"
                 FontFamily="IconButtons"
                 FontSize="Medium"
+                IsEnabled="{Binding IsEnabled}"
                 Text="&#xE800;" />
         </Grid>
 

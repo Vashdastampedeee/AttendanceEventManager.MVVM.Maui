@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EventManager.Models;
 using EventManager.Services;
+using EventManager.Utilities;
 using EventManager.ViewModels.Popups;
 using EventManager.Views.Popups;
 using Mopups.Services;
@@ -66,24 +67,18 @@ namespace EventManager.ViewModels
         [RelayCommand]
         public async Task AddEventPopup()
         {
-            async Task ExecuteAdd()
-            {
-                var addEventViewModel = new AddEventViewModel(databaseService, this);
-                var addEvent = new AddEvent(addEventViewModel);
+            var addEventViewModel = new AddEventViewModel(databaseService, this);
+            var addEvent = new AddEvent(addEventViewModel);
 
-                if (IsBusy) return;
-                IsBusy = true;
-                OnPropertyChanged(nameof(IsNotBusy));
+            if (IsBusy) return;
+            IsBusy = true;
+            OnPropertyChanged(nameof(IsNotBusy));
 
-                await Task.Delay(500);
-                await MopupService.Instance.PushAsync(addEvent);
+            await Task.Delay(500);
+            await MopupService.Instance.PushAsync(addEvent);
 
-                IsBusy = false;
-                OnPropertyChanged(nameof(IsNotBusy));
-            }
-
-            await ExecuteAdd();
-    
+            IsBusy = false;
+            OnPropertyChanged(nameof(IsNotBusy));
         }
         [RelayCommand]
         public async Task LoadEventsData()
@@ -146,6 +141,7 @@ namespace EventManager.ViewModels
         {
             Debug.WriteLine("[EventViewModel] - refereshing events");
 
+            IsNoDataVisible = false;
             SearchText = string.Empty; 
             IsSearching = false;
             IsFiltering = false;
@@ -153,6 +149,7 @@ namespace EventManager.ViewModels
             lastLoadedIndex = 0;
 
             Events.Clear();
+            await Task.Delay(100);
             await LoadEventsData();
         }
         [RelayCommand]
@@ -166,17 +163,25 @@ namespace EventManager.ViewModels
         private async Task DeleteSelectedEvent(int eventId)
         {
             await databaseService.DeleteSelectedEvent(eventId);
+            await Task.Delay(100);
             await RefreshEvents();
         }
         [RelayCommand]
         private async Task UseSelectedEvent(int eventId)
         {
             await databaseService.UseSelectedEvent(eventId);
+            await Task.Delay(100);
             await RefreshEvents();
         }
         [RelayCommand]
         public async Task FilterEvents()
         {
+            if (Events.Count == 0)
+            {
+                await ToastHelper.ShowToast("No data available for filter!", ToastDuration.Short);
+                return;
+            }
+   
             var filterEventViewModel = new FilterEventViewModel(databaseService, this, SelectedCategory, SelectedOrder);
             var filterEvent = new FilterEvent(filterEventViewModel);
             await MopupService.Instance.PushAsync(filterEvent);
@@ -192,6 +197,7 @@ namespace EventManager.ViewModels
             SelectedOrder = eventFilter.Order ? "Latest" : "Oldest";
 
             Events.Clear();
+            await Task.Delay(100);
             await LoadEventsData();
         }
         [RelayCommand]

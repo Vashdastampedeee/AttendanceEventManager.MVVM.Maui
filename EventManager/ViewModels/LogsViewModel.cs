@@ -70,6 +70,14 @@ namespace EventManager.ViewModels
         {
             var activeEvent = await databaseService.GetSelectedEvent();
 
+            if (activeEvent == null)
+            {
+                selectedFilter = null; 
+                lastActiveEventName = null;
+                IsNoDataVisible = AttendanceLogs.Count == 0;
+                return; 
+            }
+
             if (selectedFilter == null || selectedFilter.Name != activeEvent.EventName)
             {
                 selectedFilter = new LogFilter
@@ -81,13 +89,13 @@ namespace EventManager.ViewModels
                 };
             }
 
-            if (AttendanceLogs.Count == 0)
-            {
-                await LoadAttendanceLogs();
-            }
-            else if(lastActiveEventName != activeEvent.EventName)
+            if (lastActiveEventName != activeEvent.EventName)
             {
                 await RefreshLogs();
+            }
+            else if (AttendanceLogs.Count == 0)
+            {
+                await LoadAttendanceLogs();
             }
             lastActiveEventName = activeEvent.EventName;
         }
@@ -102,7 +110,7 @@ namespace EventManager.ViewModels
             var activeEvent = await databaseService.GetSelectedEvent();
             if (activeEvent == null)
             {
-                await ToastHelper.ShowToast("No active event!", ToastDuration.Short);
+                await ToastHelper.ShowToast("No active event!", ToastDuration.Long);
                 return;
             }
             isLoadingMoreLogs = true;
@@ -148,6 +156,7 @@ namespace EventManager.ViewModels
         {
             Debug.WriteLine("[LogsViewModel] - refreshing logs");
 
+            IsNoDataVisible = false;
             lastLoadedIndex = 0;
             isAllLogsDataLoaded = false;
             IsFiltering = false;
@@ -162,11 +171,18 @@ namespace EventManager.ViewModels
             };
 
             AttendanceLogs.Clear();
+            await Task.Delay(100);
             await LoadAttendanceLogs();
         }
         [RelayCommand]
         public async Task FilterLogs()
         {
+            if(AttendanceLogs.Count == 0)
+            {
+                await ToastHelper.ShowToast("No data available for filter!", ToastDuration.Short);
+                return;
+            }
+
             var activeEvent = await databaseService.GetSelectedEvent();
             if (filterLogViewModel == null)
             {
@@ -183,6 +199,7 @@ namespace EventManager.ViewModels
             selectedFilter = filter;
 
             AttendanceLogs.Clear();
+            await Task.Delay(100);
             await LoadAttendanceLogs();
         }
 
@@ -191,7 +208,15 @@ namespace EventManager.ViewModels
         {
             if (selectedFilter == null)
             {
-                await ToastHelper.ShowToast("No filter applied!", ToastDuration.Short);
+                var activeEvent = await databaseService.GetSelectedEvent();
+                if (activeEvent == null)
+                {
+                    await ToastHelper.ShowToast("Set event first!", ToastDuration.Short);
+                }
+                else
+                {
+                    await ToastHelper.ShowToast("No filter applied!", ToastDuration.Short);
+                }
                 return;
             }
 
@@ -205,22 +230,14 @@ namespace EventManager.ViewModels
 
             try
             {
+                IsEnabled = false;
                 IsBusy = true;
                 OnPropertyChanged(nameof(IsNotBusy));
 
-                await Task.Delay(500);
+                await Task.Delay(300);
 
                 string fileName = $"ExportedLogs({DateTime.Now}).xlsx";
-                var fileResult = await fileSaverService.SaveAsync(fileName, new MemoryStream(), CancellationToken.None);
-
-                if (!fileResult.IsSuccessful)
-                {
-                    Debug.WriteLine($"[LogsViewModel] Error saving file: {fileResult.Exception?.Message}");
-                    await ToastHelper.ShowToast($"Export failed: {fileResult.Exception?.Message}", ToastDuration.Long);
-                    return;
-                }
-
-                string filePath = fileResult.FilePath;
+                var memoryStream = new MemoryStream();
 
                 using (var workbook = new XLWorkbook())
                 {
@@ -253,21 +270,29 @@ namespace EventManager.ViewModels
 
                     worksheet.Columns().AdjustToContents();
 
-                    using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                    {
-                        workbook.SaveAs(stream);
-                    }
+                    workbook.SaveAs(memoryStream);
+                    memoryStream.Position = 0;
                 }
 
-                await ToastHelper.ShowToast($"Export successful!\nFile saved: {filePath}", ToastDuration.Long);
+                var fileResult = await fileSaverService.SaveAsync(fileName, memoryStream, CancellationToken.None);
+
+                if (!fileResult.IsSuccessful)
+                {
+                    Debug.WriteLine($"[LogsViewModel] Error saving file: {fileResult.Exception?.Message}");
+                    await ToastHelper.ShowToast($"Export failed: {fileResult.Exception?.Message}", ToastDuration.Long);
+                    return;
+                }
+
+                await ToastHelper.ShowToast($"Export successful!\nFile saved: {fileResult.FilePath}", ToastDuration.Long);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[LogsViewModel] Export Error: {ex.Message}");
-                await ToastHelper.ShowToast("Export failed!", ToastDuration.Short);
+                Debug.WriteLine($"[LogsViewModel] Export Error: {ex.Message}\nStack Trace: {ex.StackTrace}");
+                await ToastHelper.ShowToast($"Export failed! {ex.Message}", ToastDuration.Short);
             }
             finally
             {
+                IsEnabled = true;
                 IsBusy = false;
                 OnPropertyChanged(nameof(IsNotBusy));
             }

@@ -22,12 +22,12 @@
                 Text="Filter Events"
                 VerticalOptions="Center" />
 
-            <Label Text="Category" />
+            <Label Text="By Category" />
             <Picker
                 Title="Filter Category"
                 ItemsSource="{Binding CategoryOptions}"
                 SelectedItem="{Binding SelectedCategory}" />
-            <Label Text="Sort By" />
+            <Label Text="By Order" />
             <Picker
                 Title="Filter Order"
                 ItemsSource="{Binding OrderOption}"
