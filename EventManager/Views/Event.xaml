@@ -166,22 +166,17 @@
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
                 BackgroundColor="#512BD4"
-                HeightRequest="54"
+                HeightRequest="55"
                 Stroke="Transparent"
-                StrokeShape="Ellipse"
-                WidthRequest="54">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="DarkSlateGrey"
-                        Opacity="0.7"
-                        Offset="1,1" />
-                </Border.Shadow>
+                StrokeShape="RoundRectangle 10"
+                WidthRequest="55">
+
                 <Grid>
                     <Button
                         BackgroundColor="Transparent"
                         Command="{Binding AddEventPopupCommand}"
                         FontFamily="IconButtons"
-                        FontSize="Title"
+                        FontSize="Large"
                         IsEnabled="{Binding IsNotBusy}"
                         IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
                         Text="&#xF271;" />
