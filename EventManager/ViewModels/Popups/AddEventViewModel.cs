@@ -57,12 +57,20 @@ namespace EventManager.ViewModels.Popups
             string formattedFromTime = DateTime.Today.Add(FromTime).ToString("hh:mm tt");
             string formattedToTime = DateTime.Today.Add(ToTime).ToString("hh:mm tt");
 
-            await databaseService.InsertEvent(EventName.Trim(), SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
+            bool isExistingEvent = await databaseService.IsExistingEvent(EventName.Trim(), SelectedCategory, formattedEventDate, formattedFromTime, formattedToTime);
 
-            await MopupService.Instance.PopAsync();
-            await ToastHelper.ShowToast("Event Added", ToastDuration.Short);
-
-            await eventViewModel.RefreshEvents();
+            if (isExistingEvent)
+            {
+                await ToastHelper.ShowToast("Event with the same time already exists!", ToastDuration.Short);
+                return;
+            }
+            else
+            {
+                await databaseService.InsertEvent(EventName.Trim(), SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
+                await MopupService.Instance.PopAsync();
+                await ToastHelper.ShowToast("Event Added", ToastDuration.Short);
+                await eventViewModel.RefreshEvents();
+            }
         }
 
         [RelayCommand]
