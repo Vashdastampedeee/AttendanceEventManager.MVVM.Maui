@@ -18,6 +18,7 @@ namespace EventManager.ViewModels
     {
         private readonly DatabaseService databaseService;
         private readonly BeepService beepService;
+        private readonly LogsViewModel logsViewModel;
 
         [ObservableProperty] private string eventName;
         [ObservableProperty] private string eventDate;
@@ -32,10 +33,11 @@ namespace EventManager.ViewModels
         [ObservableProperty] private Color color;
         [ObservableProperty] private bool isEntryFocused;
 
-        public IndexViewModel(DatabaseService databaseServiceInjection, BeepService beepServiceInjection)
+        public IndexViewModel(DatabaseService databaseService, BeepService beepService, LogsViewModel logsViewModel)
         {
-            databaseService = databaseServiceInjection;
-            beepService = beepServiceInjection;
+            this.databaseService = databaseService;
+            this.beepService = beepService;
+            this.logsViewModel = logsViewModel;
             InitializeElementProperty();
         }
         private void InitializeElementProperty()
@@ -67,58 +69,76 @@ namespace EventManager.ViewModels
         [RelayCommand]
         public async Task ScanEmployeeId()
         {
-            var selectedEvent = await databaseService.GetSelectedEvent();
-            if (selectedEvent != null)
+            string barcodeIdNumber = BarcodeNumber.Trim();
+            if (string.IsNullOrEmpty(barcodeIdNumber))
             {
-                string barcodeIdNumber = BarcodeNumber.Trim();
-                if (string.IsNullOrEmpty(barcodeIdNumber) || string.IsNullOrWhiteSpace(barcodeIdNumber))
-                {
-                    return;
-                }
-
-                var scannedEmployee = await databaseService.GetEmployeeIdNumber(barcodeIdNumber);
-                bool isAlreadyScanned = await databaseService.IsEmployeeAlreadyScanned(barcodeIdNumber);
-                beepService.PlayBeep();
-
-                if (scannedEmployee != null)
-                {
-                    if (isAlreadyScanned)
-                    {
-                        BarcodeNumber = string.Empty;
-                        IdNumber = "ALREADY SCANNED";
-                        IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
-                        Name = $"Name {scannedEmployee.Name}";
-                        BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
-                        Color = Colors.Red;
-                    }
-                    else
-                    {
-                        BarcodeNumber = string.Empty;
-                        IdNumber = $"ID Number: {scannedEmployee.IdNumber}";
-                        IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
-                        Name = $"Name {scannedEmployee.Name}";
-                        BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
-                        Color = Colors.Green;
-                        await databaseService.InsertAttendanceLog(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, "SUCCESS", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
-                    }
-                }
-                else
-                {
-                    BarcodeNumber = string.Empty;
-                    IdNumber = $"ID Number: {barcodeIdNumber} Not Found";
-                    IdPhoto = "invalid.png";
-                    Name = "Name: Not Found";
-                    BusinessUnit = "Business Unit: Not Found";
-                    Color = Colors.Red;
-                    await databaseService.InsertAttendanceLog(barcodeIdNumber, "", "", "NOT FOUND", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
-                }
-                await SetFocusEntry();
+                return;
             }
             else
             {
-                await ToastHelper.ShowToast("Set event first!", ToastDuration.Long);
-            }
+                var selectedEvent = await databaseService.GetSelectedEvent();
+                if (selectedEvent != null)
+                {
+                    var scannedEmployee = await databaseService.GetEmployeeIdNumber(barcodeIdNumber);
+                    bool isAlreadyScanned = await databaseService.IsEmployeeAlreadyScanned(barcodeIdNumber, selectedEvent.EventName, selectedEvent.EventDate, selectedEvent.FormattedTime);
+                    beepService.PlayBeep();
 
+                    if (scannedEmployee != null)
+                    {
+                        if (isAlreadyScanned)
+                        {
+                            BarcodeNumber = string.Empty;
+                            IdNumber = "ALREADY SCANNED";
+                            IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
+                            Name = $"Name {scannedEmployee.Name}";
+                            BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
+                            Color = Colors.Red;
+                        }
+                        else
+                        {
+                            BarcodeNumber = string.Empty;
+                            IdNumber = $"ID Number: {scannedEmployee.IdNumber}";
+                            IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
+                            Name = $"Name {scannedEmployee.Name}";
+                            BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
+                            Color = Colors.Green;
+                            logsViewModel.isLogsLoaded = false;
+                            await databaseService.InsertAttendanceLog(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, "SUCCESS", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
+                        }
+                    }
+                    else
+                    {
+                        bool isAlreadyNotFound = await databaseService.IsNotFoundLogAlreadyScanned(barcodeIdNumber, selectedEvent.EventName, selectedEvent.EventDate, selectedEvent.FormattedTime);
+                        
+                        if(isAlreadyNotFound)
+                        {
+                            BarcodeNumber = string.Empty;
+                            IdNumber = $"ID Number: {barcodeIdNumber} Not Found";
+                            IdPhoto = "invalid.png";
+                            Name = "Name: Not Found";
+                            BusinessUnit = "Business Unit: Not Found";
+                            Color = Colors.Red;
+                        }
+                        else
+                        {
+                            BarcodeNumber = string.Empty;
+                            IdNumber = $"ID Number: {barcodeIdNumber} Not Found";
+                            IdPhoto = "invalid.png";
+                            Name = "Name: Not Found";
+                            BusinessUnit = "Business Unit: Not Found";
+                            Color = Colors.Red;
+                            logsViewModel.isLogsLoaded = false;
+                            await databaseService.InsertAttendanceLog(barcodeIdNumber, "", "", "NOT FOUND", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
+                        }
+                    }
+                    await SetFocusEntry();
+                }
+                else
+                {
+                    await ToastHelper.ShowToast("Set event first!", ToastDuration.Long);
+                }
+            }
+          
         }
         private async Task LoadSelectedEvent()
         {
