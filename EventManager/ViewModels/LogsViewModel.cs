@@ -29,12 +29,16 @@ namespace EventManager.ViewModels
         private bool isLoadingMoreLogs;
         private bool isAllLogsDataLoaded;
         private int lastActiveEventId;
+        public bool isLogsLoaded;
 
         [ObservableProperty]
         private ObservableCollection<AttendanceLog> attendanceLogs = new();
 
         [ObservableProperty]
         private bool isNoDataVisible;
+
+        [ObservableProperty]
+        private string isNoDataLabel;
 
         [ObservableProperty]
         private bool isBusyPageIndicator;
@@ -54,6 +58,12 @@ namespace EventManager.ViewModels
 
         private LogFilter selectedFilter;
 
+        [ObservableProperty]
+        private bool isSearching;
+
+        [ObservableProperty]
+        private string searchText;
+
 
 
         public LogsViewModel(DatabaseService databaseService, IFileSaver fileSaverService)
@@ -72,30 +82,35 @@ namespace EventManager.ViewModels
 
             if (activeEvent == null)
             {
-                selectedFilter = null;
                 IsNoDataVisible = AttendanceLogs.Count == 0;
+                IsNoDataLabel = "No active event set";
                 return;
             }
 
-            if (selectedFilter == null || selectedFilter.Name != activeEvent.EventName || selectedFilter.Category != activeEvent.EventCategory ||
-                selectedFilter.Date != activeEvent.EventDate || selectedFilter.Time != activeEvent.EventCategory)
+            selectedFilter = new LogFilter
             {
-                selectedFilter = new LogFilter
+                Name = activeEvent.EventName,
+                Category = activeEvent.EventCategory,
+                Date = activeEvent.EventDate,
+                Time = activeEvent.FormattedTime
+            };
+        
+            if (AttendanceLogs.Count == 0)
+            {
+                await Task.Delay(100);
+                if (lastActiveEventId != activeEvent.Id)
                 {
-                    Name = activeEvent.EventName,
-                    Category = activeEvent.EventCategory,
-                    Date = activeEvent.EventDate,
-                    Time = activeEvent.FormattedTime
-                };
+                    await RefreshLogs();
+                }
+                else
+                {
+                    await LoadAttendanceLogs();
+                }               
             }
-
-            if (lastActiveEventId != activeEvent.Id)
+            else if (lastActiveEventId != activeEvent.Id || !isLogsLoaded)
             {
+          
                 await RefreshLogs();
-            }
-            else if (AttendanceLogs.Count == 0)
-            {
-                await LoadAttendanceLogs();
             }
             lastActiveEventId = activeEvent.Id;
       
@@ -120,17 +135,21 @@ namespace EventManager.ViewModels
             IsLoadingDataIndicator = AttendanceLogs.Count > 0;
 
             List<AttendanceLog> logs;
-            if (IsFiltering)
+
+            if (IsFiltering && IsSearching)
+            {
+                logs = await databaseService.SearchFilteredLogs(selectedFilter, SearchText.Trim(), lastLoadedIndex, pageSize);
+            }
+            else if (IsFiltering)
             {
                 logs = await databaseService.GetFilteredLogs(selectedFilter, lastLoadedIndex, pageSize);
             }
             else
             {
                 logs = await databaseService.GetAttendanceLogsPaginated(activeEvent.EventName, activeEvent.EventCategory, activeEvent.EventDate, activeEvent.FormattedTime, lastLoadedIndex, pageSize);
-
             }
 
-            if (logs.Any())
+            if (logs.Count != 0)
             {
                 await Task.Delay(1000);
                 foreach (var log in logs)
@@ -149,7 +168,9 @@ namespace EventManager.ViewModels
             IsBusyPageIndicator = false;
             IsLoadingDataIndicator = false;
             isLoadingMoreLogs = false;
+            isLogsLoaded = true;
             IsNoDataVisible = AttendanceLogs.Count == 0;
+            IsNoDataLabel = "No attendance log data found";
         }
 
         [RelayCommand]
@@ -158,10 +179,12 @@ namespace EventManager.ViewModels
             Debug.WriteLine("[LogsViewModel] - refreshing logs");
 
             IsNoDataVisible = false;
+            SearchText = string.Empty;
+            IsSearching = false;
+            IsFiltering = false;
             lastLoadedIndex = 0;
             isAllLogsDataLoaded = false;
-            IsFiltering = false;
-
+       
             var activeEvent = await databaseService.GetSelectedEvent();
             selectedFilter = new LogFilter
             {
@@ -178,23 +201,49 @@ namespace EventManager.ViewModels
         [RelayCommand]
         public async Task FilterLogs()
         {
-            if(AttendanceLogs.Count == 0)
+            var activeEvent = await databaseService.GetSelectedEvent();
+            if(activeEvent == null)
             {
-                await ToastHelper.ShowToast("No data available for filter!", ToastDuration.Short);
+                await ToastHelper.ShowToast("Set Event First!", ToastDuration.Short);
                 return;
             }
-
-            var activeEvent = await databaseService.GetSelectedEvent();
-            var filterLogViewModel = new FilterLogViewModel(databaseService, this, selectedFilter);
-            var filterLog = new FilterLog(filterLogViewModel);
-            await MopupService.Instance.PushAsync(filterLog);
+            else
+            {
+                if (AttendanceLogs.Count == 0)
+                {
+                    await ToastHelper.ShowToast("Scan Employee First!", ToastDuration.Short);
+                    return;
+                }
+                else
+                {
+                    var filterLogViewModel = new FilterLogViewModel(databaseService, this, selectedFilter);
+                    var filterLog = new FilterLog(filterLogViewModel);
+                    await MopupService.Instance.PushAsync(filterLog);
+                }
+            }
         }
         public async Task ApplyFilterLogs(LogFilter filter)
         {
             isAllLogsDataLoaded = false;
             lastLoadedIndex = 0;
+            SearchText = string.Empty;
+            IsSearching = false;
             IsFiltering = true;
             selectedFilter = filter;
+
+            AttendanceLogs.Clear();
+            await Task.Delay(100);
+            await LoadAttendanceLogs();
+        }
+
+
+        [RelayCommand]
+        public async Task SearchLogs()
+        {
+            isAllLogsDataLoaded = false;
+            lastLoadedIndex = 0;
+            IsFiltering = true;
+            IsSearching = !string.IsNullOrEmpty(SearchText);
 
             AttendanceLogs.Clear();
             await Task.Delay(100);
@@ -210,10 +259,6 @@ namespace EventManager.ViewModels
                 if (activeEvent == null)
                 {
                     await ToastHelper.ShowToast("Set event first!", ToastDuration.Short);
-                }
-                else
-                {
-                    await ToastHelper.ShowToast("No filter applied!", ToastDuration.Short);
                 }
                 return;
             }
@@ -295,6 +340,5 @@ namespace EventManager.ViewModels
                 OnPropertyChanged(nameof(IsNotBusy));
             }
         }
-
     }
 }
