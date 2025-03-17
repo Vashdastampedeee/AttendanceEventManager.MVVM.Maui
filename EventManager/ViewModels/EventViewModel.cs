@@ -97,7 +97,7 @@ namespace EventManager.ViewModels
 
             if (IsSearching)
             {
-                events = await databaseService.SearchEvents(SearchText, lastLoadedIndex, pageSize);
+                events = await databaseService.SearchEvents(SearchText.Trim(), lastLoadedIndex, pageSize);
             }
             else if (IsFiltering)
             {
@@ -108,14 +108,16 @@ namespace EventManager.ViewModels
                 events = await databaseService.GetEventsPaginated(lastLoadedIndex, pageSize);
             }
 
-            if (events.Any())
+            if (events.Count != 0)
             {
                 if(!isRefreshEvent)
                 {
                     await Task.Delay(1000);
                 }
-   
-                foreach (var eventData in events)
+
+                var sortedEvents = events.OrderByDescending(e => e.isSelected).ToList();
+
+                foreach (var eventData in sortedEvents)
                 {
                     eventData.IsDefaultVisible = eventData.isSelected;  
                     Events.Add(eventData);
@@ -190,8 +192,10 @@ namespace EventManager.ViewModels
         public async Task ApplyFilterEvents(EventFilter eventFilter)
         {
             isAllEventsDataLoaded = false; 
-            lastLoadedIndex = 0; 
+            lastLoadedIndex = 0;
+            SearchText = string.Empty;
             IsFiltering = true;
+            IsSearching = false;
 
             SelectedCategory = eventFilter.Category;
             SelectedOrder = eventFilter.Order ? "Latest" : "Oldest";
@@ -204,10 +208,12 @@ namespace EventManager.ViewModels
         public async Task SearchEvents()
         {
             isAllEventsDataLoaded = false;
-            lastLoadedIndex = 0; 
-            IsSearching = !string.IsNullOrEmpty(SearchText); 
+            lastLoadedIndex = 0;
+            IsFiltering = false;
+            IsSearching = !string.IsNullOrEmpty(SearchText.Trim()); 
 
             Events.Clear();
+            await Task.Delay(100);
             await LoadEventsData();
         }
     }
