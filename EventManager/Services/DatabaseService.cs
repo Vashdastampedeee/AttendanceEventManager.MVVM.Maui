@@ -95,11 +95,18 @@ namespace EventManager.Services
             return employees.FirstOrDefault();
         }
 
-        public async Task<bool> IsEmployeeAlreadyScanned(string idNumber)
+        public async Task<bool> IsEmployeeAlreadyScanned(string idNumber, string eventName, string eventDate, string eventTime)
         {
-            string query = "SELECT COUNT(*) FROM attendancelog WHERE IdNumber = ?";
-            var result = await databaseConnection.ExecuteScalarAsync<int>(query, idNumber);
+            string query = "SELECT COUNT(*) FROM attendancelog WHERE IdNumber = ? AND Status = 'SUCCESS' AND EventName = ? AND EventDate = ? AND EventTime = ?";
+            var result = await databaseConnection.ExecuteScalarAsync<int>(query, idNumber, eventName, eventDate, eventTime);
             return result > 0;
+        }
+
+        public async Task<bool> IsNotFoundLogAlreadyScanned(string idNumber, string eventName, string eventDate, string eventTime)
+        {
+            string query = "SELECT COUNT(*) FROM attendancelog WHERE IdNumber = ? AND Status = 'NOT FOUND' AND EventName = ? AND EventDate = ? AND EventTime = ?";
+            int count = await databaseConnection.ExecuteScalarAsync<int>(query, idNumber, eventName, eventDate, eventTime);
+            return count > 0;
         }
 
         public async Task InsertAttendanceLog(string idNumber, string name, string businessUnit, string status, string eventName, string eventCategory, string eventDate, string eventTime)
@@ -147,6 +154,13 @@ namespace EventManager.Services
             await databaseConnection.ExecuteAsync(query, eventName, eventCategory, eventImage, eventDate, eventFromTime, eventToTime, eventId);
             Debug.WriteLine($"[DatabaseService] Event Updated: {eventName}, {eventCategory}, {eventImage?.Length ?? 0}, {eventDate}, {eventFromTime}, {eventToTime} Where Id = {eventId}");
         }
+        public async Task<bool> IsExistingEvent(string eventName, string category, string eventDate, string fromTime, string toTime)
+        {
+            string query = @"SELECT COUNT(*) FROM event WHERE EventName = ? AND EventCategory = ? AND EventDate = ? AND EventFromTime = ? AND EventToTime = ?";
+            int count = await databaseConnection.ExecuteScalarAsync<int>(query, eventName, category, eventDate, fromTime, toTime);
+            return count > 0; 
+        }
+
         public async Task<Event?> GetEventById(int eventId)
         {
             string query = "SELECT * FROM event WHERE Id = ?";
@@ -280,6 +294,44 @@ namespace EventManager.Services
             }
 
             query += " ORDER BY Timestamp DESC";
+
+            return await databaseConnection.QueryAsync<AttendanceLog>(query, parameters.ToArray());
+        }
+        public async Task<List<AttendanceLog>> SearchFilteredLogs(LogFilter filter, string searchText, int startIndex, int pageSize)
+        {
+            string query = @"SELECT * FROM attendancelog WHERE (IdNumber LIKE ? OR Name LIKE ? OR BusinessUnit LIKE ? OR Status LIKE ? OR EventName LIKE ? OR EventCategory LIKE ? OR EventDate LIKE ? OR EventTime LIKE ?)";
+            List<object> parameters = new List<object>();
+
+            string searchPattern = $"%{searchText}%";
+            for (int i = 0; i < 8; i++)
+            {
+                parameters.Add(searchPattern);
+            }
+
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                query += " AND EventName = ?";
+                parameters.Add(filter.Name);
+            }
+            if (!string.IsNullOrEmpty(filter.Category))
+            {
+                query += " AND EventCategory = ?";
+                parameters.Add(filter.Category);
+            }
+            if (!string.IsNullOrEmpty(filter.Date))
+            {
+                query += " AND EventDate = ?";
+                parameters.Add(filter.Date);
+            }
+            if (!string.IsNullOrEmpty(filter.Time))
+            {
+                query += " AND EventTime = ?";
+                parameters.Add(filter.Time);
+            }
+
+            query += " ORDER BY Timestamp DESC LIMIT ? OFFSET ?";
+            parameters.Add(pageSize);
+            parameters.Add(startIndex);
 
             return await databaseConnection.QueryAsync<AttendanceLog>(query, parameters.ToArray());
         }
