@@ -7,54 +7,109 @@
 
     <Grid>
 
-        <VerticalStackLayout
-            HorizontalOptions="Center"
-            Spacing="40"
-            VerticalOptions="Center">
+        <Grid
+            Padding="5"
+            ColumnSpacing="5"
+            RowSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="0.5*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <Border StrokeShape="RoundRectangle 20" StrokeThickness="2">
-                <HorizontalStackLayout Padding="30" Spacing="5">
+            <Label
+                Grid.Row="0"
+                Grid.ColumnSpan="2"
+                Padding="5"
+                FontAttributes="Bold"
+                FontFamily="Roboto"
+                FontSize="Large"
+                Text="Filter:"
+                TextTransform="Uppercase" />
+
+            <Border
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="2">
+                <HorizontalStackLayout Padding="20" Spacing="5">
                     <Image
-                        HeightRequest="40"
-                        Source="Present1.png"
-                        WidthRequest="40" />
+                        HeightRequest="30"
+                        Source="employees.png"
+                        WidthRequest="30" />
+
                     <Label
                         FontAttributes="Bold"
                         FontFamily="Roboto"
-                        FontSize="Title"
+                        FontSize="Medium"
+                        Text="Employees:"
+                        TextTransform="Uppercase"
+                        VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+
+            </Border>
+
+            <Border
+                Grid.Row="2"
+                Grid.Column="0"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="2">
+                <HorizontalStackLayout Padding="20" HorizontalOptions="Center">
+                    <Image
+                        HeightRequest="25"
+                        Source="Present1.png"
+                        WidthRequest="25" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Medium"
                         Text="Present:"
                         TextTransform="Uppercase"
                         VerticalTextAlignment="Center" />
                 </HorizontalStackLayout>
 
             </Border>
-            <Border StrokeShape="RoundRectangle 20" StrokeThickness="2">
-                <HorizontalStackLayout Padding="30" Spacing="5">
+            <Border
+                Grid.Row="2"
+                Grid.Column="1"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="2">
+                <HorizontalStackLayout Padding="20" HorizontalOptions="Center">
                     <Image
-                        HeightRequest="40"
+                        HeightRequest="25"
                         Source="Absent1.png"
-                        WidthRequest="40" />
+                        WidthRequest="25" />
                     <Label
                         FontAttributes="Bold"
                         FontFamily="Roboto"
-                        FontSize="Title"
+                        FontSize="Medium"
                         Text="Absent:"
                         TextTransform="Uppercase"
                         VerticalTextAlignment="Center" />
                 </HorizontalStackLayout>
 
             </Border>
-            <Border StrokeShape="RoundRectangle 20" StrokeThickness="2">
-                <HorizontalStackLayout Padding="30" Spacing="5">
+            <Border
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="2">
+                <HorizontalStackLayout Padding="20" Spacing="5">
                     <Image
-                        HeightRequest="40"
+                        HeightRequest="30"
                         Source="Total1.png"
-                        WidthRequest="40" />
+                        WidthRequest="30" />
 
                     <Label
                         FontAttributes="Bold"
                         FontFamily="Roboto"
-                        FontSize="Title"
+                        FontSize="Medium"
                         Text="Total:"
                         TextTransform="Uppercase"
                         VerticalTextAlignment="Center" />
@@ -62,8 +117,13 @@
 
             </Border>
 
+        </Grid>
 
-        </VerticalStackLayout>
+
+
+
+
+
 
         <AbsoluteLayout>
             <Border
