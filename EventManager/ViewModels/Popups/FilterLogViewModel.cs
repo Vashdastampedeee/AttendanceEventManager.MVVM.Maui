@@ -61,11 +61,6 @@ namespace EventManager.ViewModels.Popups
 
         private async Task LoadDefaultValues()
         {
-            if (logFilter == null) 
-            {
-                return;
-            }
-
             await LoadEventNames();
 
             SelectedName = logFilter.Name;
