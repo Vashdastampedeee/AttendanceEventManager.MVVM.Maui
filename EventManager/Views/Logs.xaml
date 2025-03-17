@@ -3,6 +3,7 @@
     x:Class="EventManager.Views.Logs"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:EventManager.Controls"
     xmlns:models="clr-namespace:EventManager.Models"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:EventManager.ViewModels"
@@ -42,7 +43,14 @@
                     HeightRequest="30"
                     IsEnabled="{Binding IsEnabled}"
                     Placeholder="Search"
-                    PlaceholderColor="Black" />
+                    PlaceholderColor="Black"
+                    SearchCommand="{Binding SearchLogsCommand}"
+                    Text="{Binding SearchText, Mode=TwoWay}">
+                    <SearchBar.Behaviors>
+                        <controls:HideSearchBarKeyboard />
+                    </SearchBar.Behaviors>
+                </SearchBar>
+
             </Border>
             <Button
                 Grid.Column="1"
@@ -73,7 +81,7 @@
                     FontSize="Small"
                     HorizontalTextAlignment="Center"
                     IsVisible="{Binding IsNoDataVisible}"
-                    Text="No attendance logs found"
+                    Text="{Binding IsNoDataLabel}"
                     VerticalTextAlignment="Center" />
             </CollectionView.EmptyView>
 
@@ -84,26 +92,27 @@
                         Margin="5"
                         Padding="10"
                         StrokeShape="RectangleRound 20">
-                        <ScrollView Orientation="Horizontal">
-                            <HorizontalStackLayout Spacing="35">
-                                <VerticalStackLayout>
-                                    <Label FontSize="Small" Text="{Binding IdNumber}" />
-                                    <Label FontSize="Small" Text="{Binding Name}" />
-                                    <Label FontSize="Small" Text="{Binding BusinessUnit}" />
-                                    <Label FontSize="Small" Text="{Binding Status}" />
-                                    <Label FontSize="Small" Text="{Binding Timestamp}" />
-                                </VerticalStackLayout>
+                        <HorizontalStackLayout Spacing="35">
+                            <VerticalStackLayout>
 
-                                <VerticalStackLayout IsVisible="True">
-                                    <Label FontSize="Small" Text="{Binding EventName}" />
-                                    <Label FontSize="Small" Text="{Binding EventCategory}" />
-                                    <Label FontSize="Small" Text="{Binding EventDate}" />
-                                    <Label FontSize="Small" Text="{Binding EventTime}" />
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label FontSize="Subtitle" Text="{Binding EventName, StringFormat='Event: {0}'}" />
+                                    <Label FontSize="Small" Text="-" />
+                                    <Label FontSize="Subtitle" Text="{Binding EventCategory, StringFormat='Category: {0}'}" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label FontSize="Header" Text="{Binding EventDate}" />
+                                    <Label FontSize="Header" Text="{Binding EventTime}" />
+                                </HorizontalStackLayout>
 
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
+                                <Label FontSize="Medium" Text="{Binding IdNumber}" />
+                                <Label FontSize="Small" Text="{Binding Name}" />
+                                <Label FontSize="Small" Text="{Binding BusinessUnit}" />
+                                <Label FontSize="Small" Text="{Binding Status}" />
+                                <Label FontSize="Caption" Text="{Binding Timestamp}" />
 
-                        </ScrollView>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
                     </Border>
 
 
@@ -145,21 +154,16 @@
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
                 BackgroundColor="#512BD4"
-                HeightRequest="50"
+                HeightRequest="55"
                 Stroke="Transparent"
-                StrokeShape="Ellipse"
-                WidthRequest="50">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="DarkSlateGrey"
-                        Opacity="0.7"
-                        Offset="1,1" />
-                </Border.Shadow>
+                StrokeShape="RoundRectangle 10"
+                WidthRequest="55">
+
                 <Grid>
                     <Button
                         Command="{Binding ExportFilteredLogsCommand}"
                         FontFamily="IconButtons"
-                        FontSize="Title"
+                        FontSize="Large"
                         IsEnabled="{Binding IsNotBusy}"
                         IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
                         Text="&#xE802;" />
