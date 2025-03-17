@@ -69,20 +69,17 @@
             <Border
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                HeightRequest="50"
+                BackgroundColor="#512BD4"
+                HeightRequest="55"
                 Stroke="Transparent"
-                StrokeShape="Ellipse"
-                WidthRequest="50">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="DarkSlateGrey"
-                        Opacity="0.7"
-                        Offset="1,1" />
-                </Border.Shadow>
-                <Button
-                    FontFamily="IconButtons"
-                    FontSize="Title"
-                    Text="&#xF0B0;" />
+                StrokeShape="RoundRectangle 10"
+                WidthRequest="55">
+                <Grid>
+                    <Button
+                        FontFamily="IconButtons"
+                        FontSize="Large"
+                        Text="&#xF0B0;" />
+                </Grid>
             </Border>
 
 
