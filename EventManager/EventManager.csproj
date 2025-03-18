@@ -60,6 +60,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Modals\**" />
+	  <Compile Remove="Modals\**" />
+	  <EmbeddedResource Remove="Modals\**" />
+	  <MauiCss Remove="Modals\**" />
+	  <MauiXaml Remove="Modals\**" />
+	  <None Remove="Modals\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiAsset Remove="Resources\Raw\AboutAssets.txt" />
 	  <MauiAsset Remove="Resources\Raw\dbtest.db" />
 	</ItemGroup>
@@ -83,10 +92,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Modals\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="Views\Dashboard.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -102,10 +107,16 @@
 	  <MauiXaml Update="Views\Logs.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Modals\TotalScannedData.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\AddEvent.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\EditEvent.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Popups\FilterDashboard.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\FilterLog.xaml">
