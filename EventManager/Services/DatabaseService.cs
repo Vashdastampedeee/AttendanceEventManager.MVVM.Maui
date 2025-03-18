@@ -336,5 +336,36 @@ namespace EventManager.Services
             return await databaseConnection.QueryAsync<AttendanceLog>(query, parameters.ToArray());
         }
 
+        public async Task<int> GetTotalEmployeeCountAsync() 
+        {
+            string query = "SELECT COUNT(*) FROM employee";
+            return await databaseConnection.ExecuteScalarAsync<int>(query);
+        }
+        public async Task<int> GetTotalEmployeeCountByBUAsync(string businessUnit)
+        {
+            string query = "SELECT COUNT(*) FROM employee WHERE BusinessUnit = ?";
+            return await databaseConnection.ExecuteScalarAsync<int>(query, businessUnit);
+        }
+        public async Task<int> GetPresentEmployeeCountForActiveEvent()
+        {
+            string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE Status = 'SUCCESS' AND EventName = (SELECT EventName FROM event WHERE isSelected = 1)";
+            return await databaseConnection.ExecuteScalarAsync<int>(query);
+        }
+        public async Task<int> GetPresentEmployeeCountByBUAsync(string businessUnit)
+        {
+            string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE Status = 'SUCCESS' AND EventName = (SELECT EventName FROM event WHERE isSelected = 1) AND BusinessUnit = ?";
+            return await databaseConnection.ExecuteScalarAsync<int>(query, businessUnit);
+        }
+        public async Task<int> GetScannedEmployeeCountForActiveEventAsync()
+        {
+            string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE EventName = (SELECT EventName FROM event WHERE isSelected = 1)";
+            return await databaseConnection.ExecuteScalarAsync<int>(query);
+        }
+        public async Task<int> GetScannedEmployeeCountByBUAsync(string businessUnit)
+        {
+            string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE EventName = (SELECT EventName FROM event WHERE isSelected = 1) AND BusinessUnit = ?";
+            return await databaseConnection.ExecuteScalarAsync<int>(query, businessUnit);
+        }
+
     }
 }
