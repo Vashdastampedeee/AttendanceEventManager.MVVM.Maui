@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using EventManager.Services;
 using EventManager.Utilities;
 using EventManager.ViewModels.Popups;
+using EventManager.Views.Modals;
 using EventManager.Views.Popups;
 using Mopups.Services;
 
@@ -46,6 +47,12 @@ namespace EventManager.ViewModels
         [ObservableProperty]
         private string totalScannedEmployee;
 
+        [ObservableProperty]
+        private bool isBusyPageIndicator;
+
+        [ObservableProperty]
+        private bool isShowPage;
+
         public DashboardViewModel(DatabaseService databaseService) 
         {
             this.databaseService = databaseService;
@@ -68,14 +75,19 @@ namespace EventManager.ViewModels
             } 
             else if(lastActiveEventId != activeEvent.Id || !isAllDashboardDataLoaded)
             {
+                IsShowPage = false;
+                IsBusyPageIndicator = true;
                 await LoadDashboardData();
                 lastActiveEventId = activeEvent.Id;
                 isAllDashboardDataLoaded = true;
+                IsBusyPageIndicator = false;
+                IsShowPage = true;
             }
         }
 
         public async Task LoadDashboardData()
         {
+            
             var activeEvent = await databaseService.GetSelectedEvent();
 
             if (SelectedBusinessUnit == "ALL")
@@ -99,6 +111,7 @@ namespace EventManager.ViewModels
           
             AbsentEmployees = TotalEmployees - PresentEmployees;
 
+      
             IsVisible = PresentEmployees > 0;
         }
 
@@ -146,5 +159,11 @@ namespace EventManager.ViewModels
             SelectedBusinessUnit = businessUnit;
             await LoadDashboardData();
         }
+        [RelayCommand]
+        public async Task ViewData()
+        {
+            await Shell.Current.GoToAsync(nameof(TotalScannedData));
+        }
+        
     }
 }

@@ -20,6 +20,7 @@
         <Grid
             Padding="5"
             ColumnSpacing="5"
+            IsVisible="{Binding IsShowPage}"
             RowSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" />
@@ -142,7 +143,7 @@
                             <ColumnDefinition Width="0.5*" />
                             <ColumnDefinition Width="0.5*" />
                         </Grid.ColumnDefinitions>
-                        <Button Text="View Data" />
+                        <Button Command="{Binding ViewDataCommand}" Text="View Data" />
                         <Button Grid.Column="1" Text="Export Data" />
 
                     </Grid>
@@ -151,6 +152,12 @@
             </Border>
 
         </Grid>
+
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusyPageIndicator}"
+            IsVisible="{Binding IsBusyPageIndicator}"
+            VerticalOptions="Center" />
 
         <AbsoluteLayout>
 
