@@ -3,7 +3,17 @@
     x:Class="EventManager.Views.Dashboard"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Dashboard">
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
+    x:Name="ThisPage"
+    Title="Dashboard"
+    x:DataType="viewmodel:DashboardViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
+            Command="{Binding NavigatedToCommand}"
+            EventName="NavigatedTo" />
+    </ContentPage.Behaviors>
 
     <Grid>
 
@@ -28,8 +38,8 @@
                 Padding="5"
                 FontAttributes="Bold"
                 FontFamily="Roboto"
-                FontSize="Large"
-                Text="Filter:"
+                FontSize="Medium"
+                Text="{Binding SelectedBusinessUnit, StringFormat='Business Unit: {0}'}"
                 TextTransform="Uppercase" />
 
             <Border
@@ -38,18 +48,19 @@
                 Grid.ColumnSpan="2"
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="2">
-                <HorizontalStackLayout Padding="20" Spacing="5">
+                <HorizontalStackLayout
+                    Padding="20"
+                    HorizontalOptions="Start"
+                    Spacing="5">
                     <Image
                         HeightRequest="30"
                         Source="employees.png"
                         WidthRequest="30" />
 
                     <Label
-                        FontAttributes="Bold"
                         FontFamily="Roboto"
                         FontSize="Medium"
-                        Text="Employees:"
-                        TextTransform="Uppercase"
+                        Text="{Binding TotalEmployees, StringFormat='Employees: {0}'}"
                         VerticalTextAlignment="Center" />
                 </HorizontalStackLayout>
 
@@ -60,17 +71,15 @@
                 Grid.Column="0"
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="2">
-                <HorizontalStackLayout Padding="20" HorizontalOptions="Center">
+                <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
                     <Image
                         HeightRequest="25"
                         Source="Present1.png"
                         WidthRequest="25" />
                     <Label
-                        FontAttributes="Bold"
                         FontFamily="Roboto"
                         FontSize="Medium"
-                        Text="Present:"
-                        TextTransform="Uppercase"
+                        Text="{Binding PresentEmployees, StringFormat='Present: {0}'}"
                         VerticalTextAlignment="Center" />
                 </HorizontalStackLayout>
 
@@ -80,17 +89,15 @@
                 Grid.Column="1"
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="2">
-                <HorizontalStackLayout Padding="20" HorizontalOptions="Center">
+                <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
                     <Image
                         HeightRequest="25"
                         Source="Absent1.png"
                         WidthRequest="25" />
                     <Label
-                        FontAttributes="Bold"
                         FontFamily="Roboto"
                         FontSize="Medium"
-                        Text="Absent:"
-                        TextTransform="Uppercase"
+                        Text="{Binding AbsentEmployees, StringFormat='Absent: {0}'}"
                         VerticalTextAlignment="Center" />
                 </HorizontalStackLayout>
 
@@ -100,32 +107,53 @@
                 Grid.ColumnSpan="2"
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="2">
-                <HorizontalStackLayout Padding="20" Spacing="5">
+
+                <Grid
+                    Padding="20"
+                    ColumnSpacing="5"
+                    RowSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
                     <Image
+                        Grid.Column="0"
                         HeightRequest="30"
                         Source="Total1.png"
                         WidthRequest="30" />
 
                     <Label
-                        FontAttributes="Bold"
+                        Grid.Column="1"
                         FontFamily="Roboto"
                         FontSize="Medium"
-                        Text="Total:"
-                        TextTransform="Uppercase"
+                        Text="{Binding TotalScannedEmployee, StringFormat='Total Scanned: {0}'}"
                         VerticalTextAlignment="Center" />
-                </HorizontalStackLayout>
+                    <Grid
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        ColumnSpacing="10"
+                        IsVisible="{Binding IsVisible}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.5*" />
+                            <ColumnDefinition Width="0.5*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Text="View Data" />
+                        <Button Grid.Column="1" Text="Export Data" />
+
+                    </Grid>
+                </Grid>
 
             </Border>
 
         </Grid>
 
-
-
-
-
-
-
         <AbsoluteLayout>
+
             <Border
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
@@ -136,14 +164,25 @@
                 WidthRequest="55">
                 <Grid>
                     <Button
+                        BorderColor="Transparent"
+                        Command="{Binding FilterDashboardCommand}"
                         FontFamily="IconButtons"
                         FontSize="Large"
+                        IsEnabled="{Binding IsNotBusy}"
+                        IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
                         Text="&#xF0B0;" />
+                    <ActivityIndicator
+                        HeightRequest="25"
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"
+                        WidthRequest="25"
+                        Color="White" />
                 </Grid>
             </Border>
 
 
         </AbsoluteLayout>
+
     </Grid>
 
 
