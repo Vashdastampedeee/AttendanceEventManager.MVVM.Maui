@@ -38,6 +38,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<LogsViewModel>();
 		builder.Services.AddSingleton<EventViewModel>();
 		builder.Services.AddSingleton<DatabaseViewModel>();
+		builder.Services.AddSingleton<DashboardViewModel>();
 
         builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
 
