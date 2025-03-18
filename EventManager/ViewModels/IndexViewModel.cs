@@ -19,6 +19,7 @@ namespace EventManager.ViewModels
         private readonly DatabaseService databaseService;
         private readonly BeepService beepService;
         private readonly LogsViewModel logsViewModel;
+        private readonly DashboardViewModel dashboardViewModel;
 
         [ObservableProperty] private string eventName;
         [ObservableProperty] private string eventDate;
@@ -33,11 +34,12 @@ namespace EventManager.ViewModels
         [ObservableProperty] private Color color;
         [ObservableProperty] private bool isEntryFocused;
 
-        public IndexViewModel(DatabaseService databaseService, BeepService beepService, LogsViewModel logsViewModel)
+        public IndexViewModel(DatabaseService databaseService, BeepService beepService, LogsViewModel logsViewModel, DashboardViewModel dashboardViewModel)
         {
             this.databaseService = databaseService;
             this.beepService = beepService;
             this.logsViewModel = logsViewModel;
+            this.dashboardViewModel = dashboardViewModel;
             InitializeElementProperty();
         }
         private void InitializeElementProperty()
@@ -103,6 +105,7 @@ namespace EventManager.ViewModels
                             BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
                             Color = Colors.Green;
                             logsViewModel.isLogsLoaded = false;
+                            dashboardViewModel.isAllDashboardDataLoaded = false;
                             await databaseService.InsertAttendanceLog(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, "SUCCESS", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
                         }
                     }
@@ -128,6 +131,7 @@ namespace EventManager.ViewModels
                             BusinessUnit = "Business Unit: Not Found";
                             Color = Colors.Red;
                             logsViewModel.isLogsLoaded = false;
+                            dashboardViewModel.isAllDashboardDataLoaded = false;
                             await databaseService.InsertAttendanceLog(barcodeIdNumber, "", "", "NOT FOUND", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
                         }
                     }
