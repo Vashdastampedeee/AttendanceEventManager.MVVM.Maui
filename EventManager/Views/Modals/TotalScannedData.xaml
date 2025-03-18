@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<TabbedPage
+<ContentPage
     x:Class="EventManager.Views.Modals.TotalScannedData"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <ContentPage Title="Present">
-        <Label Text="Present" />
-    </ContentPage>
-    <ContentPage Title="Absent">
-        <Label Text="Absent" />
-    </ContentPage>
-</TabbedPage>
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Scanned Data">
+
+    <VerticalStackLayout>
+        <Label Text="Test" />
+    </VerticalStackLayout>
+
+
+</ContentPage>
