@@ -20,7 +20,6 @@
         <Grid
             Padding="5"
             ColumnSpacing="5"
-            IsVisible="{Binding IsShowPage}"
             RowSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" />
@@ -40,8 +39,7 @@
                 FontAttributes="Bold"
                 FontFamily="Roboto"
                 FontSize="Medium"
-                Text="{Binding SelectedBusinessUnit, StringFormat='Business Unit: {0}'}"
-                TextTransform="Uppercase" />
+                Text="{Binding SelectedBusinessUnit, StringFormat='Business Unit: {0}'}" />
 
             <Border
                 Grid.Row="1"
@@ -143,8 +141,53 @@
                             <ColumnDefinition Width="0.5*" />
                             <ColumnDefinition Width="0.5*" />
                         </Grid.ColumnDefinitions>
-                        <Button Command="{Binding ViewDataCommand}" Text="View Data" />
-                        <Button Grid.Column="1" Text="Export Data" />
+                        <Border
+                            Grid.Column="0"
+                            BackgroundColor="#512BD4"
+                            HeightRequest="50"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 10">
+                            <Grid>
+                                <Button
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding ViewDataCommand}"
+                                    IsEnabled="{Binding IsViewDataNotBusy}"
+                                    IsVisible="{Binding IsViewDataBusy, Converter={StaticResource InverseBoolConverter}}"
+                                    Text="View Data" />
+
+                                <ActivityIndicator
+                                    HeightRequest="25"
+                                    IsRunning="{Binding IsViewDataBusy}"
+                                    IsVisible="{Binding IsViewDataBusy}"
+                                    WidthRequest="25"
+                                    Color="White" />
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Grid.Column="1"
+                            BackgroundColor="#512BD4"
+                            HeightRequest="50"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 10">
+                            <Grid Grid.Column="1">
+                                <Button
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding ExportDataCommand}"
+                                    IsEnabled="{Binding IsExportDataNotBusy}"
+                                    IsVisible="{Binding IsExportDataBusy, Converter={StaticResource InverseBoolConverter}}"
+                                    Text="Export Data" />
+
+                                <ActivityIndicator
+                                    HeightRequest="25"
+                                    IsRunning="{Binding IsExportDataBusy}"
+                                    IsVisible="{Binding IsExportDataBusy}"
+                                    WidthRequest="25"
+                                    Color="White" />
+                            </Grid>
+                        </Border>
+
+
 
                     </Grid>
                 </Grid>
