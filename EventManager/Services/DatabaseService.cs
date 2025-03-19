@@ -367,5 +367,20 @@ namespace EventManager.Services
             return await databaseConnection.ExecuteScalarAsync<int>(query, businessUnit);
         }
 
+        public async Task<List<EmployeeAttendanceStatus>> GetTotalScannedDataPaginated(int lastLoadedIndex, int pageSize)
+        {
+            string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END LIMIT ? OFFSET ?";
+
+            return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(query, pageSize, lastLoadedIndex);
+        }
+
+        public async Task<List<EmployeeAttendanceStatus>> GetTotalScannedDataByBusinessUnitPaginated(string businessUnit, int lastLoadedIndex, int pageSize)
+        {
+            string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) WHERE e.BusinessUnit = ? ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END LIMIT ? OFFSET ?";
+
+            return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(query, businessUnit, pageSize, lastLoadedIndex);
+        }
+
+
     }
 }
