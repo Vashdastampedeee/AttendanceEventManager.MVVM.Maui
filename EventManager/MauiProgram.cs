@@ -9,6 +9,7 @@ using EventManager.Views.Popups;
 using Microsoft.Extensions.Logging;
 using Mopups.Interfaces;
 using Mopups.Services;
+using EventManager.ViewModels.Modals;
 
 namespace EventManager;
 
@@ -39,6 +40,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<EventViewModel>();
 		builder.Services.AddSingleton<DatabaseViewModel>();
 		builder.Services.AddSingleton<DashboardViewModel>();
+		builder.Services.AddSingleton<TotalScannedDataViewModel>();
 
         builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
 
