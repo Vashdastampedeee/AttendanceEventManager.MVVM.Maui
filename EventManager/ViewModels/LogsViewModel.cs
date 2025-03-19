@@ -176,7 +176,11 @@ namespace EventManager.ViewModels
         [RelayCommand]
         public async Task RefreshLogs()
         {
-            Debug.WriteLine("[LogsViewModel] - refreshing logs");
+            var activeEvent = await databaseService.GetSelectedEvent();
+            if(activeEvent == null)
+            {
+                await ToastHelper.ShowToast("Set Event First!", ToastDuration.Short);
+            }
 
             IsNoDataVisible = false;
             SearchText = string.Empty;
@@ -185,7 +189,6 @@ namespace EventManager.ViewModels
             lastLoadedIndex = 0;
             isAllLogsDataLoaded = false;
        
-            var activeEvent = await databaseService.GetSelectedEvent();
             selectedFilter = new LogFilter
             {
                 Name = activeEvent.EventName,
