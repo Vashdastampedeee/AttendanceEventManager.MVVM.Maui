@@ -3,6 +3,7 @@
     x:Class="EventManager.Views.Dashboard"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
     x:Name="ThisPage"
@@ -14,187 +15,298 @@
             Command="{Binding NavigatedToCommand}"
             EventName="NavigatedTo" />
     </ContentPage.Behaviors>
-
     <Grid>
-
-        <Grid
-            Padding="5"
-            ColumnSpacing="5"
-            RowSpacing="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.5*" />
-                <ColumnDefinition Width="0.5*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <Label
-                Grid.Row="0"
-                Grid.ColumnSpan="2"
+        <ScrollView>
+            <Grid
                 Padding="5"
-                FontAttributes="Bold"
-                FontFamily="Roboto"
-                FontSize="Medium"
-                Text="{Binding SelectedBusinessUnit, StringFormat='Business Unit: {0}'}" />
+                ColumnSpacing="5"
+                IsVisible="{Binding IsVisible}"
+                RowSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <Border
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="2">
-                <HorizontalStackLayout
-                    Padding="20"
-                    HorizontalOptions="Start"
-                    Spacing="5">
-                    <Image
-                        HeightRequest="30"
-                        Source="employees.png"
-                        WidthRequest="30" />
+                <Label
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    Padding="5"
+                    FontAttributes="Bold"
+                    FontFamily="Roboto"
+                    FontSize="Medium"
+                    Text="{Binding SelectedBusinessUnit, StringFormat='Business Unit: {0}'}" />
 
-                    <Label
-                        FontFamily="Roboto"
-                        FontSize="Medium"
-                        Text="{Binding TotalEmployees, StringFormat='Employees: {0}'}"
-                        VerticalTextAlignment="Center" />
-                </HorizontalStackLayout>
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="2">
+                    <HorizontalStackLayout
+                        Padding="20"
+                        HorizontalOptions="Start"
+                        Spacing="5">
+                        <Image
+                            HeightRequest="30"
+                            Source="employees.png"
+                            WidthRequest="30" />
 
-            </Border>
+                        <Label
+                            FontFamily="Roboto"
+                            FontSize="Medium"
+                            Text="{Binding TotalEmployees, StringFormat='Employees: {0}'}"
+                            VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
 
-            <Border
-                Grid.Row="2"
-                Grid.Column="0"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="2">
-                <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
-                    <Image
-                        HeightRequest="25"
-                        Source="Present1.png"
-                        WidthRequest="25" />
-                    <Label
-                        FontFamily="Roboto"
-                        FontSize="Medium"
-                        Text="{Binding PresentEmployees, StringFormat='Present: {0}'}"
-                        VerticalTextAlignment="Center" />
-                </HorizontalStackLayout>
+                </Border>
 
-            </Border>
-            <Border
-                Grid.Row="2"
-                Grid.Column="1"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="2">
-                <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
-                    <Image
-                        HeightRequest="25"
-                        Source="Absent1.png"
-                        WidthRequest="25" />
-                    <Label
-                        FontFamily="Roboto"
-                        FontSize="Medium"
-                        Text="{Binding AbsentEmployees, StringFormat='Absent: {0}'}"
-                        VerticalTextAlignment="Center" />
-                </HorizontalStackLayout>
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Padding="0,0,20,0"
+                    IsVisible="{Binding IsVisible}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="2">
 
-            </Border>
-            <Border
-                Grid.Row="3"
-                Grid.ColumnSpan="2"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="2">
+                    <chart:SfCartesianChart HeightRequest="400" IsTransposed="True">
 
-                <Grid
-                    Padding="20"
-                    ColumnSpacing="5"
-                    RowSpacing="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                        <chart:SfCartesianChart.Title>
+                            <Label
+                                Margin="10,0,0,0"
+                                FontFamily="Roboto"
+                                FontSize="Medium"
+                                HorizontalTextAlignment="Start"
+                                Text="Business Units Attendance Data" />
+                        </chart:SfCartesianChart.Title>
 
-                    <Image
-                        Grid.Column="0"
-                        HeightRequest="30"
-                        Source="Total1.png"
-                        WidthRequest="30" />
+                        <chart:SfCartesianChart.Legend>
+                            <chart:ChartLegend Placement="Top" />
+                        </chart:SfCartesianChart.Legend>
 
-                    <Label
-                        Grid.Column="1"
-                        FontFamily="Roboto"
-                        FontSize="Medium"
-                        Text="{Binding TotalScannedEmployee, StringFormat='Total Scanned: {0}'}"
-                        VerticalTextAlignment="Center" />
+                        <chart:SfCartesianChart.XAxes>
+                            <chart:CategoryAxis>
+                                <chart:CategoryAxis.Title>
+                                    <chart:ChartAxisTitle Text="Business Units" />
+                                </chart:CategoryAxis.Title>
+                            </chart:CategoryAxis>
+                        </chart:SfCartesianChart.XAxes>
+
+                        <chart:SfCartesianChart.YAxes>
+                            <chart:NumericalAxis>
+                                <chart:NumericalAxis.Title>
+                                    <chart:ChartAxisTitle Text="Number of Attendees" />
+                                </chart:NumericalAxis.Title>
+                            </chart:NumericalAxis>
+                        </chart:SfCartesianChart.YAxes>
+
+                        <chart:SfCartesianChart.Series>
+                            <chart:ColumnSeries
+                                ItemsSource="{Binding AttendanceByBusinessUnit}"
+                                Label="Business Units"
+                                LabelContext="Percentage"
+                                ShowDataLabels="True"
+                                XBindingPath="BusinessUnit"
+                                YBindingPath="Count">
+
+                                <chart:ColumnSeries.DataLabelSettings>
+                                    <chart:CartesianDataLabelSettings LabelPlacement="Inner" />
+                                </chart:ColumnSeries.DataLabelSettings>
+
+                            </chart:ColumnSeries>
+                        </chart:SfCartesianChart.Series>
+                    </chart:SfCartesianChart>
+                </Border>
+
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="2">
+                    <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
+                        <Image
+                            HeightRequest="25"
+                            Source="Present1.png"
+                            WidthRequest="25" />
+                        <Label
+                            FontFamily="Roboto"
+                            FontSize="Medium"
+                            Text="{Binding PresentEmployees, StringFormat='Present: {0}'}"
+                            VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+
+                </Border>
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="2">
+                    <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
+                        <Image
+                            HeightRequest="25"
+                            Source="Absent1.png"
+                            WidthRequest="25" />
+                        <Label
+                            FontFamily="Roboto"
+                            FontSize="Medium"
+                            Text="{Binding AbsentEmployees, StringFormat='Absent: {0}'}"
+                            VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+
+                </Border>
+
+
+
+                <Border
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    HeightRequest="200"
+                    IsVisible="{Binding IsVisible}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="2">
+
+                    <chart:SfCircularChart>
+
+                        <chart:SfCircularChart.Title>
+                            <Label
+                                Margin="10,0,0,0"
+                                FontFamily="Roboto"
+                                FontSize="Medium"
+                                HorizontalTextAlignment="Start"
+                                Text="{Binding SelectedBusinessUnit, StringFormat='Attendance Status: {0}'}" />
+                        </chart:SfCircularChart.Title>
+
+                        <chart:SfCircularChart.Legend>
+                            <chart:ChartLegend Placement="Bottom" />
+                        </chart:SfCircularChart.Legend>
+
+                        <chart:SfCircularChart.Series>
+                            <chart:PieSeries
+                                ItemsSource="{Binding AttendanceSummary}"
+                                LabelContext="Percentage"
+                                ShowDataLabels="True"
+                                XBindingPath="Category"
+                                YBindingPath="Count">
+
+                                <chart:PieSeries.DataLabelSettings>
+                                    <chart:CircularDataLabelSettings LabelPosition="Outside" />
+                                </chart:PieSeries.DataLabelSettings>
+
+                            </chart:PieSeries>
+                        </chart:SfCircularChart.Series>
+                    </chart:SfCircularChart>
+                </Border>
+
+                <Border
+                    Grid.Row="5"
+                    Grid.ColumnSpan="2"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="2">
+
                     <Grid
-                        Grid.Row="1"
-                        Grid.ColumnSpan="2"
-                        ColumnSpacing="10"
-                        IsVisible="{Binding IsVisible}">
+                        Padding="20"
+                        ColumnSpacing="5"
+                        RowSpacing="10">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.5*" />
-                            <ColumnDefinition Width="0.5*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Border
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Image
                             Grid.Column="0"
-                            BackgroundColor="#512BD4"
-                            HeightRequest="50"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 10">
-                            <Grid>
-                                <Button
-                                    BackgroundColor="Transparent"
-                                    Command="{Binding ViewDataCommand}"
-                                    IsEnabled="{Binding IsViewDataNotBusy}"
-                                    IsVisible="{Binding IsViewDataBusy, Converter={StaticResource InverseBoolConverter}}"
-                                    Text="View Data" />
+                            HeightRequest="30"
+                            Source="Total1.png"
+                            WidthRequest="30" />
 
-                                <ActivityIndicator
-                                    HeightRequest="25"
-                                    IsRunning="{Binding IsViewDataBusy}"
-                                    IsVisible="{Binding IsViewDataBusy}"
-                                    WidthRequest="25"
-                                    Color="White" />
-                            </Grid>
-                        </Border>
-
-                        <Border
+                        <Label
                             Grid.Column="1"
-                            BackgroundColor="#512BD4"
-                            HeightRequest="50"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 10">
-                            <Grid Grid.Column="1">
-                                <Button
-                                    BackgroundColor="Transparent"
-                                    Command="{Binding ExportDataCommand}"
-                                    IsEnabled="{Binding IsExportDataNotBusy}"
-                                    IsVisible="{Binding IsExportDataBusy, Converter={StaticResource InverseBoolConverter}}"
-                                    Text="Export Data" />
+                            FontFamily="Roboto"
+                            FontSize="Medium"
+                            Text="{Binding TotalScannedEmployee, StringFormat='Total Scanned: {0}'}"
+                            VerticalTextAlignment="Center" />
+                        <Grid
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            ColumnSpacing="10"
+                            IsVisible="{Binding IsVisible}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="0.5*" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Grid.Column="0"
+                                BackgroundColor="#512BD4"
+                                HeightRequest="50"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 10">
+                                <Grid>
+                                    <Button
+                                        BackgroundColor="Transparent"
+                                        Command="{Binding ViewDataCommand}"
+                                        IsEnabled="{Binding IsViewDataNotBusy}"
+                                        IsVisible="{Binding IsViewDataBusy, Converter={StaticResource InverseBoolConverter}}"
+                                        Text="View Data" />
 
-                                <ActivityIndicator
-                                    HeightRequest="25"
-                                    IsRunning="{Binding IsExportDataBusy}"
-                                    IsVisible="{Binding IsExportDataBusy}"
-                                    WidthRequest="25"
-                                    Color="White" />
-                            </Grid>
-                        </Border>
+                                    <ActivityIndicator
+                                        HeightRequest="25"
+                                        IsRunning="{Binding IsViewDataBusy}"
+                                        IsVisible="{Binding IsViewDataBusy}"
+                                        WidthRequest="25"
+                                        Color="White" />
+                                </Grid>
+                            </Border>
 
+                            <Border
+                                Grid.Column="1"
+                                BackgroundColor="#512BD4"
+                                HeightRequest="50"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 10">
+                                <Grid Grid.Column="1">
+                                    <Button
+                                        BackgroundColor="Transparent"
+                                        Command="{Binding ExportDataCommand}"
+                                        IsEnabled="{Binding IsExportDataNotBusy}"
+                                        IsVisible="{Binding IsExportDataBusy, Converter={StaticResource InverseBoolConverter}}"
+                                        Text="Export Data" />
 
+                                    <ActivityIndicator
+                                        HeightRequest="25"
+                                        IsRunning="{Binding IsExportDataBusy}"
+                                        IsVisible="{Binding IsExportDataBusy}"
+                                        WidthRequest="25"
+                                        Color="White" />
+                                </Grid>
+                            </Border>
 
+                        </Grid>
                     </Grid>
-                </Grid>
 
-            </Border>
+                </Border>
 
-        </Grid>
+            </Grid>
+        </ScrollView>
+        <Label
+            FontAttributes="Italic"
+            FontSize="Small"
+            HorizontalTextAlignment="Center"
+            IsVisible="{Binding IsNoDataScanned}"
+            Text="{Binding IsNoDataScannedText}"
+            VerticalTextAlignment="Center" />
 
         <ActivityIndicator
             HorizontalOptions="Center"
@@ -234,8 +346,5 @@
         </AbsoluteLayout>
 
     </Grid>
-
-
-
 
 </ContentPage>
