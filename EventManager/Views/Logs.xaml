@@ -73,7 +73,8 @@
             Grid.Row="1"
             ItemsSource="{Binding AttendanceLogs}"
             RemainingItemsThreshold="1"
-            RemainingItemsThresholdReachedCommand="{Binding LoadAttendanceLogsCommand}">
+            RemainingItemsThresholdReachedCommand="{Binding LoadAttendanceLogsCommand}"
+            VerticalScrollBarVisibility="Never">
 
             <CollectionView.EmptyView>
                 <Label
@@ -86,35 +87,37 @@
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
+
                 <DataTemplate x:DataType="models:AttendanceLog">
 
                     <Border
                         Margin="5"
                         Padding="10"
                         StrokeShape="RectangleRound 20">
-                        <HorizontalStackLayout Spacing="35">
-                            <VerticalStackLayout>
+                        <ScrollView Orientation="Horizontal">
+                            <HorizontalStackLayout Spacing="35">
+                                <VerticalStackLayout>
 
-                                <HorizontalStackLayout Spacing="5">
-                                    <Label FontSize="Subtitle" Text="{Binding EventName, StringFormat='Event: {0}'}" />
-                                    <Label FontSize="Small" Text="-" />
-                                    <Label FontSize="Subtitle" Text="{Binding EventCategory, StringFormat='Category: {0}'}" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="5">
-                                    <Label FontSize="Header" Text="{Binding EventDate}" />
-                                    <Label FontSize="Header" Text="{Binding EventTime}" />
-                                </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label FontSize="Subtitle" Text="{Binding EventName, StringFormat='Event: {0}'}" />
+                                        <Label FontSize="Small" Text="-" />
+                                        <Label FontSize="Subtitle" Text="{Binding EventCategory, StringFormat='Category: {0}'}" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Margin="0,0,0,10" Spacing="5">
+                                        <Label FontSize="Header" Text="{Binding EventDate}" />
+                                        <Label FontSize="Header" Text="{Binding EventTime}" />
+                                    </HorizontalStackLayout>
 
-                                <Label FontSize="Medium" Text="{Binding IdNumber}" />
-                                <Label FontSize="Small" Text="{Binding Name}" />
-                                <Label FontSize="Small" Text="{Binding BusinessUnit}" />
-                                <Label FontSize="Small" Text="{Binding Status}" />
-                                <Label FontSize="Caption" Text="{Binding Timestamp}" />
+                                    <Label FontSize="Medium" Text="{Binding IdNumber}" />
+                                    <Label FontSize="Small" Text="{Binding Name}" />
+                                    <Label FontSize="Small" Text="{Binding BusinessUnit}" />
+                                    <Label FontSize="Small" Text="{Binding Status}" />
+                                    <Label FontSize="Caption" Text="{Binding Timestamp}" />
 
-                            </VerticalStackLayout>
-                        </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                        </ScrollView>
                     </Border>
-
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>

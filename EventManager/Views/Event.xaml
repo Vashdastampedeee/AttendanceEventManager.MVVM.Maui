@@ -71,7 +71,8 @@
             Grid.Row="1"
             ItemsSource="{Binding Events}"
             RemainingItemsThreshold="1"
-            RemainingItemsThresholdReachedCommand="{Binding LoadEventsDataCommand}">
+            RemainingItemsThresholdReachedCommand="{Binding LoadEventsDataCommand}"
+            VerticalScrollBarVisibility="Never">
 
             <CollectionView.EmptyView>
                 <Label
