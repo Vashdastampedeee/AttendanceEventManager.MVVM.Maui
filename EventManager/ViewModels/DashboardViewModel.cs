@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +44,12 @@ namespace EventManager.ViewModels
         private bool isVisible;
 
         [ObservableProperty]
+        private bool isNoDataScanned;
+
+        [ObservableProperty]
+        private string isNoDataScannedText;
+
+        [ObservableProperty]
         private string selectedBusinessUnit = "ALL";
 
         [ObservableProperty]
@@ -59,6 +66,12 @@ namespace EventManager.ViewModels
 
         [ObservableProperty]
         private bool isBusyPageIndicator;
+
+        [ObservableProperty]
+        private ObservableCollection<AttendanceCategory> attendanceSummary = new();
+
+        [ObservableProperty]
+        private ObservableCollection<AttendanceByBU> attendanceByBusinessUnit = new();
 
         public DashboardViewModel(DatabaseService databaseService, IFileSaver fileSaverService) 
         {
@@ -77,22 +90,25 @@ namespace EventManager.ViewModels
             var activeEvent = await databaseService.GetSelectedEvent();
             if (activeEvent == null)
             {
+                IsNoDataScanned = true;
                 ResetDashboardData();
                 return;
             } 
             else if(lastActiveEventId != activeEvent.Id || !isAllDashboardDataLoaded)
             {
+                IsNoDataScannedText = string.Empty;
+                IsVisible = false;
                 IsBusyPageIndicator = true;
+                await Task.Delay(500);
                 await LoadDashboardData();
-                lastActiveEventId = activeEvent.Id;
                 isAllDashboardDataLoaded = true;
                 IsBusyPageIndicator = false;
+                lastActiveEventId = activeEvent.Id;
             }
         }
 
         public async Task LoadDashboardData()
         {
-            
             var activeEvent = await databaseService.GetSelectedEvent();
 
             if (SelectedBusinessUnit == "ALL")
@@ -105,8 +121,14 @@ namespace EventManager.ViewModels
                 TotalEmployees = await databaseService.GetTotalEmployeeCountByBUAsync(SelectedBusinessUnit);
                 PresentEmployees = await databaseService.GetPresentEmployeeCountByBUAsync(SelectedBusinessUnit);
             }
-
-            totalScannedEmployeePercentage = (PresentEmployees / TotalEmployees) * 100;
+            if (TotalEmployees > 0)
+            {
+                totalScannedEmployeePercentage = (PresentEmployees / TotalEmployees) * 100;
+            }
+            else
+            {
+                totalScannedEmployeePercentage = 0;
+            }
 
             presentEmployeeToString = PresentEmployees.ToString();
             totalEmployeeToString = TotalEmployees.ToString();
@@ -116,10 +138,35 @@ namespace EventManager.ViewModels
           
             AbsentEmployees = TotalEmployees - PresentEmployees;
 
-      
+            AttendanceSummary.Clear();
+            AttendanceSummary.Add(new AttendanceCategory { Category = "Present", Count = PresentEmployees });
+            AttendanceSummary.Add(new AttendanceCategory { Category = "Absent", Count = AbsentEmployees });
+
+            var businessUnits = new List<string> { "BAG", "BBG WAREHOUSE", "HLB", "JLINE", "RAWLINGS", "SUPPORT GROUP", "TRI-VIET" };
+            AttendanceByBusinessUnit.Clear();
+
+            foreach (var bu in businessUnits)
+            {
+                int buCount;
+
+                if (SelectedBusinessUnit == "ALL" || SelectedBusinessUnit == bu)
+                {
+                    buCount = await databaseService.GetPresentEmployeeCountByBUAsync(bu);
+                }
+                else
+                {
+                    buCount = 0;
+                }
+
+                AttendanceByBusinessUnit.Add(new AttendanceByBU { BusinessUnit = bu, Count = buCount });
+            }
+            IsNoDataScanned = PresentEmployees == 0;
+            if (IsNoDataScanned)
+            {
+                IsNoDataScannedText = "Dashboard Not Available Scanned Employee First";
+            }
             IsVisible = PresentEmployees > 0;
         }
-
         private void ResetDashboardData()
         {
             IsVisible = false;
@@ -143,6 +190,12 @@ namespace EventManager.ViewModels
             if(activeEvent == null)
             {
                 await ToastHelper.ShowToast("Set Event First!", ToastDuration.Short);
+                return;
+            }
+
+            if(!IsVisible)
+            {
+                await ToastHelper.ShowToast("Scan Data First!", ToastDuration.Short);
                 return;
             }
 
