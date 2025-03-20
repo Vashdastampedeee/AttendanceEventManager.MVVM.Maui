@@ -356,17 +356,6 @@ namespace EventManager.Services
             string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE Status = 'SUCCESS' AND EventName = (SELECT EventName FROM event WHERE isSelected = 1) AND BusinessUnit = ?";
             return await databaseConnection.ExecuteScalarAsync<int>(query, businessUnit);
         }
-        public async Task<int> GetScannedEmployeeCountForActiveEventAsync()
-        {
-            string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE EventName = (SELECT EventName FROM event WHERE isSelected = 1)";
-            return await databaseConnection.ExecuteScalarAsync<int>(query);
-        }
-        public async Task<int> GetScannedEmployeeCountByBUAsync(string businessUnit)
-        {
-            string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE EventName = (SELECT EventName FROM event WHERE isSelected = 1) AND BusinessUnit = ?";
-            return await databaseConnection.ExecuteScalarAsync<int>(query, businessUnit);
-        }
-
         public async Task<List<EmployeeAttendanceStatus>> GetTotalScannedDataPaginated(int lastLoadedIndex, int pageSize)
         {
             string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END LIMIT ? OFFSET ?";
