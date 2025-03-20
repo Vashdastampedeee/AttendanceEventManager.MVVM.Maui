@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Mopups.Interfaces;
 using Mopups.Services;
 using EventManager.ViewModels.Modals;
+using Syncfusion.Maui.Core.Hosting;
 
 namespace EventManager;
 
@@ -22,6 +23,7 @@ public static class MauiProgram
 			.UseMauiApp<App>()
             .UseMauiCommunityToolkit()
             .ConfigureMopups()
+			.ConfigureSyncfusionCore()
             .ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
