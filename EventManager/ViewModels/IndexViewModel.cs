@@ -50,7 +50,7 @@ namespace EventManager.ViewModels
             Name = "Name:";
             BusinessUnit = "Business Unit:";
             BarcodeNumber = string.Empty;
-            Color = Colors.Black;
+            Color = Color.FromArgb("#009AFE");
         }
         public async Task SetFocusEntry()
         {
@@ -94,7 +94,7 @@ namespace EventManager.ViewModels
                             IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
                             Name = $"Name {scannedEmployee.Name}";
                             BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
-                            Color = Colors.Red;
+                            Color = Color.FromArgb("#D50000");
                         }
                         else
                         {
@@ -103,7 +103,7 @@ namespace EventManager.ViewModels
                             IdPhoto = ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130);
                             Name = $"Name {scannedEmployee.Name}";
                             BusinessUnit = $"Business Unit: {scannedEmployee.BusinessUnit}";
-                            Color = Colors.Green;
+                            Color = Color.FromArgb("#00C853");
                             logsViewModel.isLogsLoaded = false;
                             dashboardViewModel.isAllDashboardDataLoaded = false;
                             await databaseService.InsertAttendanceLog(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, "SUCCESS", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
@@ -120,7 +120,7 @@ namespace EventManager.ViewModels
                             IdPhoto = "invalid.png";
                             Name = "Name: Not Found";
                             BusinessUnit = "Business Unit: Not Found";
-                            Color = Colors.Red;
+                            Color = Color.FromArgb("#D50000");
                         }
                         else
                         {
@@ -129,7 +129,7 @@ namespace EventManager.ViewModels
                             IdPhoto = "invalid.png";
                             Name = "Name: Not Found";
                             BusinessUnit = "Business Unit: Not Found";
-                            Color = Colors.Red;
+                            Color = Color.FromArgb("#D50000");
                             logsViewModel.isLogsLoaded = false;
                             dashboardViewModel.isAllDashboardDataLoaded = false;
                             await databaseService.InsertAttendanceLog(barcodeIdNumber, "", "", "NOT FOUND", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
