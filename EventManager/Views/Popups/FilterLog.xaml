@@ -3,47 +3,132 @@
     x:Class="EventManager.Views.Popups.FilterLog"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converter="clr-namespace:EventManager.Converters"
     xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+    xmlns:sfcontrols="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels.Popups"
     Title="FilterLog"
     x:DataType="viewmodel:FilterLogViewModel"
     CloseWhenBackgroundIsClicked="True">
     <Border
-        BackgroundColor="LightGray"
-        HeightRequest="470"
+        BackgroundColor="{DynamicResource BgColorWhite}"
+        HeightRequest="455"
         StrokeShape="RoundRectangle 20"
         WidthRequest="250">
         <VerticalStackLayout Padding="20" Spacing="10">
             <Label
                 Padding="5"
+                FontAttributes="Bold"
                 FontFamily="Roboto"
-                FontSize="Medium"
+                FontSize="Large"
                 HorizontalOptions="Start"
                 Text="Filter Logs"
+                TextColor="{DynamicResource TxtColorBlack}"
                 VerticalOptions="Center" />
 
-            <Label Text="By Event Name" />
-            <Picker
-                Title="Filter Event Name"
+            <Label
+                FontFamily="Roboto"
+                FontSize="Small"
+                Text="By Event Name"
+                TextColor="{DynamicResource TxtColorBlack}" />
+            <sfcontrols:SfComboBox
+                BackgroundColor="{DynamicResource BgColorWhite}"
+                DropDownBackground="{DynamicResource BgColorWhite}"
+                DropDownItemFontFamily="Small"
+                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                FontFamily="Roboto"
+                FontSize="Small"
+                IsClearButtonVisible="False"
+                IsEditable="False"
                 ItemsSource="{Binding EventNames}"
-                SelectedItem="{Binding SelectedName, Mode=TwoWay}" />
-            <Label Text="By Event Category" />
-            <Picker
-                Title="Filter Event Category"
-                ItemsSource="{Binding EventCategories}"
-                SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
-            <Label Text="By Event Date" />
-            <Picker
-                Title="Filter Date"
-                ItemsSource="{Binding EventDates}"
-                SelectedItem="{Binding SelectedDate, Mode=TwoWay}" />
-            <Label Text="By Event Time" />
-            <Picker
-                Title="Filter Time"
-                ItemsSource="{Binding EventTimes}"
-                SelectedItem="{Binding SelectedTime, Mode=TwoWay}" />
+                MaxDropDownHeight="200"
+                Placeholder="Select Name"
+                PlaceholderColor="Black"
+                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedItem="{Binding SelectedName, Mode=TwoWay}"
+                TextColor="{DynamicResource TxtColorBlack}" />
 
-            <Button Command="{Binding ApplyLogFilterCommand}" Text="Apply" />
+
+            <Label
+                FontFamily="Roboto"
+                FontSize="Small"
+                Text="By Event Category"
+                TextColor="{DynamicResource TxtColorBlack}" />
+
+            <sfcontrols:SfComboBox
+                BackgroundColor="{DynamicResource BgColorWhite}"
+                DropDownBackground="{DynamicResource BgColorWhite}"
+                DropDownItemFontFamily="Small"
+                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                FontFamily="Roboto"
+                FontSize="Small"
+                IsClearButtonVisible="False"
+                IsEditable="False"
+                IsEnabled="{Binding IsCategoryEnabled}"
+                ItemsSource="{Binding EventCategories}"
+                MaxDropDownHeight="200"
+                Placeholder="Select Category"
+                PlaceholderColor="{Binding IsCategoryEnabled, Converter={StaticResource PlaceholderConverter}}"
+                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                TextColor="{DynamicResource TxtColorBlack}" />
+
+
+            <Label
+                FontFamily="Roboto"
+                FontSize="Small"
+                Text="By Event Date"
+                TextColor="{DynamicResource TxtColorBlack}" />
+
+            <sfcontrols:SfComboBox
+                BackgroundColor="{DynamicResource BgColorWhite}"
+                DropDownBackground="{DynamicResource BgColorWhite}"
+                DropDownItemFontFamily="Small"
+                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                FontFamily="Roboto"
+                FontSize="Small"
+                IsClearButtonVisible="False"
+                IsEditable="False"
+                IsEnabled="{Binding IsDateEnabled}"
+                ItemsSource="{Binding EventDates}"
+                MaxDropDownHeight="200"
+                Placeholder="Select Date"
+                PlaceholderColor="{Binding IsDateEnabled, Converter={StaticResource PlaceholderConverter}}"
+                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedItem="{Binding SelectedDate, Mode=TwoWay}"
+                TextColor="{DynamicResource TxtColorBlack}" />
+
+            <Label
+                FontFamily="Roboto"
+                FontSize="Small"
+                Text="By Event Time"
+                TextColor="{DynamicResource TxtColorBlack}" />
+
+            <sfcontrols:SfComboBox
+                BackgroundColor="{DynamicResource BgColorWhite}"
+                DropDownBackground="{DynamicResource BgColorWhite}"
+                DropDownItemFontFamily="Small"
+                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                FontFamily="Roboto"
+                FontSize="Small"
+                IsClearButtonVisible="False"
+                IsEditable="False"
+                IsEnabled="{Binding IsTimeEnabled}"
+                ItemsSource="{Binding EventTimes}"
+                MaxDropDownHeight="200"
+                Placeholder="Select Time"
+                PlaceholderColor="{Binding IsTimeEnabled, Converter={StaticResource PlaceholderConverter}}"
+                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
+                TextColor="{DynamicResource TxtColorBlack}" />
+
+
+
+            <Button
+                BackgroundColor="{DynamicResource PrimaryColor}"
+                Command="{Binding ApplyLogFilterCommand}"
+                Text="Apply"
+                TextColor="{StaticResource PrimaryColorText}" />
 
         </VerticalStackLayout>
     </Border>
