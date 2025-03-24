@@ -100,7 +100,7 @@ namespace EventManager.ViewModels.Popups
             }
             catch (Exception ex)
             {
-
+                await ToastHelper.ShowToast($"Upload failed! {ex.Message}", ToastDuration.Short);
             }
         }
 
