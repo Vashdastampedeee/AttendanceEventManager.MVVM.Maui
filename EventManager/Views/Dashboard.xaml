@@ -7,8 +7,8 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
     x:Name="ThisPage"
-    Title="Dashboard"
-    x:DataType="viewmodel:DashboardViewModel">
+    x:DataType="viewmodel:DashboardViewModel"
+    BackgroundColor="{DynamicResource BgColorLightGray}">
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
             BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
@@ -18,10 +18,9 @@
     <Grid>
         <ScrollView>
             <Grid
-                Padding="5"
+                Padding="10"
                 ColumnSpacing="5"
-                IsVisible="{Binding IsVisible}"
-                RowSpacing="10">
+                RowSpacing="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*" />
                     <ColumnDefinition Width="0.5*" />
@@ -32,24 +31,25 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Label
+                <!--<Label
                     Grid.Row="0"
                     Grid.ColumnSpan="2"
-                    Padding="5"
+                    Padding="0,10,0,0"
                     FontAttributes="Bold"
                     FontFamily="Roboto"
                     FontSize="Medium"
-                    Text="{Binding SelectedBusinessUnit, StringFormat='Business Unit: {0}'}" />
+                    Text="{Binding SelectedBusinessUnit, StringFormat='Business Unit: {0}'}"
+                    TextColor="{DynamicResource PrimaryTextColor}" />-->
 
                 <Border
-                    Grid.Row="1"
+                    Grid.Row="0"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    Stroke="{StaticResource TransparentColor}"
+                    StrokeShape="RoundRectangle 5"
                     StrokeThickness="2">
                     <HorizontalStackLayout
                         Padding="20"
@@ -61,76 +61,119 @@
                             WidthRequest="30" />
 
                         <Label
+                            FontAttributes="Bold"
                             FontFamily="Roboto"
                             FontSize="Medium"
                             Text="{Binding TotalEmployees, StringFormat='Employees: {0}'}"
+                            TextColor="{DynamicResource TxtColorBlack}"
                             VerticalTextAlignment="Center" />
                     </HorizontalStackLayout>
 
                 </Border>
 
                 <Border
-                    Grid.Row="2"
+                    Grid.Row="1"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Padding="0,0,20,0"
-                    IsVisible="{Binding IsVisible}"
-                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    Stroke="{StaticResource TransparentColor}"
+                    StrokeShape="RoundRectangle 5"
                     StrokeThickness="2">
 
                     <chart:SfCartesianChart HeightRequest="400" IsTransposed="True">
 
                         <chart:SfCartesianChart.Title>
                             <Label
-                                Margin="10,0,0,0"
+                                Margin="10,5,0,0"
+                                FontAttributes="Bold"
                                 FontFamily="Roboto"
                                 FontSize="Medium"
                                 HorizontalTextAlignment="Start"
-                                Text="Business Units Attendance Data" />
+                                Text="Attendance Data"
+                                TextColor="{DynamicResource TxtColorBlack}" />
                         </chart:SfCartesianChart.Title>
 
                         <chart:SfCartesianChart.Legend>
-                            <chart:ChartLegend Placement="Top" />
+                            <chart:ChartLegend Placement="Top">
+                                <chart:ChartLegend.LabelStyle>
+                                    <chart:ChartLegendLabelStyle
+                                        FontFamily="Roboto"
+                                        FontSize="13"
+                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                </chart:ChartLegend.LabelStyle>
+                            </chart:ChartLegend>
                         </chart:SfCartesianChart.Legend>
 
                         <chart:SfCartesianChart.XAxes>
                             <chart:CategoryAxis>
                                 <chart:CategoryAxis.Title>
-                                    <chart:ChartAxisTitle Text="Business Units" />
+                                    <chart:ChartAxisTitle
+                                        FontFamily="Roboto"
+                                        FontSize="Small"
+                                        Text="{Binding CartesianCategory}"
+                                        TextColor="{DynamicResource TxtColorBlack}" />
                                 </chart:CategoryAxis.Title>
+                                <chart:CategoryAxis.LabelStyle>
+                                    <chart:ChartAxisLabelStyle
+                                        FontFamily="Roboto"
+                                        FontSize="Micro"
+                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                </chart:CategoryAxis.LabelStyle>
                             </chart:CategoryAxis>
                         </chart:SfCartesianChart.XAxes>
 
                         <chart:SfCartesianChart.YAxes>
                             <chart:NumericalAxis>
                                 <chart:NumericalAxis.Title>
-                                    <chart:ChartAxisTitle Text="Number of Attendees" />
+                                    <chart:ChartAxisTitle
+                                        FontFamily="Roboto"
+                                        FontSize="Small"
+                                        Text="{Binding CartesianNumerical}"
+                                        TextColor="{DynamicResource TxtColorBlack}" />
                                 </chart:NumericalAxis.Title>
+                                <chart:NumericalAxis.LabelStyle>
+                                    <chart:ChartAxisLabelStyle
+                                        FontFamily="Roboto"
+                                        FontSize="Micro"
+                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                </chart:NumericalAxis.LabelStyle>
                             </chart:NumericalAxis>
                         </chart:SfCartesianChart.YAxes>
 
                         <chart:SfCartesianChart.Series>
                             <chart:ColumnSeries
                                 ItemsSource="{Binding AttendanceByBusinessUnit}"
-                                Label="Business Units"
-                                LabelContext="Percentage"
-                                ShowDataLabels="True"
+                                Label="{Binding CartesianLegend}"
+                                LabelContext="YValue"
+                                PaletteBrushes="{Binding AttendanceByBusinessUnitPalleteBrushes}"
+                                ShowDataLabels="{Binding IsShowDataLabel}"
                                 XBindingPath="BusinessUnit"
                                 YBindingPath="Count">
 
                                 <chart:ColumnSeries.DataLabelSettings>
-                                    <chart:CartesianDataLabelSettings LabelPlacement="Inner" />
+                                    <chart:CartesianDataLabelSettings LabelPlacement="Auto">
+                                        <chart:CartesianDataLabelSettings.LabelStyle>
+                                            <chart:ChartDataLabelStyle
+                                                FontAttributes="Bold"
+                                                FontFamily="Roboto"
+                                                FontSize="Micro"
+                                                LabelFormat="0 Employee"
+                                                TextColor="{StaticResource PrimaryColorText}" />
+                                        </chart:CartesianDataLabelSettings.LabelStyle>
+                                    </chart:CartesianDataLabelSettings>
                                 </chart:ColumnSeries.DataLabelSettings>
-
                             </chart:ColumnSeries>
                         </chart:SfCartesianChart.Series>
                     </chart:SfCartesianChart>
                 </Border>
 
                 <Border
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Grid.Column="0"
-                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    Stroke="{StaticResource TransparentColor}"
+                    StrokeShape="RoundRectangle 5"
                     StrokeThickness="2">
                     <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
                         <Image
@@ -138,17 +181,21 @@
                             Source="Present1.png"
                             WidthRequest="25" />
                         <Label
+                            FontAttributes="Bold"
                             FontFamily="Roboto"
                             FontSize="Medium"
                             Text="{Binding PresentEmployees, StringFormat='Present: {0}'}"
+                            TextColor="{DynamicResource TxtColorBlack}"
                             VerticalTextAlignment="Center" />
                     </HorizontalStackLayout>
 
                 </Border>
                 <Border
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Grid.Column="1"
-                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    Stroke="{StaticResource TransparentColor}"
+                    StrokeShape="RoundRectangle 5"
                     StrokeThickness="2">
                     <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
                         <Image
@@ -156,50 +203,69 @@
                             Source="Absent1.png"
                             WidthRequest="25" />
                         <Label
+                            FontAttributes="Bold"
                             FontFamily="Roboto"
                             FontSize="Medium"
                             Text="{Binding AbsentEmployees, StringFormat='Absent: {0}'}"
+                            TextColor="{DynamicResource TxtColorBlack}"
                             VerticalTextAlignment="Center" />
                     </HorizontalStackLayout>
 
                 </Border>
 
-
-
                 <Border
-                    Grid.Row="4"
+                    Grid.Row="3"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    HeightRequest="200"
-                    IsVisible="{Binding IsVisible}"
-                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    Stroke="{StaticResource TransparentColor}"
+                    StrokeShape="RoundRectangle 5"
                     StrokeThickness="2">
 
-                    <chart:SfCircularChart>
+                    <chart:SfCircularChart HeightRequest="200">
 
                         <chart:SfCircularChart.Title>
                             <Label
-                                Margin="10,0,0,0"
+                                Margin="10,5,0,0"
+                                FontAttributes="Bold"
                                 FontFamily="Roboto"
                                 FontSize="Medium"
                                 HorizontalTextAlignment="Start"
-                                Text="{Binding SelectedBusinessUnit, StringFormat='Attendance Status: {0}'}" />
+                                Text="Attendance Status"
+                                TextColor="{DynamicResource TxtColorBlack}" />
                         </chart:SfCircularChart.Title>
 
                         <chart:SfCircularChart.Legend>
-                            <chart:ChartLegend Placement="Bottom" />
+                            <chart:ChartLegend Placement="Bottom">
+                                <chart:ChartLegend.LabelStyle>
+                                    <chart:ChartLegendLabelStyle
+                                        FontFamily="Roboto"
+                                        FontSize="13"
+                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                </chart:ChartLegend.LabelStyle>
+                            </chart:ChartLegend>
                         </chart:SfCircularChart.Legend>
 
                         <chart:SfCircularChart.Series>
                             <chart:PieSeries
                                 ItemsSource="{Binding AttendanceSummary}"
                                 LabelContext="Percentage"
-                                ShowDataLabels="True"
+                                PaletteBrushes="{Binding AttendanceSummaryPalleteBrushes}"
+                                ShowDataLabels="{Binding IsShowDataLabel}"
                                 XBindingPath="Category"
                                 YBindingPath="Count">
 
                                 <chart:PieSeries.DataLabelSettings>
-                                    <chart:CircularDataLabelSettings LabelPosition="Outside" />
+                                    <chart:CircularDataLabelSettings LabelPlacement="Inner">
+                                        <chart:CircularDataLabelSettings.LabelStyle>
+                                            <chart:ChartDataLabelStyle
+                                                FontAttributes="Bold"
+                                                FontFamily="Roboto"
+                                                FontSize="Micro"
+                                                TextColor="{DynamicResource PrimaryColorText}" />
+                                        </chart:CircularDataLabelSettings.LabelStyle>
+                                    </chart:CircularDataLabelSettings>
+
                                 </chart:PieSeries.DataLabelSettings>
 
                             </chart:PieSeries>
@@ -208,9 +274,11 @@
                 </Border>
 
                 <Border
-                    Grid.Row="5"
+                    Grid.Row="4"
                     Grid.ColumnSpan="2"
-                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    Stroke="{StaticResource TransparentColor}"
+                    StrokeShape="RoundRectangle 5"
                     StrokeThickness="2">
 
                     <Grid
@@ -234,10 +302,13 @@
 
                         <Label
                             Grid.Column="1"
+                            FontAttributes="Bold"
                             FontFamily="Roboto"
                             FontSize="Medium"
                             Text="{Binding TotalScannedEmployee, StringFormat='Total Scanned: {0}'}"
+                            TextColor="{DynamicResource TxtColorBlack}"
                             VerticalTextAlignment="Center" />
+
                         <Grid
                             Grid.Row="1"
                             Grid.ColumnSpan="2"
@@ -247,49 +318,58 @@
                                 <ColumnDefinition Width="0.5*" />
                                 <ColumnDefinition Width="0.5*" />
                             </Grid.ColumnDefinitions>
+
                             <Border
                                 Grid.Column="0"
-                                BackgroundColor="#512BD4"
+                                BackgroundColor="{DynamicResource PrimaryColor}"
                                 HeightRequest="50"
-                                Stroke="Transparent"
+                                Stroke="{StaticResource TransparentColor}"
                                 StrokeShape="RoundRectangle 10">
                                 <Grid>
                                     <Button
-                                        BackgroundColor="Transparent"
+                                        BackgroundColor="{DynamicResource PrimaryColor}"
                                         Command="{Binding ViewDataCommand}"
+                                        FontAttributes="Bold"
+                                        FontFamily="Roboto"
+                                        FontSize="Small"
                                         IsEnabled="{Binding IsViewDataNotBusy}"
                                         IsVisible="{Binding IsViewDataBusy, Converter={StaticResource InverseBoolConverter}}"
-                                        Text="View Data" />
+                                        Text="View Data"
+                                        TextColor="{StaticResource PrimaryColorText}" />
 
                                     <ActivityIndicator
                                         HeightRequest="25"
                                         IsRunning="{Binding IsViewDataBusy}"
                                         IsVisible="{Binding IsViewDataBusy}"
                                         WidthRequest="25"
-                                        Color="White" />
+                                        Color="{StaticResource PrimaryColorText}" />
                                 </Grid>
                             </Border>
 
                             <Border
                                 Grid.Column="1"
-                                BackgroundColor="#512BD4"
+                                BackgroundColor="{DynamicResource PrimaryColor}"
                                 HeightRequest="50"
-                                Stroke="Transparent"
+                                Stroke="{DynamicResource TransparentColor}"
                                 StrokeShape="RoundRectangle 10">
                                 <Grid Grid.Column="1">
                                     <Button
-                                        BackgroundColor="Transparent"
+                                        BackgroundColor="{DynamicResource PrimaryColor}"
                                         Command="{Binding ExportDataCommand}"
+                                        FontAttributes="Bold"
+                                        FontFamily="Roboto"
+                                        FontSize="Small"
                                         IsEnabled="{Binding IsExportDataNotBusy}"
                                         IsVisible="{Binding IsExportDataBusy, Converter={StaticResource InverseBoolConverter}}"
-                                        Text="Export Data" />
+                                        Text="Export Data"
+                                        TextColor="{StaticResource PrimaryColorText}" />
 
                                     <ActivityIndicator
                                         HeightRequest="25"
                                         IsRunning="{Binding IsExportDataBusy}"
                                         IsVisible="{Binding IsExportDataBusy}"
                                         WidthRequest="25"
-                                        Color="White" />
+                                        Color="{StaticResource PrimaryColorText}" />
                                 </Grid>
                             </Border>
 
@@ -300,45 +380,42 @@
 
             </Grid>
         </ScrollView>
-        <Label
-            FontAttributes="Italic"
-            FontSize="Small"
-            HorizontalTextAlignment="Center"
-            IsVisible="{Binding IsNoDataScanned}"
-            Text="{Binding IsNoDataScannedText}"
-            VerticalTextAlignment="Center" />
 
         <ActivityIndicator
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusyPageIndicator}"
             IsVisible="{Binding IsBusyPageIndicator}"
-            VerticalOptions="Center" />
+            VerticalOptions="Center"
+            Color="{DynamicResource PrimaryColor}" />
 
         <AbsoluteLayout>
 
             <Border
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="#512BD4"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 HeightRequest="55"
-                Stroke="Transparent"
+                Stroke="{DynamicResource TransparentColor}"
                 StrokeShape="RoundRectangle 10"
                 WidthRequest="55">
                 <Grid>
                     <Button
-                        BorderColor="Transparent"
+                        BackgroundColor="{DynamicResource PrimaryColor}"
+                        BorderColor="{DynamicResource TransparentColor}"
                         Command="{Binding FilterDashboardCommand}"
+                        FontAttributes="Bold"
                         FontFamily="IconButtons"
                         FontSize="Large"
                         IsEnabled="{Binding IsNotBusy}"
                         IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
-                        Text="&#xF0B0;" />
+                        Text="&#xF0B0;"
+                        TextColor="{StaticResource PrimaryColorText}" />
                     <ActivityIndicator
                         HeightRequest="25"
                         IsRunning="{Binding IsBusy}"
                         IsVisible="{Binding IsBusy}"
                         WidthRequest="25"
-                        Color="White" />
+                        Color="{StaticResource PrimaryColorText}" />
                 </Grid>
             </Border>
 
