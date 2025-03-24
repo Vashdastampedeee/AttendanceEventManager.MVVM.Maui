@@ -10,6 +10,7 @@
         <ResourceDictionary>
             <toolkit:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
             <converters:InverseBooleanConverters x:Key="InverseBoolConverter" />
+            <converters:PlaceHolderConverter x:Key="PlaceholderConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
