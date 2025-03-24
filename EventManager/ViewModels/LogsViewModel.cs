@@ -23,7 +23,6 @@ namespace EventManager.ViewModels
     {
         private readonly DatabaseService databaseService;
         private readonly IFileSaver fileSaverService;
-        private FilterLogViewModel filterLogViewModel;
         private const int pageSize = 10;
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreLogs;
