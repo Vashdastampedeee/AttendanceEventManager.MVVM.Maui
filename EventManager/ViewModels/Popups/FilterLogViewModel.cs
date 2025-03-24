@@ -45,6 +45,18 @@ namespace EventManager.ViewModels.Popups
         [ObservableProperty] 
         private ObservableCollection<string> eventTimes = new();
 
+        [ObservableProperty]
+        private bool isCategoryEnabled;
+
+        [ObservableProperty]
+        private bool isDateEnabled;
+
+        [ObservableProperty]
+        private bool isTimeEnabled;
+
+        [ObservableProperty]
+        private string placeholderColor;
+
         public FilterLogViewModel(DatabaseService databaseService, LogsViewModel logsViewModel, LogFilter logFilter) 
         {
             this.logsViewModel = logsViewModel;
@@ -82,10 +94,23 @@ namespace EventManager.ViewModels.Popups
         {
             if (!string.IsNullOrEmpty(value))
             {
-                LoadCategories(value);
-                SelectedCategory = null;
-                SelectedDate = null;
-                SelectedTime = null;
+    
+            IsCategoryEnabled = true;
+            IsDateEnabled = false;
+            IsTimeEnabled = false;
+
+            SelectedCategory = null;
+            SelectedDate = null;
+            SelectedTime = null;
+
+            LoadCategories(value);
+            }
+            else
+            {
+  
+            IsCategoryEnabled = false;
+            IsDateEnabled = false;
+            IsTimeEnabled = false;
             }
         }
 
@@ -93,9 +118,20 @@ namespace EventManager.ViewModels.Popups
         {
             if (!string.IsNullOrEmpty(value))
             {
-                LoadDates(SelectedName, value);
-                SelectedDate = null;
-                SelectedTime = null;
+          
+            IsDateEnabled = true;
+            IsTimeEnabled = false;
+
+            SelectedDate = null;
+            SelectedTime = null;
+
+            LoadDates(SelectedName, value);
+            }
+            else
+            {
+           
+            IsDateEnabled = false;
+            IsTimeEnabled = false;
             }
         }
 
@@ -103,8 +139,13 @@ namespace EventManager.ViewModels.Popups
         {
             if (!string.IsNullOrEmpty(value))
             {
-                LoadTimes(SelectedName, SelectedCategory, value);
-                SelectedTime = null;
+            IsTimeEnabled = true;
+            SelectedTime = null;
+            LoadTimes(SelectedName, SelectedCategory, value);
+            }
+            else
+            {
+            IsTimeEnabled = false;
             }
         }
 
