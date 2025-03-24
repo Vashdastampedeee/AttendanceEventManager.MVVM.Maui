@@ -9,7 +9,9 @@
     xmlns:viewmodels="clr-namespace:EventManager.ViewModels"
     x:Name="ThisPage"
     Title="Logs History"
-    x:DataType="viewmodels:LogsViewModel">
+    x:DataType="viewmodels:LogsViewModel"
+    BackgroundColor="{DynamicResource BgColorLightGray}">
+
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
             BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
@@ -35,17 +37,20 @@
             </Grid.ColumnDefinitions>
             <Border
                 Grid.Column="0"
+                BackgroundColor="{DynamicResource BgColorWhite}"
                 HeightRequest="55"
                 StrokeShape="RoundRectangle 5">
                 <SearchBar
+                    BackgroundColor="{DynamicResource BgColorWhite}"
                     FontFamily="Roboto"
                     FontSize="Small"
                     HeightRequest="30"
                     IsEnabled="{Binding IsEnabled}"
                     Placeholder="Search"
-                    PlaceholderColor="Black"
+                    PlaceholderColor="{DynamicResource TxtColorBlack}"
                     SearchCommand="{Binding SearchLogsCommand}"
-                    Text="{Binding SearchText, Mode=TwoWay}">
+                    Text="{Binding SearchText, Mode=TwoWay}"
+                    TextColor="{DynamicResource TxtColorBlack}">
                     <SearchBar.Behaviors>
                         <controls:HideSearchBarKeyboard />
                     </SearchBar.Behaviors>
@@ -54,18 +59,24 @@
             </Border>
             <Button
                 Grid.Column="1"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 Command="{Binding FilterLogsCommand}"
+                FontAttributes="Bold"
                 FontFamily="IconButtons"
                 FontSize="Medium"
                 IsEnabled="{Binding IsEnabled}"
-                Text="&#xF0B0;" />
+                Text="&#xF0B0;"
+                TextColor="{StaticResource PrimaryColorText}" />
             <Button
                 Grid.Column="2"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 Command="{Binding RefreshLogsCommand}"
+                FontAttributes="Bold"
                 FontFamily="IconButtons"
                 FontSize="Medium"
                 IsEnabled="{Binding IsEnabled}"
-                Text="&#xE800;" />
+                Text="&#xE800;"
+                TextColor="{StaticResource PrimaryColorText}" />
 
         </Grid>
 
@@ -79,10 +90,12 @@
             <CollectionView.EmptyView>
                 <Label
                     FontAttributes="Italic"
+                    FontFamily="Roboto"
                     FontSize="Small"
                     HorizontalTextAlignment="Center"
                     IsVisible="{Binding IsNoDataVisible}"
                     Text="{Binding IsNoDataLabel}"
+                    TextColor="{DynamicResource TxtColorBlack}"
                     VerticalTextAlignment="Center" />
             </CollectionView.EmptyView>
 
@@ -93,26 +106,91 @@
                     <Border
                         Margin="5"
                         Padding="10"
-                        StrokeShape="RectangleRound 20">
+                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        StrokeShape="RoundRectangle 5">
                         <ScrollView Orientation="Horizontal">
                             <HorizontalStackLayout Spacing="35">
                                 <VerticalStackLayout>
 
                                     <HorizontalStackLayout Spacing="5">
-                                        <Label FontSize="Subtitle" Text="{Binding EventName, StringFormat='Event: {0}'}" />
-                                        <Label FontSize="Small" Text="-" />
-                                        <Label FontSize="Subtitle" Text="{Binding EventCategory, StringFormat='Category: {0}'}" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontFamily="Roboto"
+                                            FontSize="Medium"
+                                            Text="{Binding EventName, StringFormat='Event: {0}'}" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontFamily="Roboto"
+                                            FontSize="Medium"
+                                            Text="-" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontFamily="Roboto"
+                                            FontSize="Medium"
+                                            Text="{Binding EventCategory, StringFormat='Category: {0}'}" />
                                     </HorizontalStackLayout>
                                     <HorizontalStackLayout Margin="0,0,0,10" Spacing="5">
-                                        <Label FontSize="Header" Text="{Binding EventDate}" />
-                                        <Label FontSize="Header" Text="{Binding EventTime}" />
+                                        <Label
+                                            FontFamily="Roboto"
+                                            FontSize="Header"
+                                            Text="{Binding EventDate}" />
+                                        <Label
+                                            FontFamily="Roboto"
+                                            FontSize="Header"
+                                            Text="{Binding EventTime}" />
                                     </HorizontalStackLayout>
 
-                                    <Label FontSize="Medium" Text="{Binding IdNumber}" />
-                                    <Label FontSize="Small" Text="{Binding Name}" />
-                                    <Label FontSize="Small" Text="{Binding BusinessUnit}" />
-                                    <Label FontSize="Small" Text="{Binding Status}" />
-                                    <Label FontSize="Caption" Text="{Binding Timestamp}" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontFamily="Roboto"
+                                        FontSize="Medium"
+                                        Text="{Binding IdNumber}" />
+                                    <Label
+                                        FontFamily="Roboto"
+                                        FontSize="Medium"
+                                        Text="{Binding BusinessUnit}" />
+                                    <Label
+                                        FontFamily="Roboto"
+                                        FontSize="Small"
+                                        Text="{Binding Name}" />
+
+                                    <Label
+                                        FontFamily="Roboto"
+                                        FontSize="Caption"
+                                        Text="{Binding Timestamp}" />
+                                    <Border
+                                        Margin="0,10,0,0"
+                                        HorizontalOptions="Start"
+                                        Stroke="{StaticResource TransparentColor}"
+                                        StrokeShape="RoundRectangle 10"
+                                        WidthRequest="80">
+
+                                        <Border.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding Status}"
+                                                TargetType="Border"
+                                                Value="SUCCESS">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource BgColorGreen}" />
+                                            </DataTrigger>
+
+                                            <DataTrigger
+                                                Binding="{Binding Status}"
+                                                TargetType="Border"
+                                                Value="NOT FOUND">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource BgColorRed}" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+
+                                        <Label
+                                            Padding="2.5"
+                                            FontAttributes="Bold"
+                                            FontFamily="Roboto"
+                                            FontSize="Caption"
+                                            HorizontalOptions="Center"
+                                            Text="{Binding Status}"
+                                            TextColor="{DynamicResource PrimaryColorText}" />
+                                    </Border>
+
 
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
@@ -128,10 +206,10 @@
             <Border
                 AbsoluteLayout.LayoutBounds="0.5, 0.95, AutoSize, AutoSize"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="#512BD4"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 HeightRequest="50"
                 IsVisible="{Binding IsLoadingDataIndicator}"
-                Stroke="Transparent"
+                Stroke="{DynamicResource TransparentColor}"
                 StrokeShape="Ellipse"
                 WidthRequest="50">
 
@@ -140,7 +218,7 @@
                     IsRunning="{Binding IsLoadingDataIndicator}"
                     IsVisible="{Binding IsLoadingDataIndicator}"
                     WidthRequest="25"
-                    Color="White" />
+                    Color="{StaticResource PrimaryColorText}" />
 
             </Border>
         </AbsoluteLayout>
@@ -150,20 +228,22 @@
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusyPageIndicator}"
             IsVisible="{Binding IsBusyPageIndicator}"
-            VerticalOptions="Center" />
+            VerticalOptions="Center"
+            Color="{DynamicResource PrimaryColor}" />
 
         <AbsoluteLayout Grid.RowSpan="2">
             <Border
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="#512BD4"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 HeightRequest="55"
-                Stroke="Transparent"
+                Stroke="{StaticResource TransparentColor}"
                 StrokeShape="RoundRectangle 10"
                 WidthRequest="55">
 
                 <Grid>
                     <Button
+                        BackgroundColor="{DynamicResource PrimaryColor}"
                         Command="{Binding ExportFilteredLogsCommand}"
                         FontFamily="IconButtons"
                         FontSize="Large"
@@ -175,7 +255,7 @@
                         IsRunning="{Binding IsBusy}"
                         IsVisible="{Binding IsBusy}"
                         WidthRequest="25"
-                        Color="White" />
+                        Color="{StaticResource PrimaryColorText}" />
                 </Grid>
 
             </Border>
