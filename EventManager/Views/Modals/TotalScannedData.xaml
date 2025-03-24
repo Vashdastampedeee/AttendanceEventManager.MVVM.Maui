@@ -7,7 +7,6 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels.Modals"
     x:Name="ThisPage"
-    Title="{Binding SelectedBusinessUnit, StringFormat='Scanned Data ({0})'}"
     x:DataType="viewmodel:TotalScannedDataViewModel">
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
@@ -16,7 +15,17 @@
             EventName="NavigatedTo" />
     </ContentPage.Behaviors>
 
-    <Grid>
+    <Shell.TitleView>
+        <Label
+            FontAttributes="Bold"
+            FontFamily="Roboto"
+            FontSize="Large"
+            Text="{Binding SelectedBusinessUnit, StringFormat='Scanned Data ({0})'}"
+            TextColor="{StaticResource TxtColorWhite}"
+            VerticalTextAlignment="Center" />
+    </Shell.TitleView>
+
+    <Grid BackgroundColor="{DynamicResource BgColorLightGray}">
         <CollectionView
             ItemsSource="{Binding EmployeeAttendance}"
             RemainingItemsThreshold="1"
@@ -28,12 +37,59 @@
                     <Border
                         Margin="5"
                         Padding="10"
-                        StrokeShape="RectangleRound 20">
+                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        StrokeShape="RoundRectangle 5">
                         <VerticalStackLayout>
-                            <Label FontSize="Medium" Text="{Binding IdNumber}" />
-                            <Label FontSize="Small" Text="{Binding Name}" />
-                            <Label FontSize="Small" Text="{Binding BusinessUnit}" />
-                            <Label FontSize="Small" Text="{Binding Status}" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontFamily="Roboto"
+                                FontSize="Medium"
+                                Text="{Binding IdNumber}"
+                                TextColor="{DynamicResource TxtColorBlack}" />
+                            <Label
+                                FontFamily="Roboto"
+                                FontSize="Medium"
+                                Text="{Binding BusinessUnit}"
+                                TextColor="{DynamicResource TxtColorBlack}" />
+                            <Label
+                                FontFamily="Roboto"
+                                FontSize="Small"
+                                Text="{Binding Name}"
+                                TextColor="{DynamicResource TxtColorBlack}" />
+
+                            <Border
+                                Margin="0,10,0,0"
+                                HorizontalOptions="Start"
+                                Stroke="{StaticResource TransparentColor}"
+                                StrokeShape="RoundRectangle 10"
+                                WidthRequest="80">
+
+                                <Border.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding Status}"
+                                        TargetType="Border"
+                                        Value="Present">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource BgColorGreen}" />
+                                    </DataTrigger>
+
+                                    <DataTrigger
+                                        Binding="{Binding Status}"
+                                        TargetType="Border"
+                                        Value="Absent">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource BgColorRed}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+
+                                <Label
+                                    Padding="2.5"
+                                    FontAttributes="Bold"
+                                    FontFamily="Roboto"
+                                    FontSize="Caption"
+                                    HorizontalOptions="Center"
+                                    Text="{Binding Status}"
+                                    TextColor="{DynamicResource PrimaryColorText}" />
+                            </Border>
+
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
@@ -45,10 +101,10 @@
             <Border
                 AbsoluteLayout.LayoutBounds="0.5, 0.95, AutoSize, AutoSize"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="#512BD4"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 HeightRequest="50"
                 IsVisible="{Binding IsLoadingDataIndicator}"
-                Stroke="Transparent"
+                Stroke="{StaticResource TransparentColor}"
                 StrokeShape="Ellipse"
                 WidthRequest="50">
 
@@ -57,7 +113,7 @@
                     IsRunning="{Binding IsLoadingDataIndicator}"
                     IsVisible="{Binding IsLoadingDataIndicator}"
                     WidthRequest="25"
-                    Color="White" />
+                    Color="{DynamicResource PrimaryColorText}" />
 
             </Border>
         </AbsoluteLayout>
@@ -66,7 +122,8 @@
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusyPageIndicator}"
             IsVisible="{Binding IsBusyPageIndicator}"
-            VerticalOptions="Center" />
+            VerticalOptions="Center"
+            Color="{DynamicResource PrimaryColor}" />
 
     </Grid>
 
