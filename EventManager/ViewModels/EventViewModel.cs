@@ -178,15 +178,18 @@ namespace EventManager.ViewModels
         [RelayCommand]
         public async Task FilterEvents()
         {
-            if (Events.Count == 0)
+            var activeEvent = databaseService.GetSelectedEvent();
+            if(activeEvent == null)
             {
-                await ToastHelper.ShowToast("No data available for filter!", ToastDuration.Short);
+                await ToastHelper.ShowToast("Set Event First!", ToastDuration.Short);
                 return;
             }
-   
-            var filterEventViewModel = new FilterEventViewModel(databaseService, this, SelectedCategory, SelectedOrder);
-            var filterEvent = new FilterEvent(filterEventViewModel);
-            await MopupService.Instance.PushAsync(filterEvent);
+            else
+            {
+                var filterEventViewModel = new FilterEventViewModel(databaseService, this, SelectedCategory, SelectedOrder);
+                var filterEvent = new FilterEvent(filterEventViewModel);
+                await MopupService.Instance.PushAsync(filterEvent);
+            }
         }
         [RelayCommand]
         public async Task ApplyFilterEvents(EventFilter eventFilter)
