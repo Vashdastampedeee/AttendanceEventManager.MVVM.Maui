@@ -7,42 +7,56 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:EventManager.Views"
     Title="EventManager"
-    Shell.FlyoutBackdrop="Transparent"
+    Shell.BackgroundColor="{DynamicResource PrimaryColor}"
+    Shell.FlyoutBackdrop="{StaticResource TransparentColor}"
     Shell.FlyoutBehavior="Flyout"
+    Shell.ForegroundColor="{StaticResource PrimaryColorText}"
     Shell.NavBarHasShadow="True">
 
     <Shell.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource PrimaryColor}" StatusBarStyle="LightContent" />
     </Shell.Behaviors>
 
     <Shell.FlyoutHeader>
-        <FlexLayout
-            AlignItems="Center"
-            HeightRequest="130"
-            JustifyContent="Center">
-            <VerticalStackLayout>
-                <Image
-                    Aspect="AspectFill"
-                    HeightRequest="60"
-                    Source="dotnet_bot.png"
-                    WidthRequest="80" />
-                <Label
-                    FontAttributes="Bold"
-                    FontFamily="Roboto"
-                    FontSize="18"
-                    Text="Attendance Event Manager"
-                    TextTransform="Uppercase" />
-                <BoxView
-                    Margin="10"
-                    BackgroundColor="LightSlateGray"
-                    HeightRequest="1" />
-            </VerticalStackLayout>
-        </FlexLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Image
+                Grid.Row="0"
+                Margin="10"
+                Aspect="AspectFit"
+                HeightRequest="80"
+                Source="tp_home_icon1.png"
+                WidthRequest="80" />
+            <Label
+                Grid.Row="1"
+                FontAttributes="Bold"
+                FontFamily="Roboto"
+                FontSize="18"
+                HorizontalOptions="Center"
+                Text="Triphil Event Manager"
+                TextTransform="Uppercase" />
+            <BoxView
+                Grid.Row="2"
+                Margin="10,10,10,5"
+                BackgroundColor="LightSlateGray"
+                HeightRequest="1" />
+        </Grid>
+
     </Shell.FlyoutHeader>
 
     <Shell.ItemTemplate>
         <DataTemplate>
-            <Grid Padding="10" ColumnDefinitions="0.2*,0.8*">
+            <Grid Padding="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.8*" />
+                </Grid.ColumnDefinitions>
+
                 <Image
                     Grid.Column="0"
                     Margin="5"
@@ -53,11 +67,11 @@
 
                 <Label
                     Grid.Column="1"
-                    FontAttributes="Italic"
+                    FontAttributes="Bold,Italic"
                     FontFamily="Roboto"
-                    FontSize="13"
+                    FontSize="Small"
                     Text="{Binding Title}"
-                    TextDecorations="Underline"
+                    TextColor="{DynamicResource TxtColorBlack}"
                     VerticalTextAlignment="Center" />
 
                 <VisualStateManager.VisualStateGroups>
@@ -68,7 +82,7 @@
                             </VisualState>
                             <VisualState x:Name="Selected">
                                 <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="LightGray" />
+                                    <Setter Property="BackgroundColor" Value="{StaticResource SelectedPickerColor}" />
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Disabled">
@@ -84,31 +98,96 @@
 
     <ShellItem Title="Home" FlyoutIcon="barcode.png">
         <ShellSection>
-            <ShellContent ContentTemplate="{DataTemplate views:Index}" Route="IndexPage" />
+            <ShellContent
+                Title="Home"
+                ContentTemplate="{DataTemplate views:Index}"
+                Route="IndexPage">
+                <Shell.TitleView>
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Large"
+                        Text="Home"
+                        TextColor="{DynamicResource TxtColorWhite}"
+                        VerticalTextAlignment="Center" />
+                </Shell.TitleView>
+            </ShellContent>
         </ShellSection>
     </ShellItem>
 
     <ShellItem Title="Dashboard" FlyoutIcon="dashboard.png">
         <ShellSection>
-            <ShellContent ContentTemplate="{DataTemplate views:Dashboard}" Route="DashboardPage" />
+            <ShellContent
+                Title="Dashboard"
+                ContentTemplate="{DataTemplate views:Dashboard}"
+                Route="DashboardPage">
+                <Shell.TitleView>
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Large"
+                        Text="Dashboard"
+                        TextColor="{DynamicResource TxtColorWhite}"
+                        VerticalTextAlignment="Center" />
+                </Shell.TitleView>
+            </ShellContent>
         </ShellSection>
     </ShellItem>
 
     <ShellItem Title="Logs History" FlyoutIcon="logs.png">
         <ShellSection>
-            <ShellContent ContentTemplate="{DataTemplate views:Logs}" Route="LogsPage" />
+            <ShellContent
+                Title="Logs History"
+                ContentTemplate="{DataTemplate views:Logs}"
+                Route="LogsPage">
+                <Shell.TitleView>
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Large"
+                        Text="Logs History"
+                        TextColor="{DynamicResource TxtColorWhite}"
+                        VerticalTextAlignment="Center" />
+                </Shell.TitleView>
+            </ShellContent>
         </ShellSection>
     </ShellItem>
 
     <ShellItem Title="Event Setter" FlyoutIcon="event.png">
         <ShellSection>
-            <ShellContent ContentTemplate="{DataTemplate views:Event}" Route="EventPage" />
+            <ShellContent
+                Title="Event Setter"
+                ContentTemplate="{DataTemplate views:Event}"
+                Route="EventPage">
+                <Shell.TitleView>
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Large"
+                        Text="Event Setter"
+                        TextColor="{DynamicResource TxtColorWhite}"
+                        VerticalTextAlignment="Center" />
+                </Shell.TitleView>
+            </ShellContent>
         </ShellSection>
     </ShellItem>
 
     <ShellItem Title="Database Option" FlyoutIcon="database.png">
         <ShellSection>
-            <ShellContent ContentTemplate="{DataTemplate views:Database}" Route="DatabasePage" />
+            <ShellContent
+                Title="Database Option"
+                ContentTemplate="{DataTemplate views:Database}"
+                Route="DatabasePage">
+                <Shell.TitleView>
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Large"
+                        Text="Database Option"
+                        TextColor="{DynamicResource TxtColorWhite}"
+                        VerticalTextAlignment="Center" />
+                </Shell.TitleView>
+            </ShellContent>
         </ShellSection>
     </ShellItem>
 
