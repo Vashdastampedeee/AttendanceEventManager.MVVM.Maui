@@ -11,6 +11,20 @@
     <Color x:Key="SecondaryDarkText">#9880e5</Color>
     <Color x:Key="Tertiary">#2B0B98</Color>
 
+    <Color x:Key="PrimaryColor">#009AFE</Color>
+    <Color x:Key="PrimaryColorText">#FFFFFF</Color>
+
+    <Color x:Key="SelectedPickerColor">#ADD8E6</Color>
+    <Color x:Key="TransparentColor">#00FFFFFF</Color>
+
+    <Color x:Key="BgColorGreen">#00C853</Color>
+    <Color x:Key="BgColorRed">#D50000</Color>
+    <Color x:Key="BgColorLightGray">#F0F0F0</Color>
+    <Color x:Key="BgColorWhite">#FFFFFF</Color>
+
+    <Color x:Key="TxtColorBlack">#000000</Color>
+    <Color x:Key="TxtColorWhite">#FFFFFF</Color>
+
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>
