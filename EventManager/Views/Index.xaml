@@ -7,8 +7,8 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:EventManager.ViewModels"
     x:Name="ThisPage"
-    Title="Home"
-    x:DataType="viewmodels:IndexViewModel">
+    x:DataType="viewmodels:IndexViewModel"
+    BackgroundColor="{DynamicResource BgColorLightGray}">
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
             BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
@@ -28,24 +28,28 @@
             FontFamily="Roboto"
             FontSize="Title"
             HorizontalTextAlignment="Center"
-            Text="{Binding EventName}" />
+            Text="{Binding EventName}"
+            TextColor="{DynamicResource TxtColorBlack}" />
         <Label
             FontAttributes="Bold"
             FontFamily="Roboto"
             FontSize="Subtitle"
             HorizontalTextAlignment="Center"
-            Text="{Binding EventDate}" />
+            Text="{Binding EventDate}"
+            TextColor="{DynamicResource TxtColorBlack}" />
         <Label
             FontAttributes="Bold"
             FontFamily="Roboto"
             FontSize="Subtitle"
             HorizontalTextAlignment="Center"
-            Text="{Binding EventTime}" />
+            Text="{Binding EventTime}"
+            TextColor="{DynamicResource TxtColorBlack}" />
         <Label
             FontFamily="Roboto"
             FontSize="Medium"
             HorizontalTextAlignment="Center"
-            Text="{Binding IdNumber}" />
+            Text="{Binding IdNumber}"
+            TextColor="{DynamicResource TxtColorBlack}" />
         <Border
             BackgroundColor="{Binding Color}"
             HeightRequest="130"
@@ -59,28 +63,30 @@
             FontFamily="Roboto"
             FontSize="Small"
             HorizontalTextAlignment="Center"
-            Text="{Binding Name}" />
+            Text="{Binding Name}"
+            TextColor="{DynamicResource TxtColorBlack}" />
         <Label
             FontFamily="Roboto"
             FontSize="Small"
             HorizontalTextAlignment="Center"
-            Text="{Binding BusinessUnit}" />
+            Text="{Binding BusinessUnit}"
+            TextColor="{DynamicResource TxtColorBlack}" />
 
         <Border
+            BackgroundColor="{DynamicResource BgColorWhite}"
             HeightRequest="40"
             StrokeShape="RoundRectangle 5"
             WidthRequest="200">
-            <Border.Shadow>
-                <Shadow Opacity="0.8" Offset="1,1" />
-            </Border.Shadow>
+
             <controls:RemoveVisualEntry
                 ClearButtonVisibility="WhileEditing"
                 FontFamily="Roboto"
                 FontSize="Small"
                 HorizontalTextAlignment="Center"
                 Placeholder="Scan ID Number"
-                PlaceholderColor="Black"
-                Text="{Binding BarcodeNumber, Mode=TwoWay}">
+                PlaceholderColor="{DynamicResource TxtColorBlack}"
+                Text="{Binding BarcodeNumber, Mode=TwoWay}"
+                TextColor="{DynamicResource TxtColorBlack}">
                 <controls:RemoveVisualEntry.Behaviors>
                     <controls:FocusEntry BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}" IsFocused="{Binding IsEntryFocused, Mode=TwoWay}" />
                     <toolkit:EventToCommandBehavior
