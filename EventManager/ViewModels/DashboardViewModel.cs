@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,12 +45,6 @@ namespace EventManager.ViewModels
         private bool isVisible;
 
         [ObservableProperty]
-        private bool isNoDataScanned;
-
-        [ObservableProperty]
-        private string isNoDataScannedText;
-
-        [ObservableProperty]
         private string selectedBusinessUnit = "ALL";
 
         [ObservableProperty]
@@ -73,6 +68,21 @@ namespace EventManager.ViewModels
         [ObservableProperty]
         private ObservableCollection<AttendanceByBU> attendanceByBusinessUnit = new();
 
+        [ObservableProperty]
+        private ObservableCollection<Brush> attendanceSummaryPalleteBrushes = new();
+
+        [ObservableProperty]
+        private ObservableCollection<Brush> attendanceByBusinessUnitPalleteBrushes = new();
+
+        [ObservableProperty]
+        private string cartesianCategory;
+        [ObservableProperty]
+        private string cartesianNumerical;
+        [ObservableProperty]
+        private string cartesianLegend;
+        [ObservableProperty]
+        private bool isShowDataLabel;
+
         public DashboardViewModel(DatabaseService databaseService, IFileSaver fileSaverService) 
         {
             this.databaseService = databaseService;
@@ -90,13 +100,11 @@ namespace EventManager.ViewModels
             var activeEvent = await databaseService.GetSelectedEvent();
             if (activeEvent == null)
             {
-                IsNoDataScanned = true;
                 ResetDashboardData();
                 return;
             } 
             else if(lastActiveEventId != activeEvent.Id || !isAllDashboardDataLoaded)
             {
-                IsNoDataScannedText = string.Empty;
                 IsVisible = false;
                 IsBusyPageIndicator = true;
                 await Task.Delay(500);
@@ -121,6 +129,7 @@ namespace EventManager.ViewModels
                 TotalEmployees = await databaseService.GetTotalEmployeeCountByBUAsync(SelectedBusinessUnit);
                 PresentEmployees = await databaseService.GetPresentEmployeeCountByBUAsync(SelectedBusinessUnit);
             }
+
             if (TotalEmployees > 0)
             {
                 totalScannedEmployeePercentage = (PresentEmployees / TotalEmployees) * 100;
@@ -133,7 +142,6 @@ namespace EventManager.ViewModels
             presentEmployeeToString = PresentEmployees.ToString();
             totalEmployeeToString = TotalEmployees.ToString();
             totalScannedEmployeeToString = totalScannedEmployeePercentage.ToString("F2");
-
             TotalScannedEmployee = $"{presentEmployeeToString} / {totalEmployeeToString} - {totalScannedEmployeeToString}%";
           
             AbsentEmployees = TotalEmployees - PresentEmployees;
@@ -142,42 +150,66 @@ namespace EventManager.ViewModels
             AttendanceSummary.Add(new AttendanceCategory { Category = "Present", Count = PresentEmployees });
             AttendanceSummary.Add(new AttendanceCategory { Category = "Absent", Count = AbsentEmployees });
 
+            AttendanceSummaryPalleteBrushes.Clear();
+
+            foreach (var category in AttendanceSummary)
+            {
+                if (category.Category == "Present")
+                {
+                    AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("009AFE")));
+                }
+                else
+                {
+                    AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#F5090B")));
+                }
+            }
+
+            AttendanceByBusinessUnit.Clear();
+            AttendanceByBusinessUnitPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("009AFE")));
+
             var businessUnits = new List<string> { "BAG", "BBG WAREHOUSE", "HLB", "JLINE", "RAWLINGS", "SUPPORT GROUP", "TRI-VIET" };
             AttendanceByBusinessUnit.Clear();
 
             foreach (var bu in businessUnits)
             {
-                int buCount;
+                int buCount = 0;
+               
 
                 if (SelectedBusinessUnit == "ALL" || SelectedBusinessUnit == bu)
                 {
                     buCount = await databaseService.GetPresentEmployeeCountByBUAsync(bu);
                 }
-                else
-                {
-                    buCount = 0;
-                }
 
                 AttendanceByBusinessUnit.Add(new AttendanceByBU { BusinessUnit = bu, Count = buCount });
             }
-            IsNoDataScanned = PresentEmployees == 0;
-            if (IsNoDataScanned)
-            {
-                IsNoDataScannedText = "Dashboard Not Available Scanned Employee First";
-            }
+
+            CartesianCategory = "Comparison of Business Units";
+            CartesianNumerical = "Number of Attendees";
+            CartesianLegend = "Business Units";
+            IsShowDataLabel = true;
             IsVisible = PresentEmployees > 0;
         }
         private void ResetDashboardData()
         {
-            IsVisible = false;
+            IsShowDataLabel = false;
             TotalEmployees = 0;
             PresentEmployees = 0;
             AbsentEmployees = 0;
-  
+            CartesianCategory = "No Data";
+            CartesianLegend = "No Data";
+            CartesianNumerical = "No Data";  
             presentEmployeeToString = "0";
             totalEmployeeToString = "0";
             totalScannedEmployeeToString = "0";
-            TotalScannedEmployee = $"{presentEmployeeToString} / {totalEmployeeToString} - {totalScannedEmployeeToString}%";
+            TotalScannedEmployee = "No Data";
+
+            AttendanceSummary.Clear();
+            AttendanceByBusinessUnit.Clear();
+            AttendanceSummaryPalleteBrushes.Clear();
+
+            AttendanceSummary.Add(new AttendanceCategory { Category = "No Data", Count = 1 });
+            AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#505050")));
+            AttendanceByBusinessUnit.Add(new AttendanceByBU { BusinessUnit = "No Data", Count = 0 });
         }
 
         [RelayCommand]
@@ -189,13 +221,7 @@ namespace EventManager.ViewModels
 
             if(activeEvent == null)
             {
-                await ToastHelper.ShowToast("Set Event First!", ToastDuration.Short);
-                return;
-            }
-
-            if(!IsVisible)
-            {
-                await ToastHelper.ShowToast("Scan Data First!", ToastDuration.Short);
+                await ToastHelper.ShowToast("No Data Found!", ToastDuration.Short);
                 return;
             }
 
@@ -206,7 +232,7 @@ namespace EventManager.ViewModels
 
             IsBusy = true;
             OnPropertyChanged(nameof(IsNotBusy));
-            await Task.Delay(500);
+            await Task.Delay(300);
             await MopupService.Instance.PushAsync(filterDashboard);
             IsBusy = false;
             OnPropertyChanged(nameof(IsNotBusy));
