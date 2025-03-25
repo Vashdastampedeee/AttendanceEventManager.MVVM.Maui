@@ -167,6 +167,7 @@ namespace EventManager.ViewModels
             await databaseService.DeleteSelectedEvent(eventId);
             await Task.Delay(100);
             await RefreshEvents();
+            await ToastHelper.ShowToast("Delete Successful!", ToastDuration.Short);
         }
         [RelayCommand]
         private async Task UseSelectedEvent(int eventId)
