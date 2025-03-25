@@ -16,7 +16,7 @@ namespace EventManager.ViewModels.Popups
         [ObservableProperty]
         private string selectedBusinessUnit;
 
-        public List<string> BusinessUnitOption { get; } = new() { "ALL", "BAG", "BBG WAREHOUSE", "HLB", "JLINE", "RAWLINGS", "SUPPORT GROUP", "TRI-VIET" };
+        public List<string> BusinessUnitOption { get; } = new() { "ALL", "BAG", "HLB", "JLINE", "RAWLINGS", "SUPPORT GROUP" };
         public FilterDashboardViewModel(DashboardViewModel dashboardViewModel) 
         {
             this.dashboardViewModel = dashboardViewModel;
