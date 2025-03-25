@@ -43,7 +43,7 @@
             <BoxView
                 Grid.Row="2"
                 Margin="10,10,10,5"
-                BackgroundColor="LightSlateGray"
+                BackgroundColor="{DynamicResource BgColorLightGray}"
                 HeightRequest="1" />
         </Grid>
 
