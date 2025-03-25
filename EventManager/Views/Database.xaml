@@ -5,25 +5,27 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
     Title="Database Option"
-    x:DataType="viewmodel:DatabaseViewModel">
+    x:DataType="viewmodel:DatabaseViewModel"
+    BackgroundColor="{DynamicResource BgColorLightGray}">
     <VerticalStackLayout Spacing="10" VerticalOptions="Center">
         <Label
             FontAttributes="Bold"
             FontFamily="Roboto"
             FontSize="Small"
             HorizontalTextAlignment="Center"
-            Text="Sync Microsoft SQL Server Database" />
+            Text="Sync Microsoft SQL Server Database"
+            TextColor="{DynamicResource TxtColorBlack}" />
 
         <Border
-            BackgroundColor="#512BD4"
+            BackgroundColor="{DynamicResource PrimaryColor}"
             HeightRequest="50"
-            Stroke="Transparent"
+            Stroke="{StaticResource TransparentColor}"
             StrokeShape="RoundRectangle 10"
             WidthRequest="160">
 
             <Grid>
                 <Button
-                    BackgroundColor="Transparent"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
                     Command="{Binding SyncEmployeesCommand}"
                     FontAttributes="Bold"
                     FontFamily="IconButtons"
@@ -31,14 +33,15 @@
                     IsEnabled="{Binding IsSyncNotBusy}"
                     IsVisible="{Binding IsSyncBusy, Converter={StaticResource InverseBoolConverter}}"
                     MaximumWidthRequest="160"
-                    Text="&#xE800; Sync Database" />
+                    Text="&#xE800; Sync Database"
+                    TextColor="{StaticResource PrimaryColorText}" />
 
                 <ActivityIndicator
                     HeightRequest="25"
                     IsRunning="{Binding IsSyncBusy}"
                     IsVisible="{Binding IsSyncBusy}"
                     WidthRequest="25"
-                    Color="White" />
+                    Color="{StaticResource PrimaryColorText}" />
             </Grid>
 
         </Border>
@@ -50,15 +53,15 @@
             HorizontalTextAlignment="Center"
             Text="Export SQLite Database" />
         <Border
-            BackgroundColor="#512BD4"
+            BackgroundColor="{DynamicResource PrimaryColor}"
             HeightRequest="50"
-            Stroke="Transparent"
+            Stroke="{StaticResource TransparentColor}"
             StrokeShape="RoundRectangle 10"
             WidthRequest="160">
 
             <Grid>
                 <Button
-                    BackgroundColor="Transparent"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
                     Command="{Binding ExportDatabaseCommand}"
                     FontAttributes="Bold"
                     FontFamily="IconButtons"
@@ -66,14 +69,15 @@
                     IsEnabled="{Binding IsExportNotBusy}"
                     IsVisible="{Binding IsExportBusy, Converter={StaticResource InverseBoolConverter}}"
                     MaximumWidthRequest="160"
-                    Text="&#xE802; Export Database" />
+                    Text="&#xE802; Export Database"
+                    TextColor="{StaticResource PrimaryColorText}" />
 
                 <ActivityIndicator
                     HeightRequest="25"
                     IsRunning="{Binding IsExportBusy}"
                     IsVisible="{Binding IsExportBusy}"
                     WidthRequest="25"
-                    Color="White" />
+                    Color="{StaticResource PrimaryColorText}" />
             </Grid>
 
         </Border>
