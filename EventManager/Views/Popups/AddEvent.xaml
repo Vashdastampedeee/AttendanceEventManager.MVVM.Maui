@@ -9,7 +9,7 @@
     CloseWhenBackgroundIsClicked="True">
 
     <Border
-        BackgroundColor="LightGray"
+        BackgroundColor="{DynamicResource BgColorWhite}"
         HeightRequest="500"
         StrokeShape="RoundRectangle 20"
         WidthRequest="260">
@@ -40,45 +40,104 @@
                     Source="{Binding EventImagePreview}"
                     WidthRequest="100" />
                 <StackLayout Grid.Row="1" Grid.ColumnSpan="2">
-                    <Label Text="EVENT NAME" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        Text="Event Name"
+                        TextColor="{DynamicResource TxtColorBlack}" />
                     <Entry
+                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        FontFamily="Roboto"
+                        FontSize="Small"
                         Placeholder="Enter Event Name"
-                        PlaceholderColor="Black"
-                        Text="{Binding EventName, Mode=TwoWay}" />
+                        PlaceholderColor="{DynamicResource TxtColorBlack}"
+                        Text="{Binding EventName, Mode=TwoWay}"
+                        TextColor="{DynamicResource TxtColorBlack}" />
                 </StackLayout>
                 <StackLayout Grid.Row="2" Grid.ColumnSpan="2">
-                    <Label Text="EVENT CATEGORY" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        Text="Event Category"
+                        TextColor="{DynamicResource TxtColorBlack}" />
                     <Picker
-                        Title="Pick Event Category"
+                        Title="Select Category"
+                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        FontFamily="Roboto"
+                        FontSize="Small"
                         ItemsSource="{Binding CategoryOptions}"
                         SelectedItem="{Binding SelectedCategory}"
-                        TextColor="Black" />
+                        TitleColor="{DynamicResource TxtColorBlack}" />
                 </StackLayout>
 
                 <StackLayout Grid.Row="3" Grid.ColumnSpan="3">
-                    <Label Text="DATE" />
-                    <DatePicker Date="{Binding EventDate}" MinimumDate="{Binding EventDate}" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        Text="Date"
+                        TextColor="{DynamicResource TxtColorBlack}" />
+                    <DatePicker
+                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        Date="{Binding EventDate}"
+                        FontFamily="Rboto"
+                        FontSize="Small"
+                        MinimumDate="{Binding EventDate}"
+                        TextColor="{DynamicResource TxtColorBlack}" />
                 </StackLayout>
 
                 <StackLayout Grid.Row="4" Grid.Column="0">
-                    <Label Text="FROM" />
-                    <TimePicker Time="{Binding FromTime, Mode=TwoWay}" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        Text="From"
+                        TextColor="{DynamicResource TxtColorBlack}" />
+                    <TimePicker
+                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        TextColor="{DynamicResource TxtColorBlack}"
+                        Time="{Binding FromTime, Mode=TwoWay}" />
                 </StackLayout>
                 <StackLayout Grid.Row="4" Grid.Column="1">
-                    <Label Text="TO" />
-                    <TimePicker IsEnabled="{Binding IsToTimeEnabled}" Time="{Binding ToTime, Mode=TwoWay}" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        Text="To"
+                        TextColor="{DynamicResource TxtColorBlack}" />
+                    <TimePicker
+                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        FontFamily="Roboto"
+                        FontSize="Small"
+                        IsEnabled="{Binding IsToTimeEnabled}"
+                        TextColor="{Binding IsToTimeEnabled, Converter={StaticResource PlaceholderConverter}}"
+                        Time="{Binding ToTime, Mode=TwoWay}" />
                 </StackLayout>
 
                 <Button
                     Grid.Row="5"
                     Grid.Column="0"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
                     Command="{Binding UploadImageCommand}"
-                    Text="Upload Img" />
+                    FontAttributes="Bold"
+                    FontFamily="Roboto"
+                    FontSize="Small"
+                    Text="Upload Img"
+                    TextColor="{StaticResource PrimaryColorText}" />
                 <Button
                     Grid.Row="5"
                     Grid.Column="1"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
                     Command="{Binding SubmitEventCommand}"
-                    Text="Add Event" />
+                    FontAttributes="Bold"
+                    FontFamily="Roboto"
+                    FontSize="Small"
+                    Text="Add Event"
+                    TextColor="{StaticResource PrimaryColorText}" />
             </Grid>
         </VerticalStackLayout>
 
