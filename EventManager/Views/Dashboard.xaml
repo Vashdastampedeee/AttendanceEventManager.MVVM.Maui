@@ -33,24 +33,12 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!--<Label
-                    Grid.Row="0"
-                    Grid.ColumnSpan="2"
-                    Padding="0,10,0,0"
-                    FontAttributes="Bold"
-                    FontFamily="Roboto"
-                    FontSize="Medium"
-                    Text="{Binding SelectedBusinessUnit, StringFormat='Business Unit: {0}'}"
-                    TextColor="{DynamicResource PrimaryTextColor}" />-->
-
                 <Border
                     Grid.Row="0"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     BackgroundColor="{DynamicResource BgColorWhite}"
-                    Stroke="{StaticResource TransparentColor}"
-                    StrokeShape="RoundRectangle 5"
-                    StrokeThickness="2">
+                    StrokeShape="RoundRectangle 5">
                     <HorizontalStackLayout
                         Padding="20"
                         HorizontalOptions="Start"
@@ -61,12 +49,19 @@
                             WidthRequest="30" />
 
                         <Label
-                            FontAttributes="Bold"
                             FontFamily="Roboto"
                             FontSize="Medium"
-                            Text="{Binding TotalEmployees, StringFormat='Employees: {0}'}"
-                            TextColor="{DynamicResource TxtColorBlack}"
-                            VerticalTextAlignment="Center" />
+                            VerticalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span
+                                        FontAttributes="Bold"
+                                        Text="Employee: "
+                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                    <Span Text="{Binding TotalEmployees}" TextColor="{DynamicResource TxtColorBlack}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
                     </HorizontalStackLayout>
 
                 </Border>
@@ -77,9 +72,7 @@
                     Grid.ColumnSpan="2"
                     Padding="0,0,20,0"
                     BackgroundColor="{DynamicResource BgColorWhite}"
-                    Stroke="{StaticResource TransparentColor}"
-                    StrokeShape="RoundRectangle 5"
-                    StrokeThickness="2">
+                    StrokeShape="RoundRectangle 5">
 
                     <chart:SfCartesianChart HeightRequest="400" IsTransposed="True">
 
@@ -143,11 +136,12 @@
 
                         <chart:SfCartesianChart.Series>
                             <chart:ColumnSeries
+                                EnableAnimation="True"
                                 ItemsSource="{Binding AttendanceByBusinessUnit}"
                                 Label="{Binding CartesianLegend}"
                                 LabelContext="YValue"
                                 PaletteBrushes="{Binding AttendanceByBusinessUnitPalleteBrushes}"
-                                ShowDataLabels="{Binding IsShowDataLabel}"
+                                ShowDataLabels="True"
                                 XBindingPath="BusinessUnit"
                                 YBindingPath="Count">
 
@@ -172,21 +166,27 @@
                     Grid.Row="2"
                     Grid.Column="0"
                     BackgroundColor="{DynamicResource BgColorWhite}"
-                    Stroke="{StaticResource TransparentColor}"
-                    StrokeShape="RoundRectangle 5"
-                    StrokeThickness="2">
+                    StrokeShape="RoundRectangle 5">
                     <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
                         <Image
                             HeightRequest="25"
                             Source="Present1.png"
                             WidthRequest="25" />
+
                         <Label
-                            FontAttributes="Bold"
                             FontFamily="Roboto"
                             FontSize="Medium"
-                            Text="{Binding PresentEmployees, StringFormat='Present: {0}'}"
-                            TextColor="{DynamicResource TxtColorBlack}"
-                            VerticalTextAlignment="Center" />
+                            VerticalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span
+                                        FontAttributes="Bold"
+                                        Text="Present: "
+                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                    <Span Text="{Binding PresentEmployees}" TextColor="{DynamicResource TxtColorBlack}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
                     </HorizontalStackLayout>
 
                 </Border>
@@ -194,21 +194,27 @@
                     Grid.Row="2"
                     Grid.Column="1"
                     BackgroundColor="{DynamicResource BgColorWhite}"
-                    Stroke="{StaticResource TransparentColor}"
-                    StrokeShape="RoundRectangle 5"
-                    StrokeThickness="2">
+                    StrokeShape="RoundRectangle 5">
                     <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
                         <Image
                             HeightRequest="25"
                             Source="Absent1.png"
                             WidthRequest="25" />
+
                         <Label
-                            FontAttributes="Bold"
                             FontFamily="Roboto"
                             FontSize="Medium"
-                            Text="{Binding AbsentEmployees, StringFormat='Absent: {0}'}"
-                            TextColor="{DynamicResource TxtColorBlack}"
-                            VerticalTextAlignment="Center" />
+                            VerticalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span
+                                        FontAttributes="Bold"
+                                        Text="Absent: "
+                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                    <Span Text="{Binding AbsentEmployees}" TextColor="{DynamicResource TxtColorBlack}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
                     </HorizontalStackLayout>
 
                 </Border>
@@ -218,9 +224,7 @@
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     BackgroundColor="{DynamicResource BgColorWhite}"
-                    Stroke="{StaticResource TransparentColor}"
-                    StrokeShape="RoundRectangle 5"
-                    StrokeThickness="2">
+                    StrokeShape="RoundRectangle 5">
 
                     <chart:SfCircularChart HeightRequest="200">
 
@@ -248,6 +252,7 @@
 
                         <chart:SfCircularChart.Series>
                             <chart:PieSeries
+                                EnableAnimation="True"
                                 ItemsSource="{Binding AttendanceSummary}"
                                 LabelContext="Percentage"
                                 PaletteBrushes="{Binding AttendanceSummaryPalleteBrushes}"
@@ -277,9 +282,7 @@
                     Grid.Row="4"
                     Grid.ColumnSpan="2"
                     BackgroundColor="{DynamicResource BgColorWhite}"
-                    Stroke="{StaticResource TransparentColor}"
-                    StrokeShape="RoundRectangle 5"
-                    StrokeThickness="2">
+                    StrokeShape="RoundRectangle 5">
 
                     <Grid
                         Padding="20"
@@ -302,12 +305,20 @@
 
                         <Label
                             Grid.Column="1"
-                            FontAttributes="Bold"
                             FontFamily="Roboto"
                             FontSize="Medium"
-                            Text="{Binding TotalScannedEmployee, StringFormat='Total Scanned: {0}'}"
-                            TextColor="{DynamicResource TxtColorBlack}"
-                            VerticalTextAlignment="Center" />
+                            VerticalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span
+                                        FontAttributes="Bold"
+                                        Text="Total Scanned: "
+                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                    <Span Text="{Binding TotalScannedEmployee}" TextColor="{DynamicResource TxtColorBlack}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
 
                         <Grid
                             Grid.Row="1"
