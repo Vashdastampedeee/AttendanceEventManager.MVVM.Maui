@@ -94,7 +94,7 @@ namespace EventManager.Services
         private async Task<int> GetTotalEmployees(SqlConnection sqlConn)
         {
             using (var countCmd = new SqlCommand(
-                "SELECT COUNT(*) FROM TimeKeeping..Employees WHERE JobStatus = 'ACTIVE' OR JobStatusCurrent = 'ACTIVE'", sqlConn))
+                "SELECT COUNT(*) FROM TimeKeeping..Employees WHERE (JobStatus = 'ACTIVE' OR JobStatusCurrent = 'ACTIVE') AND BusinessUnit != 'TRI-VIET'", sqlConn))
             {
                 return (int)await countCmd.ExecuteScalarAsync();
             }
@@ -102,16 +102,17 @@ namespace EventManager.Services
 
         private string GetEmployeeQuery()
         {
-            return @"SELECT 
-                IDNo, 
-                EmpName = CONCAT(LastName, ', ', FirstName, 
+            return @"SELECT
+                    IDNo, 
+                    EmpName = CONCAT(LastName, ', ', FirstName, 
                     CASE WHEN TRIM(MiddleName) = '' OR MiddleName IS NULL THEN '' ELSE ' ' END, 
                     SUBSTRING(TRIM(MiddleName), 1, 1), 
                     CASE WHEN TRIM(MiddleName) = '' OR MiddleName IS NULL THEN '' ELSE '.' END), 
-                BusinessUnit, 
-                Photo 
-            FROM TimeKeeping..Employees 
-            WHERE JobStatus = 'ACTIVE' OR JobStatusCurrent = 'ACTIVE'";
+                    BusinessUnit = CASE WHEN BusinessUnit = 'BBG WAREHOUSE' THEN 'RAWLINGS' ELSE UPPER(BusinessUnit) END, 
+                    Photo 
+                    FROM TimeKeeping..Employees 
+                    WHERE (JobStatus = 'ACTIVE' OR JobStatusCurrent = 'ACTIVE')
+                    AND BusinessUnit != 'TRI-VIET'";
         }
     }
 
