@@ -68,8 +68,8 @@ namespace EventManager.ViewModels.Popups
             {
                 await databaseService.InsertEvent(EventName.Trim(), SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
                 await MopupService.Instance.PopAsync();
-                await ToastHelper.ShowToast("Event Added", ToastDuration.Short);
                 await eventViewModel.RefreshEvents();
+                await ToastHelper.ShowToast("Event Added", ToastDuration.Short);
             }
         }
 
