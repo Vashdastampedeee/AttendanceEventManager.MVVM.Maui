@@ -75,20 +75,25 @@ namespace EventManager.ViewModels.Popups
             string formattedFromTime = DateTime.Today.Add(FromTime).ToString("hh:mm tt");
             string formattedToTime = DateTime.Today.Add(ToTime).ToString("hh:mm tt");
 
-            bool isExistingEvent = await databaseService.IsExistingEvent(EventName.Trim(), SelectedCategory, formattedEventDate, formattedFromTime, formattedToTime);
 
-            if (isExistingEvent)
+            var selectedEvent = await databaseService.GetEventById(eventId);
+            bool isEventChanged = EventName.Trim() != selectedEvent.EventName || SelectedCategory != selectedEvent.EventCategory || formattedEventDate != selectedEvent.EventDate || formattedFromTime != selectedEvent.EventFromTime || formattedToTime != selectedEvent.EventToTime;
+
+            if (isEventChanged)
             {
-                await ToastHelper.ShowToast("Event with the same time already exists!", ToastDuration.Short);
-                return;
+                bool isExistingEvent = await databaseService.IsExistingEvent(EventName.Trim(), SelectedCategory, formattedEventDate, formattedFromTime, formattedToTime);
+                if (isExistingEvent)
+                {
+                    await ToastHelper.ShowToast("Event with the same time already exists!", ToastDuration.Short);
+                    return;
+                }
             }
-            else
-            {
-                await databaseService.UpdateSelectedEvent(eventId, EventName, SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
-                await MopupService.Instance.PopAsync();
-                await ToastHelper.ShowToast("Event Updated", ToastDuration.Short);
-                await eventViewModel.RefreshEvents();
-            }
+ 
+            await databaseService.UpdateSelectedEvent(eventId, EventName, SelectedCategory, eventImageData, formattedEventDate, formattedFromTime, formattedToTime);
+            await MopupService.Instance.PopAsync();
+            await eventViewModel.RefreshEvents();
+            await ToastHelper.ShowToast("Event Updated", ToastDuration.Short);
+            
         }
 
         [RelayCommand]
