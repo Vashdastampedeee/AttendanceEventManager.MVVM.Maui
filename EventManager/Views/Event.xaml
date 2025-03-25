@@ -9,7 +9,8 @@
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
     x:Name="ThisPage"
     Title="Event Setter"
-    x:DataType="viewmodel:EventViewModel">
+    x:DataType="viewmodel:EventViewModel"
+    BackgroundColor="{DynamicResource BgColorLightGray}">
 
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
@@ -33,18 +34,23 @@
                 <ColumnDefinition Width="0.15*" />
                 <ColumnDefinition Width="0.15*" />
             </Grid.ColumnDefinitions>
-            <Border HeightRequest="55" StrokeShape="RoundRectangle 5">
+            <Border
+                BackgroundColor="{DynamicResource BgColorWhite}"
+                HeightRequest="55"
+                StrokeShape="RoundRectangle 5">
 
                 <SearchBar
                     Grid.Column="0"
+                    BackgroundColor="{DynamicResource BgColorWhite}"
                     FontFamily="Roboto"
                     FontSize="Small"
                     HeightRequest="30"
                     IsEnabled="{Binding IsEnabled}"
                     Placeholder="Search"
-                    PlaceholderColor="Black"
+                    PlaceholderColor="{DynamicResource TxtColorBlack}"
                     SearchCommand="{Binding SearchEventsCommand}"
-                    Text="{Binding SearchText, Mode=TwoWay}">
+                    Text="{Binding SearchText, Mode=TwoWay}"
+                    TextColor="{DynamicResource TxtColorBlack}">
                     <SearchBar.Behaviors>
                         <controls:HideSearchBarKeyboard />
                     </SearchBar.Behaviors>
@@ -53,18 +59,24 @@
             </Border>
             <Button
                 Grid.Column="1"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 Command="{Binding FilterEventsCommand}"
+                FontAttributes="Bold"
                 FontFamily="IconButtons"
                 FontSize="Medium"
                 IsEnabled="{Binding IsEnabled}"
-                Text="&#xF0B0;" />
+                Text="&#xF0B0;"
+                TextColor="{StaticResource PrimaryColorText}" />
             <Button
                 Grid.Column="2"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 Command="{Binding RefreshEventsCommand}"
+                FontAttributes="Bold"
                 FontFamily="IconButtons"
                 FontSize="Medium"
                 IsEnabled="{Binding IsEnabled}"
-                Text="&#xE800;" />
+                Text="&#xE800;"
+                TextColor="{StaticResource PrimaryColorText}" />
         </Grid>
 
         <CollectionView
@@ -77,10 +89,12 @@
             <CollectionView.EmptyView>
                 <Label
                     FontAttributes="Italic"
+                    FontFamily="Roboto"
                     FontSize="Small"
                     HorizontalTextAlignment="Center"
                     IsVisible="{Binding IsNoDataVisible}"
                     Text="No events found"
+                    TextColor="{DynamicResource TxtColorBlack}"
                     VerticalTextAlignment="Center" />
             </CollectionView.EmptyView>
 
@@ -89,7 +103,8 @@
                     <Border
                         Margin="5"
                         Padding="10"
-                        StrokeShape="RectangleRound 20">
+                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        StrokeShape="RoundRectangle 5">
                         <VerticalStackLayout Spacing="5">
 
                             <FlexLayout JustifyContent="SpaceBetween">
@@ -99,32 +114,91 @@
                                     WidthRequest="120" />
                                 <Label
                                     FontAttributes="Bold"
+                                    FontFamily="Roboto"
                                     FontSize="Medium"
                                     HorizontalTextAlignment="End"
                                     IsVisible="{Binding IsDefaultVisible}"
-                                    Text="Default" />
+                                    Text="Default"
+                                    TextColor="{DynamicResource TxtColorBlack}" />
                             </FlexLayout>
 
                             <StackLayout Spacing="5">
-                                <Label FontSize="Small" Text="{Binding EventName, StringFormat='Name: {0}'}" />
-                                <Label Text="{Binding EventCategory, StringFormat='Category: {0}'}" />
-                                <Label Text="{Binding EventDate, StringFormat='Date: {0}'}" />
-                                <Label FontSize="Small" Text="{Binding FormattedTime, StringFormat='Time: {0}'}" />
+
+                                <Label FontFamily="Roboto" FontSize="Small">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span
+                                                FontAttributes="Bold"
+                                                Text="Name: "
+                                                TextColor="{DynamicResource TxtColorBlack}" />
+                                            <Span Text="{Binding EventName}" TextColor="{DynamicResource TxtColorBlack}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                                <Label FontFamily="Roboto" FontSize="Small">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span
+                                                FontAttributes="Bold"
+                                                Text="Category: "
+                                                TextColor="{DynamicResource TxtColorBlack}" />
+                                            <Span Text="{Binding EventCategory}" TextColor="{DynamicResource TxtColorBlack}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                                <Label FontFamily="Roboto" FontSize="Small">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span
+                                                FontAttributes="Bold"
+                                                Text="Date: "
+                                                TextColor="{DynamicResource TxtColorBlack}" />
+                                            <Span Text="{Binding EventDate}" TextColor="{DynamicResource TxtColorBlack}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                                <Label FontFamily="Roboto" FontSize="Small">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span
+                                                FontAttributes="Bold"
+                                                Text="Time: "
+                                                TextColor="{DynamicResource TxtColorBlack}" />
+                                            <Span Text="{Binding FormattedTime}" TextColor="{DynamicResource TxtColorBlack}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
                             </StackLayout>
 
                             <StackLayout Orientation="Horizontal" Spacing="5">
                                 <Button
+                                    BackgroundColor="{DynamicResource PrimaryColor}"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=UseSelectedEventCommand}"
                                     CommandParameter="{Binding Id}"
-                                    Text="Use" />
+                                    FontAttributes="Bold"
+                                    FontFamily="Roboto"
+                                    Text="Use"
+                                    TextColor="{StaticResource PrimaryColorText}" />
                                 <Button
+                                    BackgroundColor="{DynamicResource PrimaryColor}"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=EditSelectedEventCommand}"
                                     CommandParameter="{Binding Id}"
-                                    Text="Edit" />
+                                    FontAttributes="Bold"
+                                    FontFamily="Roboto"
+                                    Text="Edit"
+                                    TextColor="{StaticResource PrimaryColorText}" />
                                 <Button
+                                    BackgroundColor="{StaticResource BgColorRed}"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=DeleteSelectedEventCommand}"
                                     CommandParameter="{Binding Id}"
-                                    Text="Delete" />
+                                    FontAttributes="Bold"
+                                    FontFamily="Roboto"
+                                    Text="Delete"
+                                    TextColor="{StaticResource PrimaryColorText}" />
                             </StackLayout>
 
                         </VerticalStackLayout>
@@ -138,10 +212,10 @@
             <Border
                 AbsoluteLayout.LayoutBounds="0.5, 0.95, AutoSize, AutoSize"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="#512BD4"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 HeightRequest="50"
                 IsVisible="{Binding IsLoadingDataIndicator}"
-                Stroke="Transparent"
+                Stroke="{StaticResource TransparentColor}"
                 StrokeShape="Ellipse"
                 WidthRequest="50">
 
@@ -150,7 +224,7 @@
                     IsRunning="{Binding IsLoadingDataIndicator}"
                     IsVisible="{Binding IsLoadingDataIndicator}"
                     WidthRequest="25"
-                    Color="White" />
+                    Color="{DynamicResource PrimaryColorText}" />
 
             </Border>
         </AbsoluteLayout>
@@ -160,34 +234,37 @@
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusyPageIndicator}"
             IsVisible="{Binding IsBusyPageIndicator}"
-            VerticalOptions="Center" />
+            VerticalOptions="Center"
+            Color="{DynamicResource PrimaryColor}" />
 
         <AbsoluteLayout Grid.RowSpan="2">
             <Border
                 AbsoluteLayout.LayoutBounds="1,1,80,80"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="#512BD4"
+                BackgroundColor="{DynamicResource PrimaryColor}"
                 HeightRequest="55"
-                Stroke="Transparent"
+                Stroke="{StaticResource TransparentColor}"
                 StrokeShape="RoundRectangle 10"
                 WidthRequest="55">
 
                 <Grid>
                     <Button
-                        BackgroundColor="Transparent"
+                        BackgroundColor="{DynamicResource PrimaryColor}"
                         Command="{Binding AddEventPopupCommand}"
+                        FontAttributes="Bold"
                         FontFamily="IconButtons"
                         FontSize="Large"
                         IsEnabled="{Binding IsNotBusy}"
                         IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
-                        Text="&#xF271;" />
+                        Text="&#xF271;"
+                        TextColor="{StaticResource PrimaryColorText}" />
 
                     <ActivityIndicator
                         HeightRequest="25"
                         IsRunning="{Binding IsBusy}"
                         IsVisible="{Binding IsBusy}"
                         WidthRequest="25"
-                        Color="White" />
+                        Color="{DynamicResource PrimaryColorText}" />
                 </Grid>
 
             </Border>
