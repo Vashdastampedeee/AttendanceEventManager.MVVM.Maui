@@ -9,7 +9,7 @@
     CloseWhenBackgroundIsClicked="False">
 
     <Border
-        BackgroundColor="LightGray"
+        BackgroundColor="{DynamicResource BgColorWhite}"
         HeightRequest="150"
         StrokeShape="RoundRectangle 20"
         WidthRequest="300">
@@ -18,8 +18,10 @@
             HorizontalOptions="Center"
             Spacing="10"
             VerticalOptions="Center">
-            <ActivityIndicator IsRunning="True" />
+            <ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryColor}" />
             <Label
+                FontAttributes="Bold"
+                FontFamily="Roboto"
                 FontSize="Small"
                 HorizontalTextAlignment="Center"
                 Text="{Binding StatusMessage}" />
