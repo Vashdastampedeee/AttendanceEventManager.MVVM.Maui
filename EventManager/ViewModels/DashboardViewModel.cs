@@ -105,18 +105,16 @@ namespace EventManager.ViewModels
             } 
             else if(lastActiveEventId != activeEvent.Id || !isAllDashboardDataLoaded)
             {
-                IsVisible = false;
-                IsBusyPageIndicator = true;
-                await Task.Delay(500);
                 await LoadDashboardData();
                 isAllDashboardDataLoaded = true;
-                IsBusyPageIndicator = false;
                 lastActiveEventId = activeEvent.Id;
             }
         }
 
         public async Task LoadDashboardData()
         {
+            IsBusyPageIndicator = true;
+
             var activeEvent = await databaseService.GetSelectedEvent();
 
             if (SelectedBusinessUnit == "ALL")
@@ -152,11 +150,11 @@ namespace EventManager.ViewModels
 
             AttendanceSummaryPalleteBrushes.Clear();
 
-            foreach (var category in AttendanceSummary)
+            for (int i = 0; i < AttendanceSummary.Count; i++)
             {
-                if (category.Category == "Present")
+                if (AttendanceSummary[i].Category == "Present")
                 {
-                    AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("009AFE")));
+                    AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#00C853")));
                 }
                 else
                 {
@@ -164,33 +162,45 @@ namespace EventManager.ViewModels
                 }
             }
 
+            AttendanceByBusinessUnitPalleteBrushes.Clear();
             AttendanceByBusinessUnit.Clear();
-            AttendanceByBusinessUnitPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("009AFE")));
+            var tempList = new List<AttendanceByBU>();
+            var businessUnits = new List<string> { "BAG", "HLB", "JLINE", "RAWLINGS", "SUPPORT GROUP" };
 
-            var businessUnits = new List<string> { "BAG", "BBG WAREHOUSE", "HLB", "JLINE", "RAWLINGS", "SUPPORT GROUP", "TRI-VIET" };
-            AttendanceByBusinessUnit.Clear();
-
-            foreach (var bu in businessUnits)
+            for (int i = 0; i < businessUnits.Count; i++)
             {
+                string bu = businessUnits[i];
                 int buCount = 0;
-               
 
                 if (SelectedBusinessUnit == "ALL" || SelectedBusinessUnit == bu)
                 {
+                    AttendanceByBusinessUnitPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#009AFE")));
                     buCount = await databaseService.GetPresentEmployeeCountByBUAsync(bu);
                 }
+                else
+                {
+                    AttendanceByBusinessUnitPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#505050")));  
+                }
 
-                AttendanceByBusinessUnit.Add(new AttendanceByBU { BusinessUnit = bu, Count = buCount });
+                tempList.Add(new AttendanceByBU { BusinessUnit = bu, Count = buCount });
+            }
+
+            AttendanceByBusinessUnit.Clear();
+            foreach (var item in tempList)
+            {
+                AttendanceByBusinessUnit.Add(item);
             }
 
             CartesianCategory = "Comparison of Business Units";
             CartesianNumerical = "Number of Attendees";
-            CartesianLegend = "Business Units";
+            CartesianLegend = "Employee";
             IsShowDataLabel = true;
             IsVisible = PresentEmployees > 0;
+            IsBusyPageIndicator = false;
         }
         private void ResetDashboardData()
         {
+            IsBusyPageIndicator = true;
             IsShowDataLabel = false;
             TotalEmployees = 0;
             PresentEmployees = 0;
@@ -210,6 +220,7 @@ namespace EventManager.ViewModels
             AttendanceSummary.Add(new AttendanceCategory { Category = "No Data", Count = 1 });
             AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#505050")));
             AttendanceByBusinessUnit.Add(new AttendanceByBU { BusinessUnit = "No Data", Count = 0 });
+            IsBusyPageIndicator = false;
         }
 
         [RelayCommand]
