@@ -4,12 +4,13 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+    xmlns:sfcontrols="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels.Popups"
     Title="FilterEvent"
     x:DataType="viewmodel:FilterEventViewModel"
     CloseWhenBackgroundIsClicked="True">
     <Border
-        BackgroundColor="LightGray"
+        BackgroundColor="{DynamicResource BgColorWhite}"
         HeightRequest="300"
         StrokeShape="RoundRectangle 20"
         WidthRequest="250">
@@ -17,23 +18,57 @@
             <Label
                 Padding="5"
                 FontFamily="Roboto"
-                FontSize="Medium"
+                FontSize="Large"
                 HorizontalOptions="Start"
                 Text="Filter Events"
+                TextColor="{DynamicResource TxtColorBlack}"
                 VerticalOptions="Center" />
 
-            <Label Text="By Category" />
-            <Picker
-                Title="Filter Category"
-                ItemsSource="{Binding CategoryOptions}"
-                SelectedItem="{Binding SelectedCategory}" />
-            <Label Text="By Order" />
-            <Picker
-                Title="Filter Order"
-                ItemsSource="{Binding OrderOption}"
-                SelectedItem="{Binding SelectedOrder}" />
+            <Label
+                FontFamily="Roboto"
+                FontSize="Small"
+                Text="By Category"
+                TextColor="{DynamicResource TxtColorBlack}" />
 
-            <Button Command="{Binding ApplyFilterCommand}" Text="Apply" />
+            <sfcontrols:SfComboBox
+                BackgroundColor="{DynamicResource BgColorWhite}"
+                DropDownBackground="{DynamicResource BgColorWhite}"
+                DropDownItemFontFamily="Small"
+                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                FontFamily="Roboto"
+                FontSize="Small"
+                IsClearButtonVisible="False"
+                IsEditable="False"
+                ItemsSource="{Binding CategoryOptions}"
+                Placeholder="Select Category"
+                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedItem="{Binding SelectedCategory}"
+                TextColor="{DynamicResource TxtColorBlack}" />
+            <Label
+                FontFamily="Roboto"
+                FontSize="Small"
+                Text="By Order"
+                TextColor="{DynamicResource TxtColorBlack}" />
+
+            <sfcontrols:SfComboBox
+                BackgroundColor="{DynamicResource BgColorWhite}"
+                DropDownBackground="{DynamicResource BgColorWhite}"
+                DropDownItemFontFamily="Small"
+                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                FontFamily="Roboto"
+                FontSize="Small"
+                IsClearButtonVisible="False"
+                IsEditable="False"
+                ItemsSource="{Binding OrderOption}"
+                Placeholder="Select Order"
+                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedItem="{Binding SelectedOrder}"
+                TextColor="{DynamicResource TxtColorBlack}" />
+            <Button
+                BackgroundColor="{DynamicResource PrimaryColor}"
+                Command="{Binding ApplyFilterCommand}"
+                Text="Apply"
+                TextColor="{StaticResource PrimaryColorText}" />
 
         </VerticalStackLayout>
     </Border>
