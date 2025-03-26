@@ -45,24 +45,25 @@ namespace EventManager.ViewModels
                 "blank_id.png",
                 "Name:",
                 "Business Unit:",
-                Color.FromArgb("#009AFE"));
+                ScanStatusHelper.FrameColor.Default);
         }
+
         public async Task SetFocusEntry()
         {
-            Debug.WriteLine("[IndexViewModel] Focus Set To Entry");
             IsEntryFocused = false;
             await Task.Delay(50);
             IsEntryFocused = true;
         }
+
         [RelayCommand]
         public async Task OnNavigatedTo()
         {
-            Debug.WriteLine("[IndexViewModel] Page Appearing");
             await databaseService.InitializeTablesAsync();
             await LoadSelectedEvent();
             await SetFocusEntry();
             await beepService.InitializeBeepSound();
         }
+
         [RelayCommand]
         public async Task ScanEmployeeId()
         {
@@ -85,11 +86,11 @@ namespace EventManager.ViewModels
                         if (isAlreadyScanned)
                         {
                             SetElementsProperty(
-                                "ALREADY SCANNED",
+                                ScanStatusHelper.StatusString.AlreadyScanned,
                                 ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130),
                                 $"Name {scannedEmployee.Name}",
                                 $"Business Unit: {scannedEmployee.BusinessUnit}",
-                                Color.FromArgb("#D50000"));
+                                ScanStatusHelper.FrameColor.Error);
                         }
                         else
                         {
@@ -98,34 +99,33 @@ namespace EventManager.ViewModels
                                 ImageHelper.ConvertBytesToImage(scannedEmployee.IdPhoto, 130, 130),
                                 $"Name {scannedEmployee.Name}",
                                 $"Business Unit: {scannedEmployee.BusinessUnit}",
-                                Color.FromArgb("#00C853"));
-                            NewDataCondition();
-                            await InsertAttendanceLog(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, "SUCCESS", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
+                                ScanStatusHelper.FrameColor.Success);
+                            ResetDashboardAndLogs();
+                            await InsertAttendanceLog(scannedEmployee.IdNumber, scannedEmployee.Name, scannedEmployee.BusinessUnit, ScanStatusHelper.StatusString.Success, selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);
                         }
                     }
                     else
                     {
                         bool isAlreadyNotFound = await databaseService.IsNotFoundLogAlreadyScanned(barcodeIdNumber, selectedEvent.EventName, selectedEvent.EventDate, selectedEvent.FormattedTime);
-
                         if (isAlreadyNotFound)
                         {
                             SetElementsProperty(
-                                $"ID Number: {barcodeIdNumber} Not Found",
+                                $"ID Number: {barcodeIdNumber} {ScanStatusHelper.StatusString.NotFound}",
                                 "invalid.png",
-                                "Name: Not Found",
-                                "Business Unit: Not Found",
-                                Color.FromArgb("#D50000"));
+                                $"Name: {ScanStatusHelper.StatusString.NotFound}",
+                                $"Business Unit: {ScanStatusHelper.StatusString.NotFound}",
+                                ScanStatusHelper.FrameColor.Error);
                         }
                         else
                         {
                             SetElementsProperty(
-                                $"ID Number: {barcodeIdNumber} Not Found",
+                                $"ID Number: {barcodeIdNumber} {ScanStatusHelper.StatusString.NotFound}",
                                 "invalid.png",
-                                "Name: Not Found",
-                                "Business Unit: Not Found",
-                                Color.FromArgb("#D50000"));
-                            NewDataCondition();
-                            await InsertAttendanceLog(barcodeIdNumber, string.Empty, string.Empty, "NOT FOUND", selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);            
+                                $"Name: {ScanStatusHelper.StatusString.NotFound}",
+                                $"Business Unit: {ScanStatusHelper.StatusString.NotFound}",
+                                ScanStatusHelper.FrameColor.Error);
+                            ResetDashboardAndLogs();
+                            await InsertAttendanceLog(barcodeIdNumber, string.Empty, string.Empty, ScanStatusHelper.StatusString.NotFound, selectedEvent.EventName, selectedEvent.EventCategory, selectedEvent.EventDate, selectedEvent.FormattedTime);            
                         }
                     }
                     await SetFocusEntry();
@@ -138,6 +138,7 @@ namespace EventManager.ViewModels
             }
 
         }
+
         private async Task LoadSelectedEvent()
         {
             var selectedEvent = await databaseService.GetSelectedEvent();
@@ -152,10 +153,12 @@ namespace EventManager.ViewModels
 
             }
         }
+
         private void ClearBarcodeEntry()
         {
             BarcodeNumber = string.Empty;
         }
+
         private void LoadSelectedData(string eventName, string eventDate, string eventTime, ImageSource eventImage)
         {
             EventName = eventName;
@@ -163,6 +166,7 @@ namespace EventManager.ViewModels
             EventTime = eventTime;
             EventImage = eventImage;
         }
+
         private void SetElementsProperty(string idNumber, ImageSource idPhoto, string employeeName, string businessUnit, Color color)
         {
             ClearBarcodeEntry();
@@ -172,11 +176,13 @@ namespace EventManager.ViewModels
             BusinessUnit = businessUnit;
             Color = color;
         }
+
         private async Task InsertAttendanceLog(string idNumber, string name, string businessUnit, string status, string eventName, string eventCategory, string eventDate, string eventTime)
         {
             await databaseService.InsertAttendanceLog(idNumber, name, businessUnit, status, eventName, eventCategory, eventDate, eventTime);
         }
-        private void NewDataCondition()
+
+        private void ResetDashboardAndLogs()
         {
             logsViewModel.isLogsLoaded = false;
             dashboardViewModel.isAllDashboardDataLoaded = false;
