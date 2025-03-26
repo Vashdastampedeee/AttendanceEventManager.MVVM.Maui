@@ -10,7 +10,8 @@
     x:Name="ThisPage"
     Title="Event Setter"
     x:DataType="viewmodel:EventViewModel"
-    BackgroundColor="{DynamicResource BgColorLightGray}">
+    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorLightGray},
+                                      Dark={DynamicResource BgColorDarkGray}}">
 
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
@@ -35,22 +36,28 @@
                 <ColumnDefinition Width="0.15*" />
             </Grid.ColumnDefinitions>
             <Border
-                BackgroundColor="{DynamicResource BgColorWhite}"
-                HeightRequest="55"
+                BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                  Dark={DynamicResource BgColorLightSlatedGray}}"
+                HeightRequest="60"
+                Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                         Dark={DynamicResource Gray600}}"
                 StrokeShape="RoundRectangle 5">
 
                 <SearchBar
                     Grid.Column="0"
-                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
                     FontFamily="Roboto"
                     FontSize="Small"
                     HeightRequest="30"
                     IsEnabled="{Binding IsEnabled}"
                     Placeholder="Search"
-                    PlaceholderColor="{DynamicResource TxtColorBlack}"
+                    PlaceholderColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                       Dark={DynamicResource TxtColorWhite}}"
                     SearchCommand="{Binding SearchEventsCommand}"
                     Text="{Binding SearchText, Mode=TwoWay}"
-                    TextColor="{DynamicResource TxtColorBlack}">
+                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                Dark={DynamicResource TxtColorWhite}}">
                     <SearchBar.Behaviors>
                         <controls:HideSearchBarKeyboard />
                     </SearchBar.Behaviors>
@@ -94,7 +101,8 @@
                     HorizontalTextAlignment="Center"
                     IsVisible="{Binding IsNoDataVisible}"
                     Text="No events found"
-                    TextColor="{DynamicResource TxtColorBlack}"
+                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                Dark={DynamicResource TxtColorWhite}}"
                     VerticalTextAlignment="Center" />
             </CollectionView.EmptyView>
 
@@ -103,7 +111,10 @@
                     <Border
                         Margin="5"
                         Padding="10"
-                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                          Dark={DynamicResource BgColorLightSlatedGray}}"
+                        Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                                 Dark={DynamicResource Gray600}}"
                         StrokeShape="RoundRectangle 5">
                         <VerticalStackLayout Spacing="5">
 
@@ -119,7 +130,8 @@
                                     HorizontalTextAlignment="End"
                                     IsVisible="{Binding IsDefaultVisible}"
                                     Text="Default"
-                                    TextColor="{DynamicResource TxtColorBlack}" />
+                                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                Dark={DynamicResource TxtColorWhite}}" />
                             </FlexLayout>
 
                             <StackLayout Spacing="5">
@@ -130,8 +142,9 @@
                                             <Span
                                                 FontAttributes="Bold"
                                                 Text="Name: "
-                                                TextColor="{DynamicResource TxtColorBlack}" />
-                                            <Span Text="{Binding EventName}" TextColor="{DynamicResource TxtColorBlack}" />
+                                                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                            Dark={DynamicResource TxtColorWhite}}" />
+                                            <Span Text="{Binding EventName}" TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack}, Dark={DynamicResource TxtColorWhite}}" />
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
@@ -142,8 +155,9 @@
                                             <Span
                                                 FontAttributes="Bold"
                                                 Text="Category: "
-                                                TextColor="{DynamicResource TxtColorBlack}" />
-                                            <Span Text="{Binding EventCategory}" TextColor="{DynamicResource TxtColorBlack}" />
+                                                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                            Dark={DynamicResource TxtColorWhite}}" />
+                                            <Span Text="{Binding EventCategory}" TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack}, Dark={DynamicResource TxtColorWhite}}" />
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
@@ -154,8 +168,9 @@
                                             <Span
                                                 FontAttributes="Bold"
                                                 Text="Date: "
-                                                TextColor="{DynamicResource TxtColorBlack}" />
-                                            <Span Text="{Binding EventDate}" TextColor="{DynamicResource TxtColorBlack}" />
+                                                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                            Dark={DynamicResource TxtColorWhite}}" />
+                                            <Span Text="{Binding EventDate}" TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack}, Dark={DynamicResource TxtColorWhite}}" />
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
@@ -166,8 +181,9 @@
                                             <Span
                                                 FontAttributes="Bold"
                                                 Text="Time: "
-                                                TextColor="{DynamicResource TxtColorBlack}" />
-                                            <Span Text="{Binding FormattedTime}" TextColor="{DynamicResource TxtColorBlack}" />
+                                                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                            Dark={DynamicResource TxtColorWhite}}" />
+                                            <Span Text="{Binding FormattedTime}" TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack}, Dark={DynamicResource TxtColorWhite}}" />
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
