@@ -15,12 +15,19 @@
     <Color x:Key="PrimaryColorText">#FFFFFF</Color>
 
     <Color x:Key="SelectedPickerColor">#ADD8E6</Color>
+    <Color x:Key="SelectedPickerColorDark">#009AFE</Color>
     <Color x:Key="TransparentColor">#00FFFFFF</Color>
 
     <Color x:Key="BgColorGreen">#00C853</Color>
     <Color x:Key="BgColorRed">#D50000</Color>
+
+    <!--  Light Mode  -->
     <Color x:Key="BgColorLightGray">#F0F0F0</Color>
     <Color x:Key="BgColorWhite">#FFFFFF</Color>
+
+    <!--  Dark Mode  -->
+    <Color x:Key="BgColorDarkGray">#232532</Color>
+    <Color x:Key="BgColorLightSlatedGray">#1A1D26</Color>
 
     <Color x:Key="TxtColorBlack">#000000</Color>
     <Color x:Key="TxtColorWhite">#FFFFFF</Color>
