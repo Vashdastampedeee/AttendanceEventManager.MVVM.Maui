@@ -9,8 +9,11 @@
     CloseWhenBackgroundIsClicked="True">
 
     <Border
-        BackgroundColor="{DynamicResource BgColorWhite}"
+        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                          Dark={DynamicResource BgColorLightSlatedGray}}"
         HeightRequest="500"
+        Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                 Dark={DynamicResource Gray600}}"
         StrokeShape="RoundRectangle 20"
         WidthRequest="260">
         <VerticalStackLayout HorizontalOptions="Center">
@@ -45,15 +48,19 @@
                         FontFamily="Roboto"
                         FontSize="Small"
                         Text="Event Name"
-                        TextColor="{DynamicResource TxtColorBlack}" />
+                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                    Dark={DynamicResource TxtColorWhite}}" />
                     <Entry
-                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                          Dark={DynamicResource BgColorLightSlatedGray}}"
                         FontFamily="Roboto"
                         FontSize="Small"
                         Placeholder="Enter Event Name"
-                        PlaceholderColor="{DynamicResource TxtColorBlack}"
+                        PlaceholderColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                           Dark={DynamicResource TxtColorWhite}}"
                         Text="{Binding EventName, Mode=TwoWay}"
-                        TextColor="{DynamicResource TxtColorBlack}" />
+                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                    Dark={DynamicResource TxtColorWhite}}" />
                 </StackLayout>
                 <StackLayout Grid.Row="2" Grid.ColumnSpan="2">
                     <Label
@@ -61,15 +68,18 @@
                         FontFamily="Roboto"
                         FontSize="Small"
                         Text="Event Category"
-                        TextColor="{DynamicResource TxtColorBlack}" />
+                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                    Dark={DynamicResource TxtColorWhite}}" />
                     <Picker
                         Title="Select Category"
-                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                          Dark={DynamicResource BgColorLightSlatedGray}}"
                         FontFamily="Roboto"
                         FontSize="Small"
                         ItemsSource="{Binding CategoryOptions}"
                         SelectedItem="{Binding SelectedCategory}"
-                        TitleColor="{DynamicResource TxtColorBlack}" />
+                        TitleColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                     Dark={DynamicResource TxtColorWhite}}" />
                 </StackLayout>
 
                 <StackLayout Grid.Row="3" Grid.ColumnSpan="3">
@@ -78,14 +88,17 @@
                         FontFamily="Roboto"
                         FontSize="Small"
                         Text="Date"
-                        TextColor="{DynamicResource TxtColorBlack}" />
+                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                    Dark={DynamicResource TxtColorWhite}}" />
                     <DatePicker
-                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                          Dark={DynamicResource BgColorLightSlatedGray}}"
                         Date="{Binding EventDate}"
                         FontFamily="Rboto"
                         FontSize="Small"
                         MinimumDate="{Binding EventDate}"
-                        TextColor="{DynamicResource TxtColorBlack}" />
+                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                    Dark={DynamicResource TxtColorWhite}}" />
                 </StackLayout>
 
                 <StackLayout Grid.Row="4" Grid.Column="0">
@@ -94,12 +107,15 @@
                         FontFamily="Roboto"
                         FontSize="Small"
                         Text="From"
-                        TextColor="{DynamicResource TxtColorBlack}" />
+                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                    Dark={DynamicResource TxtColorWhite}}" />
                     <TimePicker
-                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                          Dark={DynamicResource BgColorLightSlatedGray}}"
                         FontFamily="Roboto"
                         FontSize="Small"
-                        TextColor="{DynamicResource TxtColorBlack}"
+                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                    Dark={DynamicResource TxtColorWhite}}"
                         Time="{Binding FromTime, Mode=TwoWay}" />
                 </StackLayout>
                 <StackLayout Grid.Row="4" Grid.Column="1">
@@ -108,9 +124,11 @@
                         FontFamily="Roboto"
                         FontSize="Small"
                         Text="To"
-                        TextColor="{DynamicResource TxtColorBlack}" />
+                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                    Dark={DynamicResource TxtColorWhite}}" />
                     <TimePicker
-                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                          Dark={DynamicResource BgColorLightSlatedGray}}"
                         FontFamily="Roboto"
                         FontSize="Small"
                         IsEnabled="{Binding IsToTimeEnabled}"
