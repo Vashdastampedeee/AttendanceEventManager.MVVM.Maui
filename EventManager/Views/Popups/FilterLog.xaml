@@ -11,8 +11,11 @@
     x:DataType="viewmodel:FilterLogViewModel"
     CloseWhenBackgroundIsClicked="True">
     <Border
-        BackgroundColor="{DynamicResource BgColorWhite}"
+        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                          Dark={DynamicResource BgColorLightSlatedGray}}"
         HeightRequest="455"
+        Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                 Dark={DynamicResource Gray600}}"
         StrokeShape="RoundRectangle 20"
         WidthRequest="250">
         <VerticalStackLayout Padding="20" Spacing="10">
@@ -23,19 +26,24 @@
                 FontSize="Large"
                 HorizontalOptions="Start"
                 Text="Filter Logs"
-                TextColor="{DynamicResource TxtColorBlack}"
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}"
                 VerticalOptions="Center" />
 
             <Label
                 FontFamily="Roboto"
                 FontSize="Small"
                 Text="By Event Name"
-                TextColor="{DynamicResource TxtColorBlack}" />
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
             <sfcontrols:SfComboBox
-                BackgroundColor="{DynamicResource BgColorWhite}"
-                DropDownBackground="{DynamicResource BgColorWhite}"
+                BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                  Dark={DynamicResource BgColorLightSlatedGray}}"
+                DropDownBackground="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                     Dark={DynamicResource BgColorLightSlatedGray}}"
                 DropDownItemFontFamily="Small"
-                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                DropDownItemTextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                        Dark={DynamicResource TxtColorWhite}}"
                 FontFamily="Roboto"
                 FontSize="Small"
                 IsClearButtonVisible="False"
@@ -43,23 +51,30 @@
                 ItemsSource="{Binding EventNames}"
                 MaxDropDownHeight="200"
                 Placeholder="Select Name"
-                PlaceholderColor="Black"
-                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                PlaceholderColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                   Dark={DynamicResource TxtColorWhite}}"
+                SelectedDropDownItemBackground="{AppThemeBinding Light={DynamicResource SelectedPickerColor},
+                                                                 Dark={DynamicResource SelectedPickerColorDark}}"
                 SelectedItem="{Binding SelectedName, Mode=TwoWay}"
-                TextColor="{DynamicResource TxtColorBlack}" />
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
 
 
             <Label
                 FontFamily="Roboto"
                 FontSize="Small"
                 Text="By Event Category"
-                TextColor="{DynamicResource TxtColorBlack}" />
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
 
             <sfcontrols:SfComboBox
-                BackgroundColor="{DynamicResource BgColorWhite}"
-                DropDownBackground="{DynamicResource BgColorWhite}"
+                BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                  Dark={DynamicResource BgColorLightSlatedGray}}"
+                DropDownBackground="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                     Dark={DynamicResource BgColorLightSlatedGray}}"
                 DropDownItemFontFamily="Small"
-                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                DropDownItemTextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                        Dark={DynamicResource TxtColorWhite}}"
                 FontFamily="Roboto"
                 FontSize="Small"
                 IsClearButtonVisible="False"
@@ -69,22 +84,28 @@
                 MaxDropDownHeight="200"
                 Placeholder="Select Category"
                 PlaceholderColor="{Binding IsCategoryEnabled, Converter={StaticResource PlaceholderConverter}}"
-                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedDropDownItemBackground="{AppThemeBinding Light={DynamicResource SelectedPickerColor},
+                                                                 Dark={DynamicResource SelectedPickerColorDark}}"
                 SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-                TextColor="{DynamicResource TxtColorBlack}" />
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
 
 
             <Label
                 FontFamily="Roboto"
                 FontSize="Small"
                 Text="By Event Date"
-                TextColor="{DynamicResource TxtColorBlack}" />
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
 
             <sfcontrols:SfComboBox
-                BackgroundColor="{DynamicResource BgColorWhite}"
-                DropDownBackground="{DynamicResource BgColorWhite}"
+                BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                  Dark={DynamicResource BgColorLightSlatedGray}}"
+                DropDownBackground="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                     Dark={DynamicResource BgColorLightSlatedGray}}"
                 DropDownItemFontFamily="Small"
-                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                DropDownItemTextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                        Dark={DynamicResource TxtColorWhite}}"
                 FontFamily="Roboto"
                 FontSize="Small"
                 IsClearButtonVisible="False"
@@ -94,21 +115,27 @@
                 MaxDropDownHeight="200"
                 Placeholder="Select Date"
                 PlaceholderColor="{Binding IsDateEnabled, Converter={StaticResource PlaceholderConverter}}"
-                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedDropDownItemBackground="{AppThemeBinding Light={DynamicResource SelectedPickerColor},
+                                                                 Dark={DynamicResource SelectedPickerColorDark}}"
                 SelectedItem="{Binding SelectedDate, Mode=TwoWay}"
-                TextColor="{DynamicResource TxtColorBlack}" />
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
 
             <Label
                 FontFamily="Roboto"
                 FontSize="Small"
                 Text="By Event Time"
-                TextColor="{DynamicResource TxtColorBlack}" />
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
 
             <sfcontrols:SfComboBox
-                BackgroundColor="{DynamicResource BgColorWhite}"
-                DropDownBackground="{DynamicResource BgColorWhite}"
+                BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                  Dark={DynamicResource BgColorLightSlatedGray}}"
+                DropDownBackground="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                     Dark={DynamicResource BgColorLightSlatedGray}}"
                 DropDownItemFontFamily="Small"
-                DropDownItemTextColor="{DynamicResource TxtColorBlack}"
+                DropDownItemTextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                        Dark={DynamicResource TxtColorWhite}}"
                 FontFamily="Roboto"
                 FontSize="Small"
                 IsClearButtonVisible="False"
@@ -118,9 +145,11 @@
                 MaxDropDownHeight="200"
                 Placeholder="Select Time"
                 PlaceholderColor="{Binding IsTimeEnabled, Converter={StaticResource PlaceholderConverter}}"
-                SelectedDropDownItemBackground="{DynamicResource SelectedPickerColor}"
+                SelectedDropDownItemBackground="{AppThemeBinding Light={DynamicResource SelectedPickerColor},
+                                                                 Dark={DynamicResource SelectedPickerColorDark}}"
                 SelectedItem="{Binding SelectedTime, Mode=TwoWay}"
-                TextColor="{DynamicResource TxtColorBlack}" />
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
 
 
 
