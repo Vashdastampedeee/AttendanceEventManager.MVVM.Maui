@@ -11,11 +11,19 @@ namespace EventManager.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+
+            var isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
+
             if (value is bool isEnabled)
             {
-                return isEnabled ? Colors.Black : Colors.Gray;
+                if (isEnabled)
+                {
+                    return isDarkMode ? Colors.White : Colors.Black;
+                }
+                return Colors.Gray;
             }
-            return Colors.Black;
+
+            return Colors.Gray; 
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
