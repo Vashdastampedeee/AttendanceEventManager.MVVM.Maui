@@ -7,7 +7,9 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels.Modals"
     x:Name="ThisPage"
-    x:DataType="viewmodel:TotalScannedDataViewModel">
+    x:DataType="viewmodel:TotalScannedDataViewModel"
+    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorLightGray},
+                                      Dark={DynamicResource BgColorDarkGray}}">
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
             BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
@@ -25,7 +27,7 @@
             VerticalTextAlignment="Center" />
     </Shell.TitleView>
 
-    <Grid BackgroundColor="{DynamicResource BgColorLightGray}">
+    <Grid>
         <CollectionView
             ItemsSource="{Binding EmployeeAttendance}"
             RemainingItemsThreshold="1"
@@ -37,7 +39,10 @@
                     <Border
                         Margin="5"
                         Padding="10"
-                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                          Dark={DynamicResource BgColorLightSlatedGray}}"
+                        Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                                 Dark={DynamicResource Gray600}}"
                         StrokeShape="RoundRectangle 5">
                         <VerticalStackLayout>
                             <Label
@@ -45,17 +50,20 @@
                                 FontFamily="Roboto"
                                 FontSize="Medium"
                                 Text="{Binding IdNumber}"
-                                TextColor="{DynamicResource TxtColorBlack}" />
+                                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                            Dark={DynamicResource TxtColorWhite}}" />
                             <Label
                                 FontFamily="Roboto"
                                 FontSize="Medium"
                                 Text="{Binding BusinessUnit}"
-                                TextColor="{DynamicResource TxtColorBlack}" />
+                                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                            Dark={DynamicResource TxtColorWhite}}" />
                             <Label
                                 FontFamily="Roboto"
                                 FontSize="Small"
                                 Text="{Binding Name}"
-                                TextColor="{DynamicResource TxtColorBlack}" />
+                                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                            Dark={DynamicResource TxtColorWhite}}" />
 
                             <Border
                                 Margin="0,10,0,0"
