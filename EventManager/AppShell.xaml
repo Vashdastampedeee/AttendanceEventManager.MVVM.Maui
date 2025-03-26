@@ -7,6 +7,8 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:EventManager.Views"
     Title="EventManager"
+    FlyoutBackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                            Dark={DynamicResource BgColorDarkGray}}"
     Shell.BackgroundColor="{DynamicResource PrimaryColor}"
     Shell.FlyoutBackdrop="{StaticResource TransparentColor}"
     Shell.FlyoutBehavior="Flyout"
@@ -43,7 +45,8 @@
             <BoxView
                 Grid.Row="2"
                 Margin="10,10,10,5"
-                BackgroundColor="{DynamicResource BgColorLightGray}"
+                BackgroundColor="{AppThemeBinding Light={DynamicResource Gray200},
+                                                  Dark={DynamicResource Gray500}}"
                 HeightRequest="1" />
         </Grid>
 
@@ -71,7 +74,8 @@
                     FontFamily="Roboto"
                     FontSize="Small"
                     Text="{Binding Title}"
-                    TextColor="{DynamicResource TxtColorBlack}"
+                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                Dark={DynamicResource TxtColorWhite}}"
                     VerticalTextAlignment="Center" />
 
                 <VisualStateManager.VisualStateGroups>
@@ -82,7 +86,7 @@
                             </VisualState>
                             <VisualState x:Name="Selected">
                                 <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="{StaticResource SelectedPickerColor}" />
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource SelectedPickerColor}, Dark={DynamicResource SelectedPickerColorDark}}" />
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Disabled">
