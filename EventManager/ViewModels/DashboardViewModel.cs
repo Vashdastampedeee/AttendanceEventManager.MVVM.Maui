@@ -27,61 +27,36 @@ namespace EventManager.ViewModels
         private readonly IFileSaver fileSaverService;
         private int lastActiveEventId;
         private double totalScannedEmployeePercentage;
-        private string presentEmployeeToString,
-                       totalEmployeeToString,
-                       totalScannedEmployeeToString;
+        private string presentEmployeeToString, totalEmployeeToString, totalScannedEmployeeToString;
         public bool isAllDashboardDataLoaded;
 
-        [ObservableProperty]
-        private bool isBusy;
+        [ObservableProperty] private bool isBusy;
         public bool IsNotBusy => !IsBusy;
-        [ObservableProperty]
-        private bool isViewDataBusy;
+        [ObservableProperty] private bool isViewDataBusy;
         public bool IsViewDataNotBusy => !IsViewDataBusy;
-        [ObservableProperty]
-        private bool isExportDataBusy;
+        [ObservableProperty] private bool isExportDataBusy;
         public bool IsExportDataNotBusy => !IsExportDataBusy;
         [ObservableProperty]
         private bool isVisible;
 
-        [ObservableProperty]
-        private string selectedBusinessUnit = "ALL";
+        [ObservableProperty] private string selectedBusinessUnit = "ALL";
 
-        [ObservableProperty]
-        private double totalEmployees;
+        [ObservableProperty] private double totalEmployees;
+        [ObservableProperty] private double presentEmployees;
+        [ObservableProperty] private double absentEmployees;
+        [ObservableProperty] private string totalScannedEmployee;
 
-        [ObservableProperty]
-        private double presentEmployees;
+        [ObservableProperty] private bool isBusyPageIndicator;
 
-        [ObservableProperty]
-        private double absentEmployees;
+        [ObservableProperty] private ObservableCollection<AttendanceCategory> attendanceSummary = new();
+        [ObservableProperty] private ObservableCollection<AttendanceByBU> attendanceByBusinessUnit = new();
+        [ObservableProperty] private ObservableCollection<Brush> attendanceSummaryPalleteBrushes = new();
+        [ObservableProperty] private ObservableCollection<Brush> attendanceByBusinessUnitPalleteBrushes = new();
 
-        [ObservableProperty]
-        private string totalScannedEmployee;
-
-        [ObservableProperty]
-        private bool isBusyPageIndicator;
-
-        [ObservableProperty]
-        private ObservableCollection<AttendanceCategory> attendanceSummary = new();
-
-        [ObservableProperty]
-        private ObservableCollection<AttendanceByBU> attendanceByBusinessUnit = new();
-
-        [ObservableProperty]
-        private ObservableCollection<Brush> attendanceSummaryPalleteBrushes = new();
-
-        [ObservableProperty]
-        private ObservableCollection<Brush> attendanceByBusinessUnitPalleteBrushes = new();
-
-        [ObservableProperty]
-        private string cartesianCategory;
-        [ObservableProperty]
-        private string cartesianNumerical;
-        [ObservableProperty]
-        private string cartesianLegend;
-        [ObservableProperty]
-        private bool isShowDataLabel;
+        [ObservableProperty] private string cartesianCategory;
+        [ObservableProperty] private string cartesianNumerical;
+        [ObservableProperty] private string cartesianLegend;
+        [ObservableProperty] private bool isShowDataLabel;
 
         public DashboardViewModel(DatabaseService databaseService, IFileSaver fileSaverService) 
         {
@@ -110,7 +85,7 @@ namespace EventManager.ViewModels
                 lastActiveEventId = activeEvent.Id;
             }
         }
-
+        
         public async Task LoadDashboardData()
         {
             IsBusyPageIndicator = true;
@@ -131,7 +106,7 @@ namespace EventManager.ViewModels
             if (TotalEmployees > 0)
             {
                 totalScannedEmployeePercentage = (PresentEmployees / TotalEmployees) * 100;
-            }
+            }   
             else
             {
                 totalScannedEmployeePercentage = 0;
