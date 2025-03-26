@@ -10,7 +10,8 @@
     x:Name="ThisPage"
     Title="Logs History"
     x:DataType="viewmodels:LogsViewModel"
-    BackgroundColor="{DynamicResource BgColorLightGray}">
+    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorLightGray},
+                                      Dark={DynamicResource BgColorDarkGray}}">
 
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
@@ -37,20 +38,26 @@
             </Grid.ColumnDefinitions>
             <Border
                 Grid.Column="0"
-                BackgroundColor="{DynamicResource BgColorWhite}"
-                HeightRequest="55"
+                BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                  Dark={DynamicResource BgColorLightSlatedGray}}"
+                HeightRequest="60"
+                Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                         Dark={DynamicResource Gray600}}"
                 StrokeShape="RoundRectangle 5">
                 <SearchBar
-                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
                     FontFamily="Roboto"
                     FontSize="Small"
                     HeightRequest="30"
                     IsEnabled="{Binding IsEnabled}"
                     Placeholder="Search"
-                    PlaceholderColor="{DynamicResource TxtColorBlack}"
+                    PlaceholderColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                       Dark={DynamicResource TxtColorWhite}}"
                     SearchCommand="{Binding SearchLogsCommand}"
                     Text="{Binding SearchText, Mode=TwoWay}"
-                    TextColor="{DynamicResource TxtColorBlack}">
+                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                Dark={DynamicResource TxtColorWhite}}">
                     <SearchBar.Behaviors>
                         <controls:HideSearchBarKeyboard />
                     </SearchBar.Behaviors>
@@ -95,7 +102,8 @@
                     HorizontalTextAlignment="Center"
                     IsVisible="{Binding IsNoDataVisible}"
                     Text="{Binding IsNoDataLabel}"
-                    TextColor="{DynamicResource TxtColorBlack}"
+                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                Dark={DynamicResource TxtColorWhite}}"
                     VerticalTextAlignment="Center" />
             </CollectionView.EmptyView>
 
@@ -106,7 +114,10 @@
                     <Border
                         Margin="5"
                         Padding="10"
-                        BackgroundColor="{DynamicResource BgColorWhite}"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                          Dark={DynamicResource BgColorLightSlatedGray}}"
+                        Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                                 Dark={DynamicResource Gray600}}"
                         StrokeShape="RoundRectangle 5">
                         <ScrollView Orientation="Horizontal">
                             <HorizontalStackLayout Spacing="35">
@@ -117,7 +128,9 @@
                                             FontAttributes="Bold"
                                             FontFamily="Roboto"
                                             FontSize="Medium"
-                                            Text="{Binding EventName, StringFormat='Event: {0}'}" />
+                                            Text="{Binding EventName}"
+                                            TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                        Dark={DynamicResource TxtColorWhite}}" />
                                         <Label
                                             FontAttributes="Bold"
                                             FontFamily="Roboto"
@@ -127,7 +140,7 @@
                                             FontAttributes="Bold"
                                             FontFamily="Roboto"
                                             FontSize="Medium"
-                                            Text="{Binding EventCategory, StringFormat='Category: {0}'}" />
+                                            Text="{Binding EventCategory}" />
                                     </HorizontalStackLayout>
                                     <HorizontalStackLayout Margin="0,0,0,10" Spacing="5">
                                         <Label
@@ -249,7 +262,8 @@
                         FontSize="Large"
                         IsEnabled="{Binding IsNotBusy}"
                         IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
-                        Text="&#xE802;" />
+                        Text="&#xE802;"
+                        TextColor="{DynamicResource PrimaryColorText}" />
                     <ActivityIndicator
                         HeightRequest="25"
                         IsRunning="{Binding IsBusy}"
