@@ -9,8 +9,11 @@
     CloseWhenBackgroundIsClicked="False">
 
     <Border
-        BackgroundColor="{DynamicResource BgColorWhite}"
+        BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                          Dark={DynamicResource BgColorLightSlatedGray}}"
         HeightRequest="150"
+        Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                 Dark={DynamicResource Gray600}}"
         StrokeShape="RoundRectangle 20"
         WidthRequest="300">
         <VerticalStackLayout
@@ -24,7 +27,9 @@
                 FontFamily="Roboto"
                 FontSize="Small"
                 HorizontalTextAlignment="Center"
-                Text="{Binding StatusMessage}" />
+                Text="{Binding StatusMessage}"
+                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                            Dark={DynamicResource TxtColorWhite}}" />
         </VerticalStackLayout>
     </Border>
 
