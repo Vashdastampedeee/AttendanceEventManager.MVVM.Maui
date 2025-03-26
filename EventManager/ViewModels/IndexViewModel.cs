@@ -34,6 +34,11 @@ namespace EventManager.ViewModels
         [ObservableProperty] private Color color;
         [ObservableProperty] private bool isEntryFocused;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsShowPage))] 
+        private bool isBusyPageIndicator;
+        public bool IsShowPage => !IsBusyPageIndicator;
+
         public IndexViewModel(DatabaseService databaseService, BeepService beepService, LogsViewModel logsViewModel, DashboardViewModel dashboardViewModel)
         {
             this.databaseService = databaseService;
@@ -58,10 +63,15 @@ namespace EventManager.ViewModels
         [RelayCommand]
         public async Task OnNavigatedTo()
         {
+ 
+            IsBusyPageIndicator = true;
+
             await databaseService.InitializeTablesAsync();
             await LoadSelectedEvent();
             await SetFocusEntry();
             await beepService.InitializeBeepSound();
+
+            IsBusyPageIndicator = false;
         }
 
         [RelayCommand]
