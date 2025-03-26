@@ -6,7 +6,8 @@
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
     Title="Database Option"
     x:DataType="viewmodel:DatabaseViewModel"
-    BackgroundColor="{DynamicResource BgColorLightGray}">
+    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorLightGray},
+                                      Dark={DynamicResource BgColorDarkGray}}">
     <VerticalStackLayout Spacing="10" VerticalOptions="Center">
         <Label
             FontAttributes="Bold"
@@ -14,7 +15,8 @@
             FontSize="Small"
             HorizontalTextAlignment="Center"
             Text="Sync Microsoft SQL Server Database"
-            TextColor="{DynamicResource TxtColorBlack}" />
+            TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                        Dark={DynamicResource TxtColorWhite}}" />
 
         <Border
             BackgroundColor="{DynamicResource PrimaryColor}"
@@ -51,7 +53,9 @@
             FontFamily="Roboto"
             FontSize="Small"
             HorizontalTextAlignment="Center"
-            Text="Export SQLite Database" />
+            Text="Export SQLite Database"
+            TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                        Dark={DynamicResource TxtColorWhite}}" />
         <Border
             BackgroundColor="{DynamicResource PrimaryColor}"
             HeightRequest="50"
