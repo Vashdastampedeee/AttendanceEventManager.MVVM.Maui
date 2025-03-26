@@ -8,7 +8,8 @@
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
     x:Name="ThisPage"
     x:DataType="viewmodel:DashboardViewModel"
-    BackgroundColor="{DynamicResource BgColorLightGray}">
+    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorLightGray},
+                                      Dark={DynamicResource BgColorDarkGray}}">
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
             BindingContext="{Binding Source={x:Reference ThisPage}, Path=BindingContext}"
@@ -37,7 +38,10 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
+                    Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                             Dark={DynamicResource Gray600}}"
                     StrokeShape="RoundRectangle 5">
                     <HorizontalStackLayout
                         Padding="20"
@@ -57,8 +61,9 @@
                                     <Span
                                         FontAttributes="Bold"
                                         Text="Employee: "
-                                        TextColor="{DynamicResource TxtColorBlack}" />
-                                    <Span Text="{Binding TotalEmployees}" TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
+                                    <Span Text="{Binding TotalEmployees}" TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack}, Dark={DynamicResource TxtColorWhite}}" />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
@@ -71,7 +76,10 @@
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Padding="0,0,20,0"
-                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
+                    Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                             Dark={DynamicResource Gray600}}"
                     StrokeShape="RoundRectangle 5">
 
                     <chart:SfCartesianChart HeightRequest="400" IsTransposed="True">
@@ -84,7 +92,9 @@
                                 FontSize="Medium"
                                 HorizontalTextAlignment="Start"
                                 Text="Attendance Data"
-                                TextColor="{DynamicResource TxtColorBlack}" />
+                                TextColor="{AppThemeBinding Light={AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                                   Dark={DynamicResource TxtColorWhite}},
+                                                            Dark={DynamicResource TxtColorWhite}}" />
                         </chart:SfCartesianChart.Title>
 
                         <chart:SfCartesianChart.Legend>
@@ -93,7 +103,8 @@
                                     <chart:ChartLegendLabelStyle
                                         FontFamily="Roboto"
                                         FontSize="13"
-                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
                                 </chart:ChartLegend.LabelStyle>
                             </chart:ChartLegend>
                         </chart:SfCartesianChart.Legend>
@@ -105,13 +116,15 @@
                                         FontFamily="Roboto"
                                         FontSize="Small"
                                         Text="{Binding CartesianCategory}"
-                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
                                 </chart:CategoryAxis.Title>
                                 <chart:CategoryAxis.LabelStyle>
                                     <chart:ChartAxisLabelStyle
                                         FontFamily="Roboto"
                                         FontSize="Micro"
-                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
                                 </chart:CategoryAxis.LabelStyle>
                             </chart:CategoryAxis>
                         </chart:SfCartesianChart.XAxes>
@@ -123,13 +136,15 @@
                                         FontFamily="Roboto"
                                         FontSize="Small"
                                         Text="{Binding CartesianNumerical}"
-                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
                                 </chart:NumericalAxis.Title>
                                 <chart:NumericalAxis.LabelStyle>
                                     <chart:ChartAxisLabelStyle
                                         FontFamily="Roboto"
                                         FontSize="Micro"
-                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
                                 </chart:NumericalAxis.LabelStyle>
                             </chart:NumericalAxis>
                         </chart:SfCartesianChart.YAxes>
@@ -165,7 +180,10 @@
                 <Border
                     Grid.Row="2"
                     Grid.Column="0"
-                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
+                    Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                             Dark={DynamicResource Gray600}}"
                     StrokeShape="RoundRectangle 5">
                     <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
                         <Image
@@ -182,8 +200,9 @@
                                     <Span
                                         FontAttributes="Bold"
                                         Text="Present: "
-                                        TextColor="{DynamicResource TxtColorBlack}" />
-                                    <Span Text="{Binding PresentEmployees}" TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
+                                    <Span Text="{Binding PresentEmployees}" TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack}, Dark={DynamicResource TxtColorWhite}}" />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
@@ -193,7 +212,10 @@
                 <Border
                     Grid.Row="2"
                     Grid.Column="1"
-                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
+                    Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                             Dark={DynamicResource Gray600}}"
                     StrokeShape="RoundRectangle 5">
                     <HorizontalStackLayout Padding="20" HorizontalOptions="Start">
                         <Image
@@ -210,8 +232,9 @@
                                     <Span
                                         FontAttributes="Bold"
                                         Text="Absent: "
-                                        TextColor="{DynamicResource TxtColorBlack}" />
-                                    <Span Text="{Binding AbsentEmployees}" TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
+                                    <Span Text="{Binding AbsentEmployees}" TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack}, Dark={DynamicResource TxtColorWhite}}" />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
@@ -223,7 +246,10 @@
                     Grid.Row="3"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
+                    Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                             Dark={DynamicResource Gray600}}"
                     StrokeShape="RoundRectangle 5">
 
                     <chart:SfCircularChart HeightRequest="200">
@@ -236,7 +262,8 @@
                                 FontSize="Medium"
                                 HorizontalTextAlignment="Start"
                                 Text="Attendance Status"
-                                TextColor="{DynamicResource TxtColorBlack}" />
+                                TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                            Dark={DynamicResource TxtColorWhite}}" />
                         </chart:SfCircularChart.Title>
 
                         <chart:SfCircularChart.Legend>
@@ -245,7 +272,8 @@
                                     <chart:ChartLegendLabelStyle
                                         FontFamily="Roboto"
                                         FontSize="13"
-                                        TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
                                 </chart:ChartLegend.LabelStyle>
                             </chart:ChartLegend>
                         </chart:SfCircularChart.Legend>
@@ -281,7 +309,10 @@
                 <Border
                     Grid.Row="4"
                     Grid.ColumnSpan="2"
-                    BackgroundColor="{DynamicResource BgColorWhite}"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
+                    Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                             Dark={DynamicResource Gray600}}"
                     StrokeShape="RoundRectangle 5">
 
                     <Grid
@@ -313,8 +344,9 @@
                                     <Span
                                         FontAttributes="Bold"
                                         Text="Total Scanned: "
-                                        TextColor="{DynamicResource TxtColorBlack}" />
-                                    <Span Text="{Binding TotalScannedEmployee}" TextColor="{DynamicResource TxtColorBlack}" />
+                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                                    Dark={DynamicResource TxtColorWhite}}" />
+                                    <Span Text="{Binding TotalScannedEmployee}" TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack}, Dark={DynamicResource TxtColorWhite}}" />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
