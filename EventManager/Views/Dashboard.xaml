@@ -21,6 +21,7 @@
             <Grid
                 Padding="10"
                 ColumnSpacing="5"
+                IsVisible="{Binding IsShowPage}"
                 RowSpacing="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*" />
