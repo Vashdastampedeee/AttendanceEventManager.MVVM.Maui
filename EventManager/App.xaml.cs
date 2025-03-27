@@ -6,7 +6,7 @@
         {
             InitializeComponent();
 
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NMaF1cXmhKYVFwWmFZfVtgfF9GYlZTTWY/P1ZhSXxWdkZiUH1ecHZXT2hUUEY=");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mzc2NzExM0AzMjM4MmUzMDJlMzBvZ2Fpcyt3RzJXSHFmeTFIajNrVlhQUXBrdE11UXlFaEhRcHlCUWgzaTVzPQ==");
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
