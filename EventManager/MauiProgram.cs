@@ -41,6 +41,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<LogsViewModel>();
 		builder.Services.AddSingleton<EventViewModel>();
 		builder.Services.AddSingleton<DatabaseViewModel>();
+		builder.Services.AddSingleton<OptionViewModel>();
 		builder.Services.AddSingleton<DashboardViewModel>();
 		builder.Services.AddSingleton<TotalScannedDataViewModel>();
 
