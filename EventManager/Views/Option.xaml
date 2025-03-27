@@ -53,6 +53,8 @@
                     Background="{AppThemeBinding Light={DynamicResource SelectedPickerColor},
                                                  Dark={DynamicResource SelectedPickerColorDark}}"
                     SelectionIndicatorPlacement="BottomBorder"
+                    Stroke="{AppThemeBinding Light={DynamicResource SelectedPickerColor},
+                                             Dark={DynamicResource SelectedPickerColorDark}}"
                     TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                                 Dark={DynamicResource TxtColorWhite}}" />
             </buttons:SfSegmentedControl.SelectionIndicatorSettings>
