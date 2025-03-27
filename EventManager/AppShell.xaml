@@ -195,4 +195,23 @@
         </ShellSection>
     </ShellItem>
 
+    <ShellItem Title="Option" FlyoutIcon="option.png">
+        <ShellSection>
+            <ShellContent
+                Title="Option"
+                ContentTemplate="{DataTemplate views:Option}"
+                Route="OptionPage">
+                <Shell.TitleView>
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="Roboto"
+                        FontSize="Large"
+                        Text="Option"
+                        TextColor="{DynamicResource TxtColorWhite}"
+                        VerticalTextAlignment="Center" />
+                </Shell.TitleView>
+            </ShellContent>
+        </ShellSection>
+
+    </ShellItem>
 </Shell>
