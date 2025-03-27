@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="EventManager.Views.Option"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+    xmlns:viewmodel="clr-namespace:EventManager.ViewModels"
+    Title="Option"
+    x:DataType="viewmodel:OptionViewModel"
+    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorLightGray},
+                                      Dark={DynamicResource BgColorDarkGray}}">
+    <VerticalStackLayout>
+        <Label
+            Padding="15,10,0,5"
+            FontAttributes="Bold"
+            FontFamily="Roboto"
+            FontSize="Medium"
+            HorizontalTextAlignment="Start"
+            Text="Theme Mode"
+            TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                        Dark={DynamicResource TxtColorWhite}}" />
+        <buttons:SfSegmentedControl
+            CornerRadius="5"
+            ItemsSource="{Binding ThemeOption}"
+            SegmentBackground="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                Dark={DynamicResource BgColorLightSlatedGray}}"
+            SegmentHeight="50"
+            SegmentWidth="125"
+            SelectedIndex="{Binding SelectedTheme, Mode=TwoWay}"
+            Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                     Dark={DynamicResource Gray600}}">
+            <buttons:SfSegmentedControl.SegmentTemplate>
+                <DataTemplate x:DataType="buttons:SfSegmentItem">
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Image
+                            HeightRequest="25"
+                            Source="{Binding ImageSource}"
+                            WidthRequest="25" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontFamily="Roboto"
+                            FontSize="Caption"
+                            Text="{Binding Text}"
+                            TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                        Dark={DynamicResource TxtColorWhite}}"
+                            VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                </DataTemplate>
+            </buttons:SfSegmentedControl.SegmentTemplate>
+
+            <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                <buttons:SelectionIndicatorSettings
+                    Background="{AppThemeBinding Light={DynamicResource SelectedPickerColor},
+                                                 Dark={DynamicResource SelectedPickerColorDark}}"
+                    SelectionIndicatorPlacement="BottomBorder"
+                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                Dark={DynamicResource TxtColorWhite}}" />
+            </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+        </buttons:SfSegmentedControl>
+
+        <BoxView
+            Grid.Row="2"
+            Margin="10,10,10,5"
+            BackgroundColor="{AppThemeBinding Light={DynamicResource Gray200},
+                                              Dark={DynamicResource Gray500}}"
+            HeightRequest="1" />
+    </VerticalStackLayout>
+</ContentPage>
