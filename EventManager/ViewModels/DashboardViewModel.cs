@@ -46,7 +46,11 @@ namespace EventManager.ViewModels
         [ObservableProperty] private double absentEmployees;
         [ObservableProperty] private string totalScannedEmployee;
 
-        [ObservableProperty] private bool isBusyPageIndicator;
+     
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsShowPage))]
+        private bool isBusyPageIndicator;
+        public bool IsShowPage => !IsBusyPageIndicator;
 
         [ObservableProperty] private ObservableCollection<AttendanceCategory> attendanceSummary = new();
         [ObservableProperty] private ObservableCollection<AttendanceByBU> attendanceByBusinessUnit = new();
