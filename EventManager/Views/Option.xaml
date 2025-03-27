@@ -25,7 +25,7 @@
             SegmentBackground="{AppThemeBinding Light={DynamicResource BgColorWhite},
                                                 Dark={DynamicResource BgColorLightSlatedGray}}"
             SegmentHeight="50"
-            SegmentWidth="125"
+            SegmentWidth="100"
             SelectedIndex="{Binding SelectedTheme, Mode=TwoWay}"
             Stroke="{AppThemeBinding Light={DynamicResource Gray200},
                                      Dark={DynamicResource Gray600}}">
