@@ -54,7 +54,7 @@
 
     <Shell.ItemTemplate>
         <DataTemplate>
-            <Grid Padding="15">
+            <Grid Padding="14">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.2*" />
                     <ColumnDefinition Width="0.8*" />
