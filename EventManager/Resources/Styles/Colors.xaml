@@ -14,8 +14,8 @@
     <Color x:Key="PrimaryColor">#009AFE</Color>
     <Color x:Key="PrimaryColorText">#FFFFFF</Color>
 
-    <Color x:Key="SelectedPickerColor">#ADD8E6</Color>
-    <Color x:Key="SelectedPickerColorDark">#009AFE</Color>
+    <Color x:Key="SelectedPickerColor">#BAE8F7</Color>
+    <Color x:Key="SelectedPickerColorDark">#8FD3E6</Color>
     <Color x:Key="TransparentColor">#00FFFFFF</Color>
 
     <Color x:Key="BgColorGreen">#00C853</Color>
