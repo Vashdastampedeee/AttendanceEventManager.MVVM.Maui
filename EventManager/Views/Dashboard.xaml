@@ -157,7 +157,7 @@
                                 Label="{Binding CartesianLegend}"
                                 LabelContext="YValue"
                                 PaletteBrushes="{Binding AttendanceByBusinessUnitPalleteBrushes}"
-                                ShowDataLabels="True"
+                                ShowDataLabels="{Binding IsShowDataLabel}"
                                 XBindingPath="BusinessUnit"
                                 YBindingPath="Count">
 
