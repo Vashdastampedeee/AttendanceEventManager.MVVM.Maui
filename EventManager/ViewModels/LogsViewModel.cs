@@ -97,7 +97,7 @@ namespace EventManager.ViewModels
             if (AttendanceLogs.Count == 0)
             {
                 await Task.Delay(100);
-                if (lastActiveEventId != activeEvent.Id)
+                if (lastActiveEventId != activeEvent.Id || !isLogsLoaded)
                 {
                     await RefreshLogs();
                 }
