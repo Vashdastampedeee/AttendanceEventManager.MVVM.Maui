@@ -125,7 +125,6 @@ namespace EventManager.ViewModels
             var activeEvent = await databaseService.GetSelectedEvent();
             if (activeEvent == null)
             {
-                await ToastHelper.ShowToast("No active event!", ToastDuration.Long);
                 return;
             }
             isLoadingMoreLogs = true;
