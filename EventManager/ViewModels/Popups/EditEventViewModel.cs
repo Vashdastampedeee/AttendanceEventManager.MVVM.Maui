@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using EventManager.Services;
 using EventManager.Utilities;
 using Mopups.Services;
+using System.Diagnostics;
 
 namespace EventManager.ViewModels.Popups
 {
@@ -44,9 +45,32 @@ namespace EventManager.ViewModels.Popups
             {
                 EventName = selectedEvent.EventName;
                 SelectedCategory = selectedEvent.EventCategory;
-                EventDate = DateTime.Parse(selectedEvent.EventDate);
-                FromTime = DateTime.Parse(selectedEvent.EventFromTime).TimeOfDay;
-                ToTime = DateTime.Parse(selectedEvent.EventToTime).TimeOfDay;
+                if (DateTime.TryParseExact(selectedEvent.EventDate, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+                {
+                    EventDate = parsedDate;
+                }
+                else
+                {
+                    EventDate = DateTime.Today;
+                }
+                if (DateTime.TryParseExact(selectedEvent.EventFromTime, "hh:mm tt", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime parsedFromTime))
+                {
+                    FromTime = parsedFromTime.TimeOfDay;
+                    
+                }
+                else
+                {
+                    FromTime = TimeSpan.Zero;
+                }
+                if (DateTime.TryParseExact(selectedEvent.EventToTime, "hh:mm tt", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime parsedToTime))
+                {
+                    ToTime = parsedToTime.TimeOfDay;
+                    
+                }
+                else
+                {
+                    ToTime = TimeSpan.Zero;
+                }
                 eventImageData = selectedEvent.EventImage;
                 EventImagePreview = ImageHelper.ConvertBytesToImage(eventImageData);
             }
