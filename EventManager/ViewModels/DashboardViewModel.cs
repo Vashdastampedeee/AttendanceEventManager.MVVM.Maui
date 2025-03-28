@@ -197,7 +197,7 @@ namespace EventManager.ViewModels
             AttendanceSummaryPalleteBrushes.Clear();
 
             AttendanceSummary.Add(new AttendanceCategory { Category = "No Data", Count = 1 });
-            AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#505050")));
+            AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#F5090B")));
             AttendanceByBusinessUnit.Add(new AttendanceByBU { BusinessUnit = "No Data", Count = 0 });
             IsBusyPageIndicator = false;
         }
