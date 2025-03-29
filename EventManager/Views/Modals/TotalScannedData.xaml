@@ -3,6 +3,7 @@
     x:Class="EventManager.Views.Modals.TotalScannedData"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:EventManager.Controls"
     xmlns:models="clr-namespace:EventManager.Models"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodel="clr-namespace:EventManager.ViewModels.Modals"
@@ -22,17 +23,85 @@
             FontAttributes="Bold"
             FontFamily="Roboto"
             FontSize="Large"
-            Text="{Binding SelectedBusinessUnit, StringFormat='Scanned Data ({0})'}"
+            Text="{Binding SelectedBusinessUnit}"
             TextColor="{StaticResource TxtColorWhite}"
             VerticalTextAlignment="Center" />
     </Shell.TitleView>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="0"
+            Padding="10"
+            ColumnSpacing="5"
+            RowSpacing="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.8*" />
+                <ColumnDefinition Width="0.15*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Grid.Column="0"
+                BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                  Dark={DynamicResource BgColorLightSlatedGray}}"
+                HeightRequest="60"
+                Stroke="{AppThemeBinding Light={DynamicResource Gray200},
+                                         Dark={DynamicResource Gray600}}"
+                StrokeShape="RoundRectangle 5">
+                <SearchBar
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
+                                                      Dark={DynamicResource BgColorLightSlatedGray}}"
+                    FontFamily="Roboto"
+                    FontSize="Small"
+                    HeightRequest="30"
+                    Placeholder="Search"
+                    PlaceholderColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                       Dark={DynamicResource TxtColorWhite}}"
+                    SearchCommand="{Binding SearchDataCommand}"
+                    Text="{Binding SearchText, Mode=TwoWay}"
+                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                Dark={DynamicResource TxtColorWhite}}">
+                    <SearchBar.Behaviors>
+                        <controls:HideSearchBarKeyboard />
+                    </SearchBar.Behaviors>
+                </SearchBar>
+
+            </Border>
+            <Button
+                Grid.Column="1"
+                BackgroundColor="{DynamicResource PrimaryColor}"
+                Command="{Binding RefreshDataCommand}"
+                FontAttributes="Bold"
+                FontFamily="IconButtons"
+                FontSize="Medium"
+                Text="&#xE800;"
+                TextColor="{StaticResource PrimaryColorText}" />
+
+        </Grid>
+
+
         <CollectionView
+            Grid.Row="1"
             ItemsSource="{Binding EmployeeAttendance}"
             RemainingItemsThreshold="1"
             RemainingItemsThresholdReachedCommand="{Binding LoadEmployeeAttendanceStatusCommand}"
             VerticalScrollBarVisibility="Never">
+
+            <CollectionView.EmptyView>
+                <Label
+                    FontAttributes="Italic"
+                    FontFamily="Roboto"
+                    FontSize="Small"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="{Binding IsNoDataVisible}"
+                    Text="No data found"
+                    TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
+                                                Dark={DynamicResource TxtColorWhite}}"
+                    VerticalTextAlignment="Center" />
+            </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:EmployeeAttendanceStatus">
@@ -54,13 +123,13 @@
                                                             Dark={DynamicResource TxtColorWhite}}" />
                             <Label
                                 FontFamily="Roboto"
-                                FontSize="Medium"
+                                FontSize="Small"
                                 Text="{Binding BusinessUnit}"
                                 TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                                             Dark={DynamicResource TxtColorWhite}}" />
                             <Label
                                 FontFamily="Roboto"
-                                FontSize="Small"
+                                FontSize="Medium"
                                 Text="{Binding Name}"
                                 TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                                             Dark={DynamicResource TxtColorWhite}}" />
@@ -105,7 +174,7 @@
 
         </CollectionView>
 
-        <AbsoluteLayout>
+        <AbsoluteLayout Grid.RowSpan="2">
             <Border
                 AbsoluteLayout.LayoutBounds="0.5, 0.95, AutoSize, AutoSize"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
@@ -127,6 +196,7 @@
         </AbsoluteLayout>
 
         <ActivityIndicator
+            Grid.RowSpan="2"
             HorizontalOptions="Center"
             IsRunning="{Binding IsBusyPageIndicator}"
             IsVisible="{Binding IsBusyPageIndicator}"
