@@ -57,8 +57,6 @@ namespace EventManager.ViewModels
         [ObservableProperty] private ObservableCollection<Brush> attendanceSummaryPalleteBrushes = new();
         [ObservableProperty] private ObservableCollection<Brush> attendanceByBusinessUnitPalleteBrushes = new();
 
-        [ObservableProperty] private string cartesianCategory;
-        [ObservableProperty] private string cartesianNumerical;
         [ObservableProperty] private string cartesianLegend;
         [ObservableProperty] private bool isShowDataLabel;
 
@@ -170,9 +168,8 @@ namespace EventManager.ViewModels
                 AttendanceByBusinessUnit.Add(item);
             }
 
-            CartesianCategory = "Comparison of Business Units";
-            CartesianNumerical = "Number of Attendees";
-            CartesianLegend = "Employee";
+   
+            CartesianLegend = "Number of Attendees";
             IsShowDataLabel = true;
             IsVisible = PresentEmployees > 0;
             IsBusyPageIndicator = false;
@@ -184,9 +181,9 @@ namespace EventManager.ViewModels
             TotalEmployees = 0;
             PresentEmployees = 0;
             AbsentEmployees = 0;
-            CartesianCategory = "No Data";
+
             CartesianLegend = "No Data";
-            CartesianNumerical = "No Data";  
+       
             presentEmployeeToString = "0";
             totalEmployeeToString = "0";
             totalScannedEmployeeToString = "0";
@@ -230,6 +227,12 @@ namespace EventManager.ViewModels
 
         public async Task ApplyFilter(string businessUnit)
         {
+            if (SelectedBusinessUnit == businessUnit)
+            {
+                await ToastHelper.ShowToast("Filter already applied!", ToastDuration.Short);
+                return;
+            }
+
             SelectedBusinessUnit = businessUnit;
             await LoadDashboardData();
         }
@@ -264,7 +267,7 @@ namespace EventManager.ViewModels
 
             try
             {
-                string fileName = $"AttendanceData_{activeEvent.EventName}_{SelectedBusinessUnit}_{DateTime.Now}.xlsx";
+                string fileName = $"AttendanceData_{activeEvent.EventName}_{SelectedBusinessUnit}({DateTime.Now}).xlsx";
                 var memoryStream = new MemoryStream();
 
                 using (var workbook = new XLWorkbook())
