@@ -20,6 +20,7 @@ namespace EventManager.ViewModels.Modals
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreData;
         private bool isAllDataLoaded;
+        private bool isSearching;
         private string isLastSelectedBuName;
 
         [ObservableProperty]
@@ -33,6 +34,12 @@ namespace EventManager.ViewModels.Modals
 
         [ObservableProperty]
         public string selectedBusinessUnit;
+
+        [ObservableProperty]
+        public string searchText;
+
+        [ObservableProperty]
+        public bool isNoDataVisible;
         public TotalScannedDataViewModel(DatabaseService databaseService)
         {
             this.databaseService = databaseService;
@@ -46,6 +53,7 @@ namespace EventManager.ViewModels.Modals
                 EmployeeAttendance.Clear();
                 lastLoadedIndex = 0;
                 isAllDataLoaded = false;
+                SearchText = string.Empty;
                 await Task.Delay(100);
                 await LoadEmployeeAttendanceStatus();
             }
@@ -62,15 +70,32 @@ namespace EventManager.ViewModels.Modals
 
             List<EmployeeAttendanceStatus> employees;
 
+        
+        
             if (SelectedBusinessUnit == "ALL")
             {
-                employees = await databaseService.GetTotalScannedDataPaginated(lastLoadedIndex, PageSize);
+                if (isSearching)
+                {
+                    employees = await databaseService.SearchTotalScannedData(SearchText.Trim(), lastLoadedIndex, PageSize);
+                }
+                else
+                {
+                    employees = await databaseService.GetTotalScannedDataPaginated(lastLoadedIndex, PageSize);
+                }
+                
             }
             else
             {
-                employees = await databaseService.GetTotalScannedDataByBusinessUnitPaginated(SelectedBusinessUnit, lastLoadedIndex, PageSize);
+                if (isSearching)
+                {
+                    employees = await databaseService.SearchTotalScannedDataByBusinessUnit(SelectedBusinessUnit, SearchText.Trim(), lastLoadedIndex, PageSize);
+                }
+                else
+                {
+                    employees = await databaseService.GetTotalScannedDataByBusinessUnitPaginated(SelectedBusinessUnit, lastLoadedIndex, PageSize);
+                }
             }
-
+      
             if (employees.Count != 0)
             {
                 await Task.Delay(500);
@@ -90,6 +115,32 @@ namespace EventManager.ViewModels.Modals
             IsBusyPageIndicator = false;
             IsLoadingDataIndicator = false;
             isLoadingMoreData = false;
+            IsNoDataVisible = EmployeeAttendance.Count == 0;
+        }
+
+        [RelayCommand]
+        public async Task SearchData()
+        {
+            isAllDataLoaded = false;
+            lastLoadedIndex = 0;
+            isSearching = !string.IsNullOrEmpty(SearchText.Trim());
+
+            EmployeeAttendance.Clear();
+            await Task.Delay(100);
+            await LoadEmployeeAttendanceStatus();
+        }
+        [RelayCommand]
+        public async Task RefreshData()
+        {
+            SearchText = string.Empty;
+            IsNoDataVisible = false;
+            isSearching = false;
+            isAllDataLoaded = false;
+            lastLoadedIndex = 0;
+
+            EmployeeAttendance.Clear();
+            await Task.Delay(100);
+            await LoadEmployeeAttendanceStatus();
         }
 
 
