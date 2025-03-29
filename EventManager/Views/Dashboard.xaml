@@ -99,7 +99,7 @@
                         </chart:SfCartesianChart.Title>
 
                         <chart:SfCartesianChart.Legend>
-                            <chart:ChartLegend Placement="Top">
+                            <chart:ChartLegend Placement="Bottom">
                                 <chart:ChartLegend.LabelStyle>
                                     <chart:ChartLegendLabelStyle
                                         FontFamily="Roboto"
@@ -112,14 +112,6 @@
 
                         <chart:SfCartesianChart.XAxes>
                             <chart:CategoryAxis>
-                                <chart:CategoryAxis.Title>
-                                    <chart:ChartAxisTitle
-                                        FontFamily="Roboto"
-                                        FontSize="Small"
-                                        Text="{Binding CartesianCategory}"
-                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
-                                                                    Dark={DynamicResource TxtColorWhite}}" />
-                                </chart:CategoryAxis.Title>
                                 <chart:CategoryAxis.LabelStyle>
                                     <chart:ChartAxisLabelStyle
                                         FontFamily="Roboto"
@@ -132,14 +124,6 @@
 
                         <chart:SfCartesianChart.YAxes>
                             <chart:NumericalAxis>
-                                <chart:NumericalAxis.Title>
-                                    <chart:ChartAxisTitle
-                                        FontFamily="Roboto"
-                                        FontSize="Small"
-                                        Text="{Binding CartesianNumerical}"
-                                        TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
-                                                                    Dark={DynamicResource TxtColorWhite}}" />
-                                </chart:NumericalAxis.Title>
                                 <chart:NumericalAxis.LabelStyle>
                                     <chart:ChartAxisLabelStyle
                                         FontFamily="Roboto"
@@ -168,7 +152,7 @@
                                                 FontAttributes="Bold"
                                                 FontFamily="Roboto"
                                                 FontSize="Micro"
-                                                LabelFormat="0 Employee"
+                                                LabelFormat="0 "
                                                 TextColor="{StaticResource PrimaryColorText}" />
                                         </chart:CartesianDataLabelSettings.LabelStyle>
                                     </chart:CartesianDataLabelSettings>
