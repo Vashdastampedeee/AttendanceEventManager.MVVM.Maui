@@ -280,7 +280,7 @@ namespace EventManager.ViewModels
 
                 await Task.Delay(300);
 
-                string fileName = $"ExportedLogs({DateTime.Now}).xlsx";
+                string fileName = $"Logs({DateTime.Now}).xlsx";
                 var memoryStream = new MemoryStream();
 
                 using (var workbook = new XLWorkbook())
