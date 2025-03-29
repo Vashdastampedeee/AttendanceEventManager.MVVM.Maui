@@ -358,16 +358,57 @@ namespace EventManager.Services
         }
         public async Task<List<EmployeeAttendanceStatus>> GetTotalScannedDataPaginated(int lastLoadedIndex, int pageSize)
         {
-            string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END LIMIT ? OFFSET ?";
+            string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name LIMIT ? OFFSET ?";
 
             return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(query, pageSize, lastLoadedIndex);
         }
 
         public async Task<List<EmployeeAttendanceStatus>> GetTotalScannedDataByBusinessUnitPaginated(string businessUnit, int lastLoadedIndex, int pageSize)
         {
-            string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) WHERE e.BusinessUnit = ? ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END LIMIT ? OFFSET ?";
+            string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) WHERE e.BusinessUnit = ? ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name LIMIT ? OFFSET ?";
 
             return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(query, businessUnit, pageSize, lastLoadedIndex);
+        }
+
+        public async Task<List<EmployeeAttendanceStatus>> SearchTotalScannedData(string searchText, int lastLoadedIndex, int pageSize)
+        {
+            string query = @"
+        SELECT e.IdNumber, e.Name, e.BusinessUnit, 
+               CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status 
+        FROM employee e 
+        LEFT JOIN attendancelog a 
+            ON e.IdNumber = a.IdNumber 
+            AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1)
+        WHERE e.IdNumber LIKE ? OR e.Name LIKE ? OR e.BusinessUnit LIKE ? OR 
+              (CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END) LIKE ?
+        ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name 
+        LIMIT ? OFFSET ?";
+
+            string searchPattern = $"%{searchText}%";
+
+            return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(
+                query, searchPattern, searchPattern, searchPattern, searchPattern, pageSize, lastLoadedIndex);
+        }
+
+        public async Task<List<EmployeeAttendanceStatus>> SearchTotalScannedDataByBusinessUnit(string businessUnit, string searchText, int lastLoadedIndex, int pageSize)
+        {
+            string query = @"
+        SELECT e.IdNumber, e.Name, e.BusinessUnit, 
+               CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status 
+        FROM employee e 
+        LEFT JOIN attendancelog a 
+            ON e.IdNumber = a.IdNumber 
+            AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1)
+        WHERE e.BusinessUnit = ? 
+        AND (e.IdNumber LIKE ? OR e.Name LIKE ? OR 
+             (CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END) LIKE ?)
+        ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name 
+        LIMIT ? OFFSET ?";
+
+            string searchPattern = $"%{searchText}%";
+
+            return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(
+                query, businessUnit, searchPattern, searchPattern, searchPattern, pageSize, lastLoadedIndex);
         }
 
 
