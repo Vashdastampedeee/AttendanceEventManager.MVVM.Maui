@@ -25,19 +25,31 @@ namespace EventManager.ViewModels
     {
         private readonly DatabaseService databaseService;
         private readonly IFileSaver fileSaverService;
-        private int lastActiveEventId;
-        private double totalScannedEmployeePercentage;
-        private string presentEmployeeToString, totalEmployeeToString, totalScannedEmployeeToString;
+
+        private int previousActiveEvent;
         public bool isAllDashboardDataLoaded;
 
-        [ObservableProperty] private bool isBusy;
-        public bool IsNotBusy => !IsBusy;
-        [ObservableProperty] private bool isViewDataBusy;
-        public bool IsViewDataNotBusy => !IsViewDataBusy;
-        [ObservableProperty] private bool isExportDataBusy;
-        public bool IsExportDataNotBusy => !IsExportDataBusy;
         [ObservableProperty]
-        private bool isVisible;
+        [NotifyPropertyChangedFor(nameof(IsShowPage))]
+        private bool isBusyPageIndicator;
+        public bool IsShowPage => !IsBusyPageIndicator;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsAnyBusy))]
+        [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+        private bool isFilterBusy;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsAnyBusy))]
+        [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+        private bool isViewDataBusy;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsAnyBusy))]
+        [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+        private bool isExportDataBusy;
+        public bool IsAnyBusy => IsFilterBusy || IsViewDataBusy || IsExportDataBusy;
+        public bool IsNotBusy => !IsAnyBusy;
 
         [ObservableProperty] private string selectedBusinessUnit = "ALL";
 
@@ -45,17 +57,19 @@ namespace EventManager.ViewModels
         [ObservableProperty] private double presentEmployees;
         [ObservableProperty] private double absentEmployees;
         [ObservableProperty] private string totalScannedEmployee;
+        private double totalScannedPercentage;
 
-     
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsShowPage))]
-        private bool isBusyPageIndicator;
-        public bool IsShowPage => !IsBusyPageIndicator;
+        [ObservableProperty] private ObservableCollection<AttendanceData> attendanceData = new();
+        [ObservableProperty] private ObservableCollection<Brush> attendanceDataChartColor = new();
+        private List<string> businessUnitsData = new List<string>{ "BAG", "HLB", "JLINE", "RAWLINGS", "SUPPORT GROUP" };
+        private string businessUnitCategory;
+        private int businessUnitCategoryCount;
 
-        [ObservableProperty] private ObservableCollection<AttendanceCategory> attendanceSummary = new();
-        [ObservableProperty] private ObservableCollection<AttendanceByBU> attendanceByBusinessUnit = new();
-        [ObservableProperty] private ObservableCollection<Brush> attendanceSummaryPalleteBrushes = new();
-        [ObservableProperty] private ObservableCollection<Brush> attendanceByBusinessUnitPalleteBrushes = new();
+        [ObservableProperty] private ObservableCollection<AttendanceStatus> attendanceStatus = new();
+        [ObservableProperty] private ObservableCollection<Brush> attendanceStatusChartColor = new();
+        private List<string> businessUnitsStatus = new List<string> { "Present", "Absent" };
+        private string businessUnitStatus;
+        private int businessUnitStatusCount;
 
         [ObservableProperty] private string cartesianLegend;
         [ObservableProperty] private bool isShowDataLabel;
@@ -80,19 +94,19 @@ namespace EventManager.ViewModels
                 ResetDashboardData();
                 return;
             } 
-            else if(lastActiveEventId != activeEvent.Id || !isAllDashboardDataLoaded)
+            else
             {
-                await LoadDashboardData();
-                isAllDashboardDataLoaded = true;
-                lastActiveEventId = activeEvent.Id;
+                if (previousActiveEvent != activeEvent.Id || !isAllDashboardDataLoaded)
+                {
+                    await LoadDashboardData();
+                    previousActiveEvent = activeEvent.Id;
+                }
             }
         }
         
         public async Task LoadDashboardData()
         {
             IsBusyPageIndicator = true;
-
-            var activeEvent = await databaseService.GetSelectedEvent();
 
             if (SelectedBusinessUnit == "ALL")
             {
@@ -107,122 +121,106 @@ namespace EventManager.ViewModels
 
             if (TotalEmployees > 0)
             {
-                totalScannedEmployeePercentage = (PresentEmployees / TotalEmployees) * 100;
+                totalScannedPercentage = (PresentEmployees / TotalEmployees) * 100;
             }   
             else
             {
-                totalScannedEmployeePercentage = 0;
+                totalScannedPercentage = 0;
             }
 
-            presentEmployeeToString = PresentEmployees.ToString();
-            totalEmployeeToString = TotalEmployees.ToString();
-            totalScannedEmployeeToString = totalScannedEmployeePercentage.ToString("F2");
-            TotalScannedEmployee = $"{presentEmployeeToString} / {totalEmployeeToString} - {totalScannedEmployeeToString}%";
-          
+            TotalScannedEmployee = $"{Convert.ToString(PresentEmployees)} / {Convert.ToString(TotalEmployees)} - {totalScannedPercentage:F2}%";
             AbsentEmployees = TotalEmployees - PresentEmployees;
 
-            AttendanceSummary.Clear();
-            AttendanceSummary.Add(new AttendanceCategory { Category = "Present", Count = PresentEmployees });
-            AttendanceSummary.Add(new AttendanceCategory { Category = "Absent", Count = AbsentEmployees });
+            AttendanceStatus.Clear();
+            AttendanceStatusChartColor.Clear();
 
-            AttendanceSummaryPalleteBrushes.Clear();
-
-            for (int i = 0; i < AttendanceSummary.Count; i++)
+            for (int i = 0; i < businessUnitsStatus.Count; i++)
             {
-                if (AttendanceSummary[i].Category == "Present")
+                businessUnitStatus = businessUnitsStatus[i];
+                if (businessUnitStatus == "Present")
                 {
-                    AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#00C853")));
+                    AttendanceStatusChartColor.Add(new SolidColorBrush(Color.FromArgb("#00C853")));
+                    businessUnitStatusCount = (int)PresentEmployees; 
                 }
                 else
                 {
-                    AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#F5090B")));
+                    AttendanceStatusChartColor.Add(new SolidColorBrush(Color.FromArgb("#F5090B")));
+                    businessUnitStatusCount = (int)AbsentEmployees; 
                 }
+                AttendanceStatus.Add(new AttendanceStatus { Category = businessUnitStatus, Count = businessUnitStatusCount });
             }
 
-            AttendanceByBusinessUnitPalleteBrushes.Clear();
-            AttendanceByBusinessUnit.Clear();
-            var tempList = new List<AttendanceByBU>();
-            var businessUnits = new List<string> { "BAG", "HLB", "JLINE", "RAWLINGS", "SUPPORT GROUP" };
+            AttendanceData.Clear();
+            AttendanceDataChartColor.Clear();
 
-            for (int i = 0; i < businessUnits.Count; i++)
+            for (int i = 0; i < businessUnitsData.Count; i++)
             {
-                string bu = businessUnits[i];
-                int buCount = 0;
+                businessUnitCategory = businessUnitsData[i];
+                businessUnitCategoryCount = 0;
 
-                if (SelectedBusinessUnit == "ALL" || SelectedBusinessUnit == bu)
+                if (SelectedBusinessUnit == "ALL" || SelectedBusinessUnit == businessUnitCategory)
                 {
-                    AttendanceByBusinessUnitPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#009AFE")));
-                    buCount = await databaseService.GetPresentEmployeeCountByBUAsync(bu);
+                    AttendanceDataChartColor.Add(new SolidColorBrush(Color.FromArgb("#009AFE")));
+                    businessUnitCategoryCount = await databaseService.GetPresentEmployeeCountByBUAsync(businessUnitCategory);
                 }
                 else
                 {
-                    AttendanceByBusinessUnitPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#505050")));  
+                    AttendanceDataChartColor.Add(new SolidColorBrush(Color.FromArgb("#505050")));  
                 }
-
-                tempList.Add(new AttendanceByBU { BusinessUnit = bu, Count = buCount });
+                AttendanceData.Add(new AttendanceData { BusinessUnit = businessUnitCategory, Count = businessUnitCategoryCount });
             }
 
-            AttendanceByBusinessUnit.Clear();
-            foreach (var item in tempList)
-            {
-                AttendanceByBusinessUnit.Add(item);
-            }
-
-   
             CartesianLegend = "Number of Attendees";
             IsShowDataLabel = true;
-            IsVisible = PresentEmployees > 0;
+            isAllDashboardDataLoaded = true;
+
             IsBusyPageIndicator = false;
+   
         }
         private void ResetDashboardData()
         {
             IsBusyPageIndicator = true;
-            IsShowDataLabel = false;
+
             TotalEmployees = 0;
             PresentEmployees = 0;
             AbsentEmployees = 0;
+            totalScannedPercentage = 0;
 
-            CartesianLegend = "No Data";
-       
-            presentEmployeeToString = "0";
-            totalEmployeeToString = "0";
-            totalScannedEmployeeToString = "0";
+            IsShowDataLabel = false;
+
             TotalScannedEmployee = "No Data";
+            CartesianLegend = "No Data";
 
-            AttendanceSummary.Clear();
-            AttendanceByBusinessUnit.Clear();
-            AttendanceSummaryPalleteBrushes.Clear();
+            AttendanceStatus.Clear();
+            AttendanceData.Clear();
+            AttendanceStatusChartColor.Clear();
+            AttendanceDataChartColor.Clear();
 
-            AttendanceSummary.Add(new AttendanceCategory { Category = "No Data", Count = 1 });
-            AttendanceSummaryPalleteBrushes.Add(new SolidColorBrush(Color.FromArgb("#F5090B")));
-            AttendanceByBusinessUnit.Add(new AttendanceByBU { BusinessUnit = "No Data", Count = 0 });
+            AttendanceStatus.Add(new AttendanceStatus { Category = "No Data", Count = 1 });
+            AttendanceStatusChartColor.Add(new SolidColorBrush(Color.FromArgb("#F5090B")));
+            AttendanceData.Add(new AttendanceData { BusinessUnit = "No Data", Count = 0 });
+
             IsBusyPageIndicator = false;
         }
 
         [RelayCommand]
         public async Task FilterDashboard()
         {
-            var filterDashboardViewModel = new FilterDashboardViewModel(this);
-            var filterDashboard = new FilterDashboard(filterDashboardViewModel);
-            var activeEvent = await databaseService.GetSelectedEvent();
+            IsFilterBusy = true;
 
+            var activeEvent = await databaseService.GetSelectedEvent();
             if(activeEvent == null)
             {
-                await ToastHelper.ShowToast("No Data Found!", ToastDuration.Short);
-                return;
+                await ToastHelper.ShowToast("Set Event First!", ToastDuration.Short);
+            }
+            else
+            {
+                var filterDashboardViewModel = new FilterDashboardViewModel(this);
+                var filterDashboard = new FilterDashboard(filterDashboardViewModel);
+                await MopupService.Instance.PushAsync(filterDashboard);
             }
 
-            if (IsBusy)
-            { 
-                return; 
-            }
-
-            IsBusy = true;
-            OnPropertyChanged(nameof(IsNotBusy));
-            await Task.Delay(300);
-            await MopupService.Instance.PushAsync(filterDashboard);
-            IsBusy = false;
-            OnPropertyChanged(nameof(IsNotBusy));
+            IsFilterBusy = false;
         }
 
         public async Task ApplyFilter(string businessUnit)
@@ -232,98 +230,117 @@ namespace EventManager.ViewModels
                 await ToastHelper.ShowToast("Filter already applied!", ToastDuration.Short);
                 return;
             }
-
-            SelectedBusinessUnit = businessUnit;
-            await LoadDashboardData();
+            else
+            {
+                SelectedBusinessUnit = businessUnit;
+                await LoadDashboardData();
+            }
         }
+
         [RelayCommand]
         public async Task ViewData()
         {
             IsViewDataBusy = true;
-            OnPropertyChanged(nameof(IsViewDataNotBusy));
-            var parameter = new ShellNavigationQueryParameters {{"SelectedBusinessUnit", SelectedBusinessUnit}};
-            await Shell.Current.GoToAsync(nameof(TotalScannedData),parameter);
+
+            var activeEvent = await databaseService.GetSelectedEvent();
+            if (activeEvent == null)
+            {
+                await ToastHelper.ShowToast("Set Event First!", ToastDuration.Short);
+            }
+            else if(PresentEmployees == 0)
+            {
+                await ToastHelper.ShowToast("No Data Found!", ToastDuration.Short);
+            }
+            else
+            {
+                var parameter = new ShellNavigationQueryParameters { { "SelectedBusinessUnit", SelectedBusinessUnit } };
+                await Shell.Current.GoToAsync(nameof(TotalScannedData), parameter);
+            }
+
             IsViewDataBusy = false;
-            OnPropertyChanged(nameof(IsViewDataNotBusy));
         }
 
         [RelayCommand]
         public async Task ExportData()
         {
             IsExportDataBusy = true;
-            OnPropertyChanged(nameof(IsExportDataNotBusy));    
+    
             var activeEvent = await databaseService.GetSelectedEvent();
-
-            List<EmployeeAttendanceStatus> employees;
-
-            if (SelectedBusinessUnit == "ALL")
+            if (activeEvent == null)
             {
-                employees = await databaseService.GetTotalScannedDataPaginated(0, int.MaxValue);
+                await ToastHelper.ShowToast("Set Event First!", ToastDuration.Short);
+            }
+            else if (PresentEmployees == 0)
+            {
+                await ToastHelper.ShowToast("No Data Found!", ToastDuration.Short);
             }
             else
             {
-                employees = await databaseService.GetTotalScannedDataByBusinessUnitPaginated(SelectedBusinessUnit, 0, int.MaxValue);
-            }
+                List<EmployeeAttendanceStatus> employees;
 
-            try
-            {
-                string fileName = $"AttendanceData_{activeEvent.EventName}_{SelectedBusinessUnit}({DateTime.Now}).xlsx";
-                var memoryStream = new MemoryStream();
-
-                using (var workbook = new XLWorkbook())
+                if (SelectedBusinessUnit == "ALL")
                 {
-                    var worksheet = workbook.Worksheets.Add("Attendance Data");
+                    employees = await databaseService.GetTotalScannedDataPaginated(0, int.MaxValue);
+                }
+                else
+                {
+                    employees = await databaseService.GetTotalScannedDataByBusinessUnitPaginated(SelectedBusinessUnit, 0, int.MaxValue);
+                }
 
-                    worksheet.Cell(1, 1).Value = "Event Name";
-                    worksheet.Cell(1, 2).Value = "Category";
-                    worksheet.Cell(1, 3).Value = "Date";
-                    worksheet.Cell(1, 4).Value = "Time";
-                    worksheet.Cell(1, 5).Value = "ID Number";
-                    worksheet.Cell(1, 6).Value = "Name";
-                    worksheet.Cell(1, 7).Value = "Business Unit";
-                    worksheet.Cell(1, 8).Value = "Status";
+                try
+                {
+                    string fileName = $"AttendanceData_{activeEvent?.EventName}_{SelectedBusinessUnit}({DateTime.Now}).xlsx";
+                    var memoryStream = new MemoryStream();
 
-                    int row = 2;
-                    foreach (var employee in employees)
+                    using (var workbook = new XLWorkbook())
                     {
-                        worksheet.Cell(row, 1).Value = activeEvent.EventName;
-                        worksheet.Cell(row, 2).Value = activeEvent.EventCategory;
-                        worksheet.Cell(row, 3).Value = activeEvent.EventDate;
-                        worksheet.Cell(row, 4).Value = activeEvent.FormattedTime;
-                        worksheet.Cell(row, 5).Value = employee.IdNumber;
-                        worksheet.Cell(row, 6).Value = employee.Name;
-                        worksheet.Cell(row, 7).Value = employee.BusinessUnit;
-                        worksheet.Cell(row, 8).Value = employee.Status;
-                        row++;
+                        var worksheet = workbook.Worksheets.Add("Attendance Data");
+
+                        worksheet.Cell(1, 1).Value = "Event Name";
+                        worksheet.Cell(1, 2).Value = "Category";
+                        worksheet.Cell(1, 3).Value = "Date";
+                        worksheet.Cell(1, 4).Value = "Time";
+                        worksheet.Cell(1, 5).Value = "ID Number";
+                        worksheet.Cell(1, 6).Value = "Name";
+                        worksheet.Cell(1, 7).Value = "Business Unit";
+                        worksheet.Cell(1, 8).Value = "Status";
+
+                        int row = 2;
+                        foreach (var employee in employees)
+                        {
+                            worksheet.Cell(row, 1).Value = activeEvent.EventName;
+                            worksheet.Cell(row, 2).Value = activeEvent.EventCategory;
+                            worksheet.Cell(row, 3).Value = activeEvent.EventDate;
+                            worksheet.Cell(row, 4).Value = activeEvent.FormattedTime;
+                            worksheet.Cell(row, 5).Value = employee.IdNumber;
+                            worksheet.Cell(row, 6).Value = employee.Name;
+                            worksheet.Cell(row, 7).Value = employee.BusinessUnit;
+                            worksheet.Cell(row, 8).Value = employee.Status;
+                            row++;
+                        }
+
+                        worksheet.Columns().AdjustToContents();
+                        workbook.SaveAs(memoryStream);
+                        memoryStream.Position = 0;
                     }
 
-                    worksheet.Columns().AdjustToContents();
-
-                    workbook.SaveAs(memoryStream);
-                    memoryStream.Position = 0;
+                    var fileResult = await fileSaverService.SaveAsync(fileName, memoryStream, CancellationToken.None);
+                    if (!fileResult.IsSuccessful)
+                    {
+                        await ToastHelper.ShowToast($"Export failed: {fileResult.Exception?.Message}", ToastDuration.Long);
+                    }
+                    else
+                    {
+                        await ToastHelper.ShowToast($"Export successful!\nFile saved: {fileResult.FilePath}", ToastDuration.Long);
+                    }
                 }
-
-                var fileResult = await fileSaverService.SaveAsync(fileName, memoryStream, CancellationToken.None);
-
-                if (!fileResult.IsSuccessful)
+                catch (Exception ex)
                 {
-                    await ToastHelper.ShowToast($"Export failed: {fileResult.Exception?.Message}", ToastDuration.Long);
-                    return;
+                    await ToastHelper.ShowToast($"Export failed! {ex.Message}", ToastDuration.Short);
                 }
+            }
 
-                await ToastHelper.ShowToast($"Export successful!\nFile saved: {fileResult.FilePath}", ToastDuration.Long);
-            }
-            catch (Exception ex)
-            {
-                await ToastHelper.ShowToast($"Export failed! {ex.Message}", ToastDuration.Short);
-            }
-            finally
-            {
-                IsExportDataBusy = false;
-                OnPropertyChanged(nameof(IsExportDataNotBusy));
-            }
+            IsExportDataBusy = false;
         }
-
-
     }
 }
