@@ -136,11 +136,10 @@
 
                         <chart:SfCartesianChart.Series>
                             <chart:ColumnSeries
-                                EnableAnimation="True"
-                                ItemsSource="{Binding AttendanceByBusinessUnit}"
+                                ItemsSource="{Binding AttendanceData}"
                                 Label="{Binding CartesianLegend}"
                                 LabelContext="YValue"
-                                PaletteBrushes="{Binding AttendanceByBusinessUnitPalleteBrushes}"
+                                PaletteBrushes="{Binding AttendanceDataChartColor}"
                                 ShowDataLabels="{Binding IsShowDataLabel}"
                                 XBindingPath="BusinessUnit"
                                 YBindingPath="Count">
@@ -265,10 +264,9 @@
 
                         <chart:SfCircularChart.Series>
                             <chart:PieSeries
-                                EnableAnimation="True"
-                                ItemsSource="{Binding AttendanceSummary}"
+                                ItemsSource="{Binding AttendanceStatus}"
                                 LabelContext="Percentage"
-                                PaletteBrushes="{Binding AttendanceSummaryPalleteBrushes}"
+                                PaletteBrushes="{Binding AttendanceStatusChartColor}"
                                 ShowDataLabels="{Binding IsShowDataLabel}"
                                 XBindingPath="Category"
                                 YBindingPath="Count">
@@ -340,8 +338,8 @@
                         <Grid
                             Grid.Row="1"
                             Grid.ColumnSpan="2"
-                            ColumnSpacing="10"
-                            IsVisible="{Binding IsVisible}">
+                            ColumnSpacing="10">
+
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.5*" />
                                 <ColumnDefinition Width="0.5*" />
@@ -360,7 +358,7 @@
                                         FontAttributes="Bold"
                                         FontFamily="Roboto"
                                         FontSize="Small"
-                                        IsEnabled="{Binding IsViewDataNotBusy}"
+                                        IsEnabled="{Binding IsNotBusy}"
                                         IsVisible="{Binding IsViewDataBusy, Converter={StaticResource InverseBoolConverter}}"
                                         Text="View Data"
                                         TextColor="{StaticResource PrimaryColorText}" />
@@ -387,7 +385,7 @@
                                         FontAttributes="Bold"
                                         FontFamily="Roboto"
                                         FontSize="Small"
-                                        IsEnabled="{Binding IsExportDataNotBusy}"
+                                        IsEnabled="{Binding IsNotBusy}"
                                         IsVisible="{Binding IsExportDataBusy, Converter={StaticResource InverseBoolConverter}}"
                                         Text="Export Data"
                                         TextColor="{StaticResource PrimaryColorText}" />
@@ -435,13 +433,13 @@
                         FontFamily="IconButtons"
                         FontSize="Large"
                         IsEnabled="{Binding IsNotBusy}"
-                        IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        IsVisible="{Binding IsFilterBusy, Converter={StaticResource InverseBoolConverter}}"
                         Text="&#xF0B0;"
                         TextColor="{StaticResource PrimaryColorText}" />
                     <ActivityIndicator
                         HeightRequest="25"
-                        IsRunning="{Binding IsBusy}"
-                        IsVisible="{Binding IsBusy}"
+                        IsRunning="{Binding IsFilterBusy}"
+                        IsVisible="{Binding IsFilterBusy}"
                         WidthRequest="25"
                         Color="{StaticResource PrimaryColorText}" />
                 </Grid>
