@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventManager.Models
 {
-    public class AttendanceCategory
+    public class AttendanceStatus
     {
         public string Category { get; set; }
         public double Count { get; set; }
