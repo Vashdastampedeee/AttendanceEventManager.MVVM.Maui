@@ -28,7 +28,7 @@
             <Grid>
                 <Button
                     BackgroundColor="{DynamicResource PrimaryColor}"
-                    Command="{Binding SyncEmployeesCommand}"
+                    Command="{Binding SyncSqlCommand}"
                     FontAttributes="Bold"
                     FontFamily="IconButtons"
                     FontSize="Small"
