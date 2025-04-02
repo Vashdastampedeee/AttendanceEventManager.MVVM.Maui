@@ -91,7 +91,74 @@ namespace EventManager.Services
 
         }
 
-        private async Task<int> GetTotalEmployees(SqlConnection sqlConn)
+        public async Task SyncEventsFromSqlServer()
+        {
+            var syncDataViewModel = new SyncDataViewModel();
+            var syncData = new SyncData(syncDataViewModel);
+
+            await MopupService.Instance.PushAsync(syncData);
+
+            try
+            {
+                using (var sqlConn = new SqlConnection(sqlServerConnStr))
+                {
+                    await sqlConn.OpenAsync();
+                    await syncDataViewModel.UpdateProgress("Connected to server...");
+
+                    await databaseService.DeleteAllEventsData();
+                    await syncDataViewModel.UpdateProgress("Clearing old events data...");
+
+                    int totalEvents = await GetTotalEvents(sqlConn);
+                    await syncDataViewModel.UpdateProgress($"Total events to fetch: {totalEvents}...");
+
+                    using (var sqlCmd = new SqlCommand(GetEventQuery(), sqlConn))
+                    using (var reader = await sqlCmd.ExecuteReaderAsync())
+                    {
+                        var events = new List<Event>();
+                        int count = 0;
+
+                        while (await reader.ReadAsync())
+                        {
+                            events.Add(new Event
+                            {
+                                EventName = reader["EventName"].ToString(),
+                                EventCategory = reader["EventCategory"].ToString(),
+                                EventImage = reader["EventImage"] as byte[],
+                                EventDate = Convert.ToDateTime(reader["EventDate"]).ToString("MM/dd/yyyy"),
+                                EventFromTime = reader["EventFromTime"].ToString(),
+                                EventToTime = reader["EventToTime"].ToString()
+                            });
+
+                            count++;
+                            await syncDataViewModel.UpdateProgress($"Fetching {count}/{totalEvents} events...");
+                        }
+
+                        await database.RunInTransactionAsync(tran =>
+                        {
+                            tran.InsertAll(events);
+                        });
+
+                        await syncDataViewModel.UpdateProgress("Saving data to local database...");
+                    }
+                }
+
+                await syncDataViewModel.UpdateProgress("Sync completed successfully!");
+                await ToastHelper.ShowToast($"SQL Server sync succesful!", ToastDuration.Long);
+                await databaseService.UseLatestEventByDefault();
+            }
+            catch(Exception ex)
+            {
+                await syncDataViewModel.UpdateProgress($"Sql server connection failed!");
+                await ToastHelper.ShowToast($"SQL Server sync failed!", ToastDuration.Long);
+            }
+            finally
+            {
+                await Task.Delay(500);
+                await MopupService.Instance.PopAsync();
+            }
+        }
+
+        private static async Task<int> GetTotalEmployees(SqlConnection sqlConn)
         {
             using (var countCmd = new SqlCommand(
                 "SELECT COUNT(*) FROM TimeKeeping..Employees WHERE (JobStatus = 'ACTIVE' OR JobStatusCurrent = 'ACTIVE') AND BusinessUnit != 'TRI-VIET'", sqlConn))
@@ -100,7 +167,16 @@ namespace EventManager.Services
             }
         }
 
-        private string GetEmployeeQuery()
+        private static async Task<int> GetTotalEvents(SqlConnection sqlConn)
+        {
+            using (var countCmd = new SqlCommand(
+                "SELECT COUNT(*) FROM WHSEPDA..SampleEvents", sqlConn))
+            {
+                return (int)await countCmd.ExecuteScalarAsync();
+            }
+        }
+
+        private static string GetEmployeeQuery()
         {
             return @"SELECT
                     IDNo, 
@@ -113,6 +189,14 @@ namespace EventManager.Services
                     FROM TimeKeeping..Employees 
                     WHERE (JobStatus = 'ACTIVE' OR JobStatusCurrent = 'ACTIVE')
                     AND BusinessUnit != 'TRI-VIET'";
+        }
+
+        private static string GetEventQuery()
+        {
+            return @"SELECT EventName, EventCategory, EventImage, EventDate, EventFromTime, EventToTime
+                     FROM WHSEPDA..SampleEvents 
+                     WHERE EventStatus = 'ACTIVE' 
+                     ORDER by EventDate DESC";
         }
     }
 
