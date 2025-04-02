@@ -87,6 +87,12 @@ namespace EventManager.Services
             Debug.WriteLine("[DatabaseService] All employee records deleted.");
         }
 
+        public async Task DeleteAllEventsData()
+        {
+            await databaseConnection.DeleteAllAsync<Event>();
+            await databaseConnection.ExecuteAsync("DELETE FROM sqlite_sequence WHERE name = 'event'");
+        }
+
         public async Task<Employee?> GetEmployeeIdNumber(string idNumber)
         {
             var query = "SELECT * FROM employee WHERE IdNumber = ?";
@@ -132,7 +138,7 @@ namespace EventManager.Services
 
         public async Task<List<Event>> GetEventsPaginated(int startIndex, int pageSize)
         {
-            string query = "SELECT * FROM event ORDER BY Id DESC LIMIT ? OFFSET ?";
+            string query = "SELECT * FROM event ORDER BY EventDate DESC LIMIT ? OFFSET ?";
             var events = await databaseConnection.QueryAsync<Event>(query, pageSize, startIndex);
 
             foreach (var eventData in events)
@@ -166,6 +172,11 @@ namespace EventManager.Services
             string query = "SELECT * FROM event WHERE Id = ?";
             var eventList = await databaseConnection.QueryAsync<Event>(query, eventId);
             return eventList.FirstOrDefault();
+        }
+        public async Task UseLatestEventByDefault()
+        {
+            await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 0");
+            await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 1 WHERE Id = (SELECT Id FROM event ORDER BY EventDate DESC LIMIT 1)");
         }
         public async Task UseSelectedEvent(int eventId)
         {
