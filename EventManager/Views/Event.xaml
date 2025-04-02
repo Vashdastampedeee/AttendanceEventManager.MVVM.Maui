@@ -116,7 +116,12 @@
                         Stroke="{AppThemeBinding Light={DynamicResource Gray200},
                                                  Dark={DynamicResource Gray600}}"
                         StrokeShape="RoundRectangle 5">
-                        <VerticalStackLayout Spacing="5">
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=EventItemTappedCommand}" CommandParameter="{Binding Id}" />
+                        </Border.GestureRecognizers>
+
+                        <VerticalStackLayout Padding="5" Spacing="5">
 
                             <FlexLayout JustifyContent="SpaceBetween">
                                 <Image
@@ -190,33 +195,6 @@
 
                             </StackLayout>
 
-                            <StackLayout Orientation="Horizontal" Spacing="5">
-                                <Button
-                                    BackgroundColor="{DynamicResource PrimaryColor}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=UseSelectedEventCommand}"
-                                    CommandParameter="{Binding Id}"
-                                    FontAttributes="Bold"
-                                    FontFamily="Roboto"
-                                    Text="Use"
-                                    TextColor="{StaticResource PrimaryColorText}" />
-                                <Button
-                                    BackgroundColor="{DynamicResource PrimaryColor}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=EditSelectedEventCommand}"
-                                    CommandParameter="{Binding Id}"
-                                    FontAttributes="Bold"
-                                    FontFamily="Roboto"
-                                    Text="Edit"
-                                    TextColor="{StaticResource PrimaryColorText}" />
-                                <Button
-                                    BackgroundColor="{StaticResource BgColorRed}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EventViewModel}}, Path=DeleteSelectedEventCommand}"
-                                    CommandParameter="{Binding Id}"
-                                    FontAttributes="Bold"
-                                    FontFamily="Roboto"
-                                    Text="Delete"
-                                    TextColor="{StaticResource PrimaryColorText}" />
-                            </StackLayout>
-
                         </VerticalStackLayout>
 
                     </Border>
@@ -253,39 +231,6 @@
             VerticalOptions="Center"
             Color="{DynamicResource PrimaryColor}" />
 
-        <AbsoluteLayout Grid.RowSpan="2">
-            <Border
-                AbsoluteLayout.LayoutBounds="1,1,80,80"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="{DynamicResource PrimaryColor}"
-                HeightRequest="55"
-                Stroke="{StaticResource TransparentColor}"
-                StrokeShape="RoundRectangle 10"
-                WidthRequest="55">
-
-                <Grid>
-                    <Button
-                        BackgroundColor="{DynamicResource PrimaryColor}"
-                        Command="{Binding AddEventPopupCommand}"
-                        FontAttributes="Bold"
-                        FontFamily="IconButtons"
-                        FontSize="Large"
-                        IsEnabled="{Binding IsNotBusy}"
-                        IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
-                        Text="&#xF271;"
-                        TextColor="{StaticResource PrimaryColorText}" />
-
-                    <ActivityIndicator
-                        HeightRequest="25"
-                        IsRunning="{Binding IsBusy}"
-                        IsVisible="{Binding IsBusy}"
-                        WidthRequest="25"
-                        Color="{DynamicResource PrimaryColorText}" />
-                </Grid>
-
-            </Border>
-
-        </AbsoluteLayout>
     </Grid>
 
 </ContentPage>
