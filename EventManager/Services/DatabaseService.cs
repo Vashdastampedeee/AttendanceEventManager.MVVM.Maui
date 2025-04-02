@@ -37,13 +37,12 @@ namespace EventManager.Services
                 Debug.WriteLine("[DatabaseService] Tables already created");
             }
         }
-
         public SQLiteAsyncConnection GetDatabaseConnection()
         {
             return databaseConnection;
         }
 
-        public string GetDatabasePath()
+        public static string GetDatabasePath()
         {
             string folderPath = FileSystem.AppDataDirectory;
             string dbPath = Path.Combine(folderPath, databaseFileName);
@@ -129,13 +128,6 @@ namespace EventManager.Services
             return await databaseConnection.QueryAsync<AttendanceLog>(query, eventName, eventCategory, eventDate, eventTime, pageSize, startIndex);
         }
 
-        public async Task InsertEvent(string eventName, string eventCategory, byte[] eventImage, string eventDate, string eventFromTime, string eventToTime)
-        {
-            string query = "INSERT INTO event (EventName, EventCategory, EventImage, EventDate, EventFromTime, EventToTime, isSelected) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            await databaseConnection.ExecuteAsync(query, eventName, eventCategory, eventImage, eventDate, eventFromTime, eventToTime, false);
-            Debug.WriteLine($"[DatabaseService] Event inserted: {eventName}, {eventCategory}, {eventImage?.Length ?? 0} {eventDate}, {eventFromTime} - {eventToTime}");
-        }
-
         public async Task<List<Event>> GetEventsPaginated(int startIndex, int pageSize)
         {
             string query = "SELECT * FROM event ORDER BY EventDate DESC LIMIT ? OFFSET ?";
@@ -149,46 +141,25 @@ namespace EventManager.Services
             return events;
         }
 
-        public async Task DeleteSelectedEvent(int eventId)
-        {
-            await databaseConnection.ExecuteAsync("DELETE FROM event WHERE Id = ?", eventId);
-            Debug.WriteLine($"[DatabaseService] Delete event: {eventId}");
-        }
-        public async Task UpdateSelectedEvent(int eventId, string eventName, string eventCategory, byte[] eventImage, string eventDate, string eventFromTime, string eventToTime)
-        {
-            string query = "UPDATE event SET EventName = ?, EventCategory = ?, EventImage = ?, EventDate = ?, EventFromTime = ?, EventToTime = ? WHERE Id = ?";
-            await databaseConnection.ExecuteAsync(query, eventName, eventCategory, eventImage, eventDate, eventFromTime, eventToTime, eventId);
-            Debug.WriteLine($"[DatabaseService] Event Updated: {eventName}, {eventCategory}, {eventImage?.Length ?? 0}, {eventDate}, {eventFromTime}, {eventToTime} Where Id = {eventId}");
-        }
-        public async Task<bool> IsExistingEvent(string eventName, string category, string eventDate, string fromTime, string toTime)
-        {
-            string query = @"SELECT COUNT(*) FROM event WHERE EventName = ? AND EventCategory = ? AND EventDate = ? AND EventFromTime = ? AND EventToTime = ?";
-            int count = await databaseConnection.ExecuteScalarAsync<int>(query, eventName, category, eventDate, fromTime, toTime);
-            return count > 0; 
-        }
-
-        public async Task<Event?> GetEventById(int eventId)
-        {
-            string query = "SELECT * FROM event WHERE Id = ?";
-            var eventList = await databaseConnection.QueryAsync<Event>(query, eventId);
-            return eventList.FirstOrDefault();
-        }
         public async Task UseLatestEventByDefault()
         {
             await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 0");
             await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 1 WHERE Id = (SELECT Id FROM event ORDER BY EventDate DESC LIMIT 1)");
         }
+
         public async Task UseSelectedEvent(int eventId)
         {
             await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 0");
             await databaseConnection.ExecuteAsync("UPDATE event SET isSelected = 1 WHERE Id =?", eventId);
         }
+
         public async Task<Event?> GetSelectedEvent()
         {
             string query = "SELECT * FROM event WHERE isSelected = 1";
             var eventList = await databaseConnection.QueryAsync<Event>(query);
             return eventList.FirstOrDefault();
         }
+
         public async Task<List<Event>> SetFilterEvents(string category, bool sortByOrder, int startIndex, int pageSize)
         {
             string query = "SELECT * FROM event";
@@ -217,6 +188,7 @@ namespace EventManager.Services
 
             return await databaseConnection.QueryAsync<Event>(query, searchPattern, searchPattern, searchPattern, searchPattern, searchPattern, pageSize, startIndex);
         }
+
         public async Task<List<string>> GetDistinctLogValues(string columnName)
         {
             string query = $"SELECT DISTINCT {columnName} FROM attendancelog ORDER BY {columnName} ASC";
@@ -308,9 +280,10 @@ namespace EventManager.Services
 
             return await databaseConnection.QueryAsync<AttendanceLog>(query, parameters.ToArray());
         }
+
         public async Task<List<AttendanceLog>> SearchFilteredLogs(LogFilter filter, string searchText, int startIndex, int pageSize)
         {
-            string query = @"SELECT * FROM attendancelog WHERE (IdNumber LIKE ? OR Name LIKE ? OR BusinessUnit LIKE ? OR Status LIKE ? OR EventName LIKE ? OR EventCategory LIKE ? OR EventDate LIKE ? OR EventTime LIKE ?)";
+            string query = "SELECT * FROM attendancelog WHERE (IdNumber LIKE ? OR Name LIKE ? OR BusinessUnit LIKE ? OR Status LIKE ? OR EventName LIKE ? OR EventCategory LIKE ? OR EventDate LIKE ? OR EventTime LIKE ?)";
             List<object> parameters = new List<object>();
 
             string searchPattern = $"%{searchText}%";
@@ -352,31 +325,52 @@ namespace EventManager.Services
             string query = "SELECT COUNT(*) FROM employee";
             return await databaseConnection.ExecuteScalarAsync<int>(query);
         }
+
         public async Task<int> GetTotalEmployeeCountByBUAsync(string businessUnit)
         {
             string query = "SELECT COUNT(*) FROM employee WHERE BusinessUnit = ?";
             return await databaseConnection.ExecuteScalarAsync<int>(query, businessUnit);
         }
+
         public async Task<int> GetPresentEmployeeCountForActiveEvent()
         {
             string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE Status = 'SUCCESS' AND EventName = (SELECT EventName FROM event WHERE isSelected = 1)";
             return await databaseConnection.ExecuteScalarAsync<int>(query);
         }
+
         public async Task<int> GetPresentEmployeeCountByBUAsync(string businessUnit)
         {
             string query = "SELECT COUNT(DISTINCT Id) FROM attendancelog WHERE Status = 'SUCCESS' AND EventName = (SELECT EventName FROM event WHERE isSelected = 1) AND BusinessUnit = ?";
             return await databaseConnection.ExecuteScalarAsync<int>(query, businessUnit);
         }
+
         public async Task<List<EmployeeAttendanceStatus>> GetTotalScannedDataPaginated(int lastLoadedIndex, int pageSize)
         {
-            string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name LIMIT ? OFFSET ?";
+            string query = @"
+                SELECT e.IdNumber, e.Name, e.BusinessUnit, 
+                       CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status 
+                FROM employee e 
+                LEFT JOIN attendancelog a 
+                    ON e.IdNumber = a.IdNumber 
+                    AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) 
+                ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name 
+                LIMIT ? OFFSET ?";
 
             return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(query, pageSize, lastLoadedIndex);
         }
 
         public async Task<List<EmployeeAttendanceStatus>> GetTotalScannedDataByBusinessUnitPaginated(string businessUnit, int lastLoadedIndex, int pageSize)
         {
-            string query = "SELECT e.IdNumber, e.Name, e.BusinessUnit, CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status FROM employee e LEFT JOIN attendancelog a ON e.IdNumber = a.IdNumber AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) WHERE e.BusinessUnit = ? ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name LIMIT ? OFFSET ?";
+            string query = @"
+                SELECT e.IdNumber, e.Name, e.BusinessUnit, 
+                       CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status 
+                FROM employee e 
+                LEFT JOIN attendancelog a 
+                    ON e.IdNumber = a.IdNumber 
+                    AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1) 
+                WHERE e.BusinessUnit = ? 
+                ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name 
+                LIMIT ? OFFSET ?";
 
             return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(query, businessUnit, pageSize, lastLoadedIndex);
         }
@@ -384,44 +378,41 @@ namespace EventManager.Services
         public async Task<List<EmployeeAttendanceStatus>> SearchTotalScannedData(string searchText, int lastLoadedIndex, int pageSize)
         {
             string query = @"
-        SELECT e.IdNumber, e.Name, e.BusinessUnit, 
-               CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status 
-        FROM employee e 
-        LEFT JOIN attendancelog a 
-            ON e.IdNumber = a.IdNumber 
-            AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1)
-        WHERE e.IdNumber LIKE ? OR e.Name LIKE ? OR e.BusinessUnit LIKE ? OR 
-              (CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END) LIKE ?
-        ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name 
-        LIMIT ? OFFSET ?";
+                SELECT e.IdNumber, e.Name, e.BusinessUnit, 
+                       CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status 
+                FROM employee e 
+                LEFT JOIN attendancelog a 
+                    ON e.IdNumber = a.IdNumber 
+                    AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1)
+                WHERE e.IdNumber LIKE ? OR e.Name LIKE ? OR e.BusinessUnit LIKE ? OR 
+                      (CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END) LIKE ?
+                ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name 
+                LIMIT ? OFFSET ?";
 
             string searchPattern = $"%{searchText}%";
 
-            return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(
-                query, searchPattern, searchPattern, searchPattern, searchPattern, pageSize, lastLoadedIndex);
+            return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(query, searchPattern, searchPattern, searchPattern, searchPattern, pageSize, lastLoadedIndex);
         }
 
         public async Task<List<EmployeeAttendanceStatus>> SearchTotalScannedDataByBusinessUnit(string businessUnit, string searchText, int lastLoadedIndex, int pageSize)
         {
             string query = @"
-        SELECT e.IdNumber, e.Name, e.BusinessUnit, 
-               CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status 
-        FROM employee e 
-        LEFT JOIN attendancelog a 
-            ON e.IdNumber = a.IdNumber 
-            AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1)
-        WHERE e.BusinessUnit = ? 
-        AND (e.IdNumber LIKE ? OR e.Name LIKE ? OR 
-             (CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END) LIKE ?)
-        ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name 
-        LIMIT ? OFFSET ?";
+                SELECT e.IdNumber, e.Name, e.BusinessUnit, 
+                       CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END AS Status 
+                FROM employee e 
+                LEFT JOIN attendancelog a 
+                    ON e.IdNumber = a.IdNumber 
+                    AND a.EventName = (SELECT EventName FROM event WHERE isSelected = 1)
+                WHERE e.BusinessUnit = ? 
+                AND (e.IdNumber LIKE ? OR e.Name LIKE ? OR 
+                     (CASE WHEN a.IdNumber IS NOT NULL THEN 'Present' ELSE 'Absent' END) LIKE ?)
+                ORDER BY CASE WHEN a.IdNumber IS NOT NULL THEN 0 ELSE 1 END, e.Name 
+                LIMIT ? OFFSET ?";
 
             string searchPattern = $"%{searchText}%";
 
-            return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(
-                query, businessUnit, searchPattern, searchPattern, searchPattern, pageSize, lastLoadedIndex);
+            return await databaseConnection.QueryAsync<EmployeeAttendanceStatus>(query, businessUnit, searchPattern, searchPattern, searchPattern, pageSize, lastLoadedIndex);
         }
-
 
     }
 }
