@@ -187,7 +187,6 @@ namespace EventManager.ViewModels
             totalScannedPercentage = 0;
 
             IsShowDataLabel = false;
-
             TotalScannedEmployee = "No Data";
             CartesianLegend = "No Data";
 
@@ -198,7 +197,8 @@ namespace EventManager.ViewModels
 
             AttendanceStatus.Add(new AttendanceStatus { Category = "No Data", Count = 1 });
             AttendanceStatusChartColor.Add(new SolidColorBrush(Color.FromArgb("#F5090B")));
-            AttendanceData.Add(new AttendanceData { BusinessUnit = "No Data", Count = 0 });
+            AttendanceData.Add(new AttendanceData { BusinessUnit = "No Data", Count = 1 });
+            AttendanceDataChartColor.Add(new SolidColorBrush(Color.FromArgb("#F5090B")));
 
             IsBusyPageIndicator = false;
         }
