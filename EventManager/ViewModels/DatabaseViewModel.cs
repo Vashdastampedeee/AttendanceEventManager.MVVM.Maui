@@ -41,7 +41,7 @@ namespace EventManager.ViewModels
             IsSyncBusy = true;
             OnPropertyChanged(nameof(IsSyncNotBusy));
 
-            await Task.Delay(1000);
+            await sqlSyncService.SyncEventsFromSqlServer();
             await sqlSyncService.SyncEmployeesFromSQLServer();
           
             IsSyncBusy = false;
@@ -57,7 +57,6 @@ namespace EventManager.ViewModels
                 if (IsExportBusy) return;
                 IsExportBusy = true;
                 OnPropertyChanged(nameof(IsExportNotBusy));
-                await Task.Delay(1000);
                 string dbPath = databaseService.GetDatabasePath();
 
                 if (!File.Exists(dbPath))
