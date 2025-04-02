@@ -15,6 +15,7 @@ namespace EventManager.Services
         private readonly SQLiteAsyncConnection database;
         private readonly DatabaseService databaseService;
         private readonly string sqlServerConnStr = "Server=192.168.4.11,1433;Database=TimeKeeping;User Id=WMS;Password=WMS@dmin;TrustServerCertificate=True;";
+        public bool isSync;
         public SqlServerService(DatabaseService databaseService) 
         {
             database = databaseService.GetDatabaseConnection();
@@ -73,12 +74,12 @@ namespace EventManager.Services
                     }
 
                     await syncDataViewModel.UpdateProgress("Sync completed successfully!");
-                    await ToastHelper.ShowToast($"SQL Server sync succesful!", ToastDuration.Long);
+                    await ToastHelper.ShowToast($"Employee sync succesful!", ToastDuration.Long);
                 }
                 catch (Exception ex)
                 {
                     await syncDataViewModel.UpdateProgress($"Sql server connection failed!");
-                    await ToastHelper.ShowToast($"SQL Server sync failed!", ToastDuration.Long);
+                    await ToastHelper.ShowToast($"Employee sync failed!", ToastDuration.Long);
                 }
                 finally
                 {
@@ -142,14 +143,15 @@ namespace EventManager.Services
                     }
                 }
 
+                isSync = true;
                 await syncDataViewModel.UpdateProgress("Sync completed successfully!");
-                await ToastHelper.ShowToast($"SQL Server sync succesful!", ToastDuration.Long);
+                await ToastHelper.ShowToast($"Event sync succesful!", ToastDuration.Long);
                 await databaseService.UseLatestEventByDefault();
             }
             catch(Exception ex)
             {
                 await syncDataViewModel.UpdateProgress($"Sql server connection failed!");
-                await ToastHelper.ShowToast($"SQL Server sync failed!", ToastDuration.Long);
+                await ToastHelper.ShowToast($"Event sync failed!", ToastDuration.Long);
             }
             finally
             {
