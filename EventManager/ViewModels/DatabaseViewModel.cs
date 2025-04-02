@@ -16,8 +16,7 @@ namespace EventManager.ViewModels
     public partial class DatabaseViewModel : ObservableObject
     {
         private readonly IFileSaver fileSaver;
-        private readonly DatabaseService databaseService;
-        private readonly SqlServerService sqlSyncService;
+        private readonly SqlServerService sqlServerService;
 
         [ObservableProperty]
         private bool isSyncBusy;
@@ -27,22 +26,22 @@ namespace EventManager.ViewModels
         private bool isExportBusy;
         public bool IsExportNotBusy => !IsExportBusy;
 
-        public DatabaseViewModel(IFileSaver fileSaver, DatabaseService databaseService, SqlServerService sqlServerService)
+        public DatabaseViewModel(IFileSaver fileSaver, SqlServerService sqlServerService)
         {
             this.fileSaver = fileSaver;
-            this.databaseService = databaseService;
-            this.sqlSyncService = sqlServerService;
+            this.sqlServerService = sqlServerService;
         }
 
         [RelayCommand]
-        public async Task SyncEmployees()
+        public async Task SyncSql()
         {
             if (IsSyncBusy) return;
             IsSyncBusy = true;
             OnPropertyChanged(nameof(IsSyncNotBusy));
 
-            await sqlSyncService.SyncEventsFromSqlServer();
-            await sqlSyncService.SyncEmployeesFromSQLServer();
+            await sqlServerService.SyncEventsFromSqlServer();
+            await sqlServerService.SyncEmployeesFromSQLServer();
+
           
             IsSyncBusy = false;
             OnPropertyChanged(nameof(IsSyncNotBusy));
@@ -57,7 +56,7 @@ namespace EventManager.ViewModels
                 if (IsExportBusy) return;
                 IsExportBusy = true;
                 OnPropertyChanged(nameof(IsExportNotBusy));
-                string dbPath = databaseService.GetDatabasePath();
+                string dbPath = DatabaseService.GetDatabasePath();
 
                 if (!File.Exists(dbPath))
                 {
