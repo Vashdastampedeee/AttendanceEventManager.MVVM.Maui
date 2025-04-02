@@ -15,12 +15,12 @@ namespace EventManager.ViewModels
     public partial class EventViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
+        private readonly SqlServerService sqlServerService;
 
         private const int pageSize = 5;
         private int lastLoadedIndex = 0;
         private bool isLoadingMoreEvents;
         private bool isAllEventsDataLoaded;
-        private bool isRefreshEvent;
 
         [ObservableProperty]
         private ObservableCollection<Event> events = new();
@@ -50,35 +50,27 @@ namespace EventManager.ViewModels
         private string searchText; 
         [ObservableProperty]
         private bool isSearching;   
-        public EventViewModel(DatabaseService databaseService)
+        public EventViewModel(DatabaseService databaseService, SqlServerService sqlServerService)
         {
             this.databaseService = databaseService;
+            this.sqlServerService = sqlServerService;
         }
 
         [RelayCommand]
         private async Task OnNavigatedTo()
         {
-            if (Events.Count == 0)
+            if (sqlServerService.isSync)
             {
-                await LoadEventsData();
+                await RefreshEvents();
+                sqlServerService.isSync = false;
             }
-        }
-
-        [RelayCommand]
-        public async Task AddEventPopup()
-        {
-            var addEventViewModel = new AddEventViewModel(databaseService, this);
-            var addEvent = new AddEvent(addEventViewModel);
-
-            if (IsBusy) return;
-            IsBusy = true;
-            OnPropertyChanged(nameof(IsNotBusy));
-
-            await Task.Delay(500);
-            await MopupService.Instance.PushAsync(addEvent);
-
-            IsBusy = false;
-            OnPropertyChanged(nameof(IsNotBusy));
+            else
+            {
+                if(Events.Count == 0)
+                {
+                    await LoadEventsData();
+                }
+            }
         }
         [RelayCommand]
         public async Task LoadEventsData()
@@ -110,11 +102,6 @@ namespace EventManager.ViewModels
 
             if (events.Count != 0)
             {
-                if(!isRefreshEvent)
-                {
-                    await Task.Delay(1000);
-                }
-
                 var sortedEvents = events.OrderByDescending(e => e.isSelected).ToList();
 
                 foreach (var eventData in sortedEvents)
@@ -131,7 +118,6 @@ namespace EventManager.ViewModels
                 isAllEventsDataLoaded = true;
             }
 
-            isRefreshEvent = false;
             IsEnabled = true;
             IsBusyPageIndicator = false;
             IsLoadingDataIndicator = false;
@@ -155,27 +141,25 @@ namespace EventManager.ViewModels
             await LoadEventsData();
         }
         [RelayCommand]
-        private async Task EditSelectedEvent(int eventId)
+        private async Task EventItemTapped(int eventId)
         {
-            var editEventViewModel = new EditEventViewModel(databaseService, this, eventId);
-            var editEvent = new EditEvent(editEventViewModel);
-            await MopupService.Instance.PushAsync(editEvent);
+            var selectedEvent = Events.FirstOrDefault(e => e.Id == eventId);
+            if (selectedEvent == null ||selectedEvent.isSelected)
+            {
+                return;
+            }
+            else
+            {
+                bool useEvent = await Shell.Current.DisplayAlert($"{selectedEvent.EventName}", "Do you want to use this event?", "Use", "Cancel");
+                if (useEvent)
+                {
+                    await databaseService.UseSelectedEvent(eventId);
+                    await RefreshEvents();
+                }
+            }
+
         }
-        [RelayCommand]
-        private async Task DeleteSelectedEvent(int eventId)
-        {
-            await databaseService.DeleteSelectedEvent(eventId);
-            await Task.Delay(100);
-            await RefreshEvents();
-            await ToastHelper.ShowToast("Delete Successful!", ToastDuration.Short);
-        }
-        [RelayCommand]
-        private async Task UseSelectedEvent(int eventId)
-        {
-            await databaseService.UseSelectedEvent(eventId);
-            await Task.Delay(100);
-            await RefreshEvents();
-        }
+     
         [RelayCommand]
         public async Task FilterEvents()
         {
