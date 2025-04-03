@@ -174,27 +174,6 @@
 
         </CollectionView>
 
-        <AbsoluteLayout Grid.RowSpan="2">
-            <Border
-                AbsoluteLayout.LayoutBounds="0.5, 0.95, AutoSize, AutoSize"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="{DynamicResource PrimaryColor}"
-                HeightRequest="50"
-                IsVisible="{Binding IsLoadingDataIndicator}"
-                Stroke="{StaticResource TransparentColor}"
-                StrokeShape="Ellipse"
-                WidthRequest="50">
-
-                <ActivityIndicator
-                    HeightRequest="25"
-                    IsRunning="{Binding IsLoadingDataIndicator}"
-                    IsVisible="{Binding IsLoadingDataIndicator}"
-                    WidthRequest="25"
-                    Color="{DynamicResource PrimaryColorText}" />
-
-            </Border>
-        </AbsoluteLayout>
-
         <ActivityIndicator
             Grid.RowSpan="2"
             HorizontalOptions="Center"
