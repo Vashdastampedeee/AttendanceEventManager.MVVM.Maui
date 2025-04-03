@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EventManager.Models;
 using EventManager.Services;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EventManager.ViewModels.Modals
 {
@@ -16,30 +17,24 @@ namespace EventManager.ViewModels.Modals
     public partial class TotalScannedDataViewModel : ObservableObject
     {
         private readonly DatabaseService databaseService;
+
         private const int PageSize = 10;
         private int lastLoadedIndex = 0;
-        private bool isLoadingMoreData;
+        private bool isLoading;
         private bool isAllDataLoaded;
-        private bool isSearching;
-        private string isLastSelectedBuName;
 
         [ObservableProperty]
         private ObservableCollection<EmployeeAttendanceStatus> employeeAttendance = new();
 
-        [ObservableProperty]
-        private bool isLoadingDataIndicator;
+        [ObservableProperty] private bool isBusyPageIndicator;
 
-        [ObservableProperty]
-        private bool isBusyPageIndicator;
+        [ObservableProperty] public string selectedBusinessUnit;
+        private string isLastSelectedBuName;
 
-        [ObservableProperty]
-        public string selectedBusinessUnit;
+        [ObservableProperty] public string searchText;
+        private bool isSearching;
 
-        [ObservableProperty]
-        public string searchText;
-
-        [ObservableProperty]
-        public bool isNoDataVisible;
+        [ObservableProperty] public bool isNoDataVisible;
         public TotalScannedDataViewModel(DatabaseService databaseService)
         {
             this.databaseService = databaseService;
@@ -62,85 +57,85 @@ namespace EventManager.ViewModels.Modals
         [RelayCommand]
         public async Task LoadEmployeeAttendanceStatus()
         {
-            if (isLoadingMoreData || isAllDataLoaded) return;
-
-            isLoadingMoreData = true;
-            IsLoadingDataIndicator = EmployeeAttendance.Count > 0;
-            IsBusyPageIndicator = EmployeeAttendance.Count == 0;
-
-            List<EmployeeAttendanceStatus> employees;
-
-        
-        
-            if (SelectedBusinessUnit == "ALL")
+            if (isLoading || isAllDataLoaded)
             {
-                if (isSearching)
-                {
-                    employees = await databaseService.SearchTotalScannedData(SearchText.Trim(), lastLoadedIndex, PageSize);
-                }
-                else
-                {
-                    employees = await databaseService.GetTotalScannedDataPaginated(lastLoadedIndex, PageSize);
-                }
-                
+                return;
             }
             else
             {
-                if (isSearching)
+                IsBusyPageIndicator = EmployeeAttendance.Count == 0;
+                isLoading = true;
+
+                await Task.Yield();
+
+                List<EmployeeAttendanceStatus> employees;
+
+                if (SelectedBusinessUnit == "ALL")
                 {
-                    employees = await databaseService.SearchTotalScannedDataByBusinessUnit(SelectedBusinessUnit, SearchText.Trim(), lastLoadedIndex, PageSize);
+                    if (isSearching)
+                    {
+                        employees = await databaseService.SearchTotalScannedData(SearchText.Trim(), lastLoadedIndex, PageSize);
+                    }
+                    else
+                    {
+                        employees = await databaseService.GetTotalScannedDataPaginated(lastLoadedIndex, PageSize);
+                    }
+
                 }
                 else
                 {
-                    employees = await databaseService.GetTotalScannedDataByBusinessUnitPaginated(SelectedBusinessUnit, lastLoadedIndex, PageSize);
+                    if (isSearching)
+                    {
+                        employees = await databaseService.SearchTotalScannedDataByBusinessUnit(SelectedBusinessUnit, SearchText.Trim(), lastLoadedIndex, PageSize);
+                    }
+                    else
+                    {
+                        employees = await databaseService.GetTotalScannedDataByBusinessUnitPaginated(SelectedBusinessUnit, lastLoadedIndex, PageSize);
+                    }
                 }
-            }
-      
-            if (employees.Count != 0)
-            {
-                await Task.Delay(500);
-                foreach (var emp in employees)
+
+                if (employees.Count != 0)
                 {
-                    EmployeeAttendance.Add(emp);
+                    foreach (var emp in employees)
+                    {
+                        EmployeeAttendance.Add(emp);
+                    }
+                    lastLoadedIndex += employees.Count;
                 }
-                lastLoadedIndex += employees.Count;
-            }
 
-            if (employees.Count < PageSize)
-            {
-                isAllDataLoaded = true;
-            }
+                if (employees.Count < PageSize)
+                {
+                    isAllDataLoaded = true;
+                }
 
-            isLastSelectedBuName = SelectedBusinessUnit;
-            IsBusyPageIndicator = false;
-            IsLoadingDataIndicator = false;
-            isLoadingMoreData = false;
-            IsNoDataVisible = EmployeeAttendance.Count == 0;
+                isLastSelectedBuName = SelectedBusinessUnit;
+                IsBusyPageIndicator = false;
+                isLoading = false;
+                IsNoDataVisible = EmployeeAttendance.Count == 0;
+            }
         }
 
         [RelayCommand]
         public async Task SearchData()
         {
-            isAllDataLoaded = false;
-            lastLoadedIndex = 0;
-            isSearching = !string.IsNullOrEmpty(SearchText.Trim());
-
+            SetSearchAndRefreshData(!string.IsNullOrEmpty(SearchText.Trim()), false, 0);
             EmployeeAttendance.Clear();
-            await Task.Delay(100);
             await LoadEmployeeAttendanceStatus();
         }
         [RelayCommand]
         public async Task RefreshData()
         {
             SearchText = string.Empty;
-            IsNoDataVisible = false;
-            isSearching = false;
-            isAllDataLoaded = false;
-            lastLoadedIndex = 0;
-
+            SetSearchAndRefreshData(false, false, 0);
             EmployeeAttendance.Clear();
-            await Task.Delay(100);
             await LoadEmployeeAttendanceStatus();
+        }
+
+        private void SetSearchAndRefreshData(bool isSearching, bool isAllDataLoaded, int lastLoadedIndex)
+        {
+            this.isSearching = isSearching;
+            this.isAllDataLoaded = isAllDataLoaded;
+            this.lastLoadedIndex = lastLoadedIndex;
         }
 
 
