@@ -19,37 +19,21 @@ namespace EventManager.ViewModels
 
         private const int pageSize = 5;
         private int lastLoadedIndex = 0;
-        private bool isLoadingMoreEvents;
         private bool isAllEventsDataLoaded;
+        private bool isLoading;
 
-        [ObservableProperty]
-        private ObservableCollection<Event> events = new();
+        [ObservableProperty] private ObservableCollection<Event> events = new();
 
-        [ObservableProperty]
-        private bool isNoDataVisible;
+        [ObservableProperty] private bool isNoDataVisible;
+        [ObservableProperty] private bool isBusyPageIndicator;
 
-        [ObservableProperty]
-        private bool isBusyPageIndicator;
-
-        [ObservableProperty]
-        private bool isEnabled;
-
-        [ObservableProperty]
-        private bool isLoadingDataIndicator;
-
-        [ObservableProperty]
-        private bool isBusy;
-        public bool IsNotBusy => !IsBusy;
-        [ObservableProperty]
         private bool isFiltering;
-        [ObservableProperty]
-        private string selectedCategory = "ALL";
-        [ObservableProperty]
-        private string selectedOrder = "Latest";
-        [ObservableProperty]
-        private string searchText; 
-        [ObservableProperty]
-        private bool isSearching;   
+        [ObservableProperty] private string selectedCategory = "ALL";
+        [ObservableProperty] private string selectedOrder = "Latest";
+
+        private bool isSearching;
+        [ObservableProperty]private string searchText; 
+
         public EventViewModel(DatabaseService databaseService, SqlServerService sqlServerService)
         {
             this.databaseService = databaseService;
@@ -59,6 +43,11 @@ namespace EventManager.ViewModels
         [RelayCommand]
         private async Task OnNavigatedTo()
         {
+            await ConditionalOnNavigated();
+        }
+
+        private async Task ConditionalOnNavigated()
+        {
             if (sqlServerService.isSync)
             {
                 await RefreshEvents();
@@ -66,78 +55,70 @@ namespace EventManager.ViewModels
             }
             else
             {
-                if(Events.Count == 0)
+                if (Events.Count == 0)
                 {
                     await LoadEventsData();
                 }
             }
         }
+
         [RelayCommand]
         public async Task LoadEventsData()
         {            
-            if (isLoadingMoreEvents || isAllEventsDataLoaded)
+            if (isLoading || isAllEventsDataLoaded)
             {
                 return;
             }
-
-            isLoadingMoreEvents = true;
-            IsEnabled = false;
-            IsBusyPageIndicator = Events.Count == 0;
-            IsLoadingDataIndicator = Events.Count > 0;
-
-            List<Event> events;
-
-            if (IsSearching)
-            {
-                events = await databaseService.SearchEvents(SearchText.Trim(), lastLoadedIndex, pageSize);
-            }
-            else if (IsFiltering)
-            {
-                events = await databaseService.SetFilterEvents(SelectedCategory, SelectedOrder == "Latest", lastLoadedIndex, pageSize);
-            }
             else
             {
-                events = await databaseService.GetEventsPaginated(lastLoadedIndex, pageSize);
-            }
+                IsBusyPageIndicator = Events.Count == 0;
+                isLoading = true;
 
-            if (events.Count != 0)
-            {
-                var sortedEvents = events.OrderByDescending(e => e.isSelected).ToList();
+                await Task.Yield();
 
-                foreach (var eventData in sortedEvents)
+                List<Event> events;
+                if (isSearching)
                 {
-                    eventData.IsDefaultVisible = eventData.isSelected;  
-                    Events.Add(eventData);
+                    events = await databaseService.SearchEvents(SearchText.Trim(), lastLoadedIndex, pageSize);
+                }
+                else if (isFiltering)
+                {
+                    events = await databaseService.SetFilterEvents(SelectedCategory, SelectedOrder == "Latest", lastLoadedIndex, pageSize);
+                }
+                else
+                {
+                    events = await databaseService.GetEventsPaginated(lastLoadedIndex, pageSize);
                 }
 
-                lastLoadedIndex += events.Count();
-            }
+                if (events.Count != 0)
+                {
+                    var sortedEvents = events.OrderByDescending(e => e.isSelected).ToList();
 
-            if (events.Count < pageSize)
-            {
-                isAllEventsDataLoaded = true;
-            }
+                    foreach (var eventData in sortedEvents)
+                    {
+                        eventData.IsDefaultVisible = eventData.isSelected;
+                        Events.Add(eventData);
+                    }
 
-            IsEnabled = true;
-            IsBusyPageIndicator = false;
-            IsLoadingDataIndicator = false;
-            isLoadingMoreEvents = false;
-            IsNoDataVisible = Events.Count == 0;
+                    lastLoadedIndex += events.Count();
+                }
+
+                if (events.Count < pageSize)
+                {
+                    isAllEventsDataLoaded = true;
+                }
+
+                IsNoDataVisible = Events.Count == 0;
+
+                isLoading = false;
+                IsBusyPageIndicator = false;
+            }
         }
         [RelayCommand]
         public async Task RefreshEvents()
-        {
-            Debug.WriteLine("[EventViewModel] - refereshing events");
-
-            IsNoDataVisible = false;
-            SearchText = string.Empty; 
-            IsSearching = false;
-            IsFiltering = false;
-            isAllEventsDataLoaded = false;
-            lastLoadedIndex = 0;
-
+        { 
+            SetSearchRefreshFilterData(string.Empty, false, 0, false, false);
             Events.Clear();
-            await Task.Delay(100);
             await LoadEventsData();
         }
         [RelayCommand]
@@ -176,33 +157,43 @@ namespace EventManager.ViewModels
                 await MopupService.Instance.PushAsync(filterEvent);
             }
         }
+
         [RelayCommand]
         public async Task ApplyFilterEvents(EventFilter eventFilter)
         {
-            isAllEventsDataLoaded = false; 
-            lastLoadedIndex = 0;
-            SearchText = string.Empty;
-            IsFiltering = true;
-            IsSearching = false;
+            SetSearchRefreshFilterData(string.Empty, false, 0, true, false);
 
             SelectedCategory = eventFilter.Category;
             SelectedOrder = eventFilter.Order ? "Latest" : "Oldest";
 
             Events.Clear();
-            await Task.Delay(100);
             await LoadEventsData();
         }
+
         [RelayCommand]
         public async Task SearchEvents()
         {
-            isAllEventsDataLoaded = false;
-            lastLoadedIndex = 0;
-            IsFiltering = false;
-            IsSearching = !string.IsNullOrEmpty(SearchText.Trim()); 
-
+            SetSearchRefreshFilterData(false, 0, false, !string.IsNullOrEmpty(SearchText.Trim()));
             Events.Clear();
-            await Task.Delay(100);
             await LoadEventsData();
         }
+
+        private void SetSearchRefreshFilterData(string searchText, bool isAllEventsDataLoaded, int lastLoadedIndex, bool isFiltering, bool isSearching)
+        {
+            SearchText = searchText;
+            this.isAllEventsDataLoaded = isAllEventsDataLoaded;
+            this.lastLoadedIndex = lastLoadedIndex;
+            this.isFiltering = isFiltering;
+            this.isSearching = isSearching;
+        }
+
+        private void SetSearchRefreshFilterData(bool isAllEventsDataLoaded, int lastLoadedIndex, bool isFiltering, bool isSearching)
+        {
+            this.isAllEventsDataLoaded = isAllEventsDataLoaded;
+            this.lastLoadedIndex = lastLoadedIndex;
+            this.isFiltering = isFiltering;
+            this.isSearching = isSearching;
+        }
+
     }
 }
