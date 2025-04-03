@@ -50,7 +50,6 @@
                     FontFamily="Roboto"
                     FontSize="Small"
                     HeightRequest="30"
-                    IsEnabled="{Binding IsEnabled}"
                     Placeholder="Search"
                     PlaceholderColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                                        Dark={DynamicResource TxtColorWhite}}"
@@ -71,7 +70,6 @@
                 FontAttributes="Bold"
                 FontFamily="IconButtons"
                 FontSize="Medium"
-                IsEnabled="{Binding IsEnabled}"
                 Text="&#xF0B0;"
                 TextColor="{StaticResource PrimaryColorText}" />
             <Button
@@ -81,7 +79,6 @@
                 FontAttributes="Bold"
                 FontFamily="IconButtons"
                 FontSize="Medium"
-                IsEnabled="{Binding IsEnabled}"
                 Text="&#xE800;"
                 TextColor="{StaticResource PrimaryColorText}" />
         </Grid>
@@ -201,27 +198,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <AbsoluteLayout Grid.Row="1">
-            <Border
-                AbsoluteLayout.LayoutBounds="0.5, 0.95, AutoSize, AutoSize"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="{DynamicResource PrimaryColor}"
-                HeightRequest="50"
-                IsVisible="{Binding IsLoadingDataIndicator}"
-                Stroke="{StaticResource TransparentColor}"
-                StrokeShape="Ellipse"
-                WidthRequest="50">
-
-                <ActivityIndicator
-                    HeightRequest="25"
-                    IsRunning="{Binding IsLoadingDataIndicator}"
-                    IsVisible="{Binding IsLoadingDataIndicator}"
-                    WidthRequest="25"
-                    Color="{DynamicResource PrimaryColorText}" />
-
-            </Border>
-        </AbsoluteLayout>
 
         <ActivityIndicator
             Grid.RowSpan="2"
