@@ -108,6 +108,8 @@ namespace EventManager.ViewModels
         {
             IsBusyPageIndicator = true;
 
+            await Task.Yield();
+
             if (SelectedBusinessUnit == "ALL")
             {
                 TotalEmployees = await databaseService.GetTotalEmployeeCountAsync();
