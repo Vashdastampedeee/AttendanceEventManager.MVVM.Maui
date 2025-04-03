@@ -53,18 +53,13 @@ namespace EventManager.ViewModels
                 ScanStatusHelper.FrameColor.Default);
         }
 
-        public async Task SetFocusEntry()
-        {
-            IsEntryFocused = false;
-            await Task.Delay(50);
-            IsEntryFocused = true;
-        }
-
         [RelayCommand]
         public async Task OnNavigatedTo()
         {
  
             IsBusyPageIndicator = true;
+
+            await Task.Yield();
 
             await databaseService.InitializeTablesAsync();
             await LoadSelectedEvent();
@@ -149,6 +144,13 @@ namespace EventManager.ViewModels
 
         }
 
+        public async Task SetFocusEntry()
+        {
+            IsEntryFocused = false;
+            await Task.Yield();
+            IsEntryFocused = true;
+        }
+
         private async Task LoadSelectedEvent()
         {
             var selectedEvent = await databaseService.GetSelectedEvent();
@@ -158,9 +160,8 @@ namespace EventManager.ViewModels
             }
             else
             {
-                await Task.Delay(50);
+                await Task.Yield();
                 LoadSelectedData("Set Event Name", "Set Event Date", "Set Event Time", ImageSource.FromFile("event_image_placeholder.jpg"));
-
             }
         }
 
