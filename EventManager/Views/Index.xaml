@@ -18,16 +18,32 @@
     </ContentPage.Behaviors>
 
     <Grid>
-        <VerticalStackLayout
+
+        <Grid
             HorizontalOptions="Center"
             IsVisible="{Binding IsShowPage}"
-            Spacing="12.5"
+            RowSpacing="12.5"
             VerticalOptions="Center">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
             <Image
+                Grid.Row="0"
                 Aspect="AspectFit"
                 Source="{Binding EventImage, Mode=TwoWay}"
                 WidthRequest="150" />
             <Label
+                Grid.Row="1"
                 FontAttributes="Bold"
                 FontFamily="Roboto"
                 FontSize="Title"
@@ -36,6 +52,7 @@
                 TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                             Dark={DynamicResource TxtColorWhite}}" />
             <Label
+                Grid.Row="2"
                 FontAttributes="Bold"
                 FontFamily="Roboto"
                 FontSize="Subtitle"
@@ -44,6 +61,7 @@
                 TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                             Dark={DynamicResource TxtColorWhite}}" />
             <Label
+                Grid.Row="3"
                 FontAttributes="Bold"
                 FontFamily="Roboto"
                 FontSize="Subtitle"
@@ -52,6 +70,7 @@
                 TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                             Dark={DynamicResource TxtColorWhite}}" />
             <Label
+                Grid.Row="4"
                 FontFamily="Roboto"
                 FontSize="Medium"
                 HorizontalTextAlignment="Center"
@@ -59,6 +78,7 @@
                 TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                             Dark={DynamicResource TxtColorWhite}}" />
             <Border
+                Grid.Row="5"
                 BackgroundColor="{Binding Color}"
                 HeightRequest="130"
                 Stroke="{Binding Color}"
@@ -67,7 +87,9 @@
                 WidthRequest="130">
                 <Image Aspect="AspectFit" Source="{Binding IdPhoto}" />
             </Border>
+
             <Label
+                Grid.Row="6"
                 FontFamily="Roboto"
                 FontSize="Small"
                 HorizontalTextAlignment="Center"
@@ -75,6 +97,7 @@
                 TextColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                             Dark={DynamicResource TxtColorWhite}}" />
             <Label
+                Grid.Row="7"
                 FontFamily="Roboto"
                 FontSize="Small"
                 HorizontalTextAlignment="Center"
@@ -83,6 +106,7 @@
                                             Dark={DynamicResource TxtColorWhite}}" />
 
             <Border
+                Grid.Row="8"
                 BackgroundColor="{AppThemeBinding Light={DynamicResource BgColorWhite},
                                                   Dark={DynamicResource BgColorLightSlatedGray}}"
                 HeightRequest="40"
@@ -111,15 +135,16 @@
                     </controls:RemoveVisualEntry.Behaviors>
                 </controls:RemoveVisualEntry>
             </Border>
-        </VerticalStackLayout>
 
-        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-            <ActivityIndicator
-                IsRunning="{Binding IsBusyPageIndicator}"
-                IsVisible="{Binding IsBusyPageIndicator}"
-                Color="{DynamicResource PrimaryColor}" />
-        </VerticalStackLayout>
+        </Grid>
+
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusyPageIndicator}"
+            IsVisible="{Binding IsBusyPageIndicator}"
+            VerticalOptions="Center"
+            Color="{DynamicResource PrimaryColor}" />
+
     </Grid>
-
 
 </ContentPage>
