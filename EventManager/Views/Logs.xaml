@@ -34,7 +34,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.7*" />
                 <ColumnDefinition Width="0.15*" />
-                <ColumnDefinition Width="0.15*" />
             </Grid.ColumnDefinitions>
             <Border
                 Grid.Column="0"
@@ -50,7 +49,7 @@
                     FontFamily="Roboto"
                     FontSize="Small"
                     HeightRequest="30"
-                    IsEnabled="{Binding IsEnabled}"
+                    IsEnabled="{Binding IsNotBusy}"
                     Placeholder="Search"
                     PlaceholderColor="{AppThemeBinding Light={DynamicResource TxtColorBlack},
                                                        Dark={DynamicResource TxtColorWhite}}"
@@ -62,18 +61,7 @@
                         <controls:HideSearchBarKeyboard />
                     </SearchBar.Behaviors>
                 </SearchBar>
-
             </Border>
-            <Button
-                Grid.Column="1"
-                BackgroundColor="{DynamicResource PrimaryColor}"
-                Command="{Binding FilterLogsCommand}"
-                FontAttributes="Bold"
-                FontFamily="IconButtons"
-                FontSize="Medium"
-                IsEnabled="{Binding IsEnabled}"
-                Text="&#xF0B0;"
-                TextColor="{StaticResource PrimaryColorText}" />
             <Button
                 Grid.Column="2"
                 BackgroundColor="{DynamicResource PrimaryColor}"
@@ -81,10 +69,9 @@
                 FontAttributes="Bold"
                 FontFamily="IconButtons"
                 FontSize="Medium"
-                IsEnabled="{Binding IsEnabled}"
+                IsEnabled="{Binding IsNotBusy}"
                 Text="&#xE800;"
                 TextColor="{StaticResource PrimaryColorText}" />
-
         </Grid>
 
         <CollectionView
@@ -119,7 +106,7 @@
                         Stroke="{AppThemeBinding Light={DynamicResource Gray200},
                                                  Dark={DynamicResource Gray600}}"
                         StrokeShape="RoundRectangle 5">
-                        <ScrollView Orientation="Horizontal">
+                        <ScrollView HorizontalScrollBarVisibility="Never" Orientation="Horizontal">
                             <HorizontalStackLayout Spacing="35">
                                 <VerticalStackLayout>
 
@@ -164,7 +151,7 @@
                                         Text="{Binding BusinessUnit}" />
                                     <Label
                                         FontFamily="Roboto"
-                                        FontSize="Small"
+                                        FontSize="Medium"
                                         Text="{Binding Name}" />
 
                                     <Label
@@ -204,7 +191,6 @@
                                             TextColor="{DynamicResource PrimaryColorText}" />
                                     </Border>
 
-
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
                         </ScrollView>
@@ -214,27 +200,6 @@
             </CollectionView.ItemTemplate>
 
         </CollectionView>
-
-        <AbsoluteLayout Grid.Row="1">
-            <Border
-                AbsoluteLayout.LayoutBounds="0.5, 0.95, AutoSize, AutoSize"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                BackgroundColor="{DynamicResource PrimaryColor}"
-                HeightRequest="50"
-                IsVisible="{Binding IsLoadingDataIndicator}"
-                Stroke="{DynamicResource TransparentColor}"
-                StrokeShape="Ellipse"
-                WidthRequest="50">
-
-                <ActivityIndicator
-                    HeightRequest="25"
-                    IsRunning="{Binding IsLoadingDataIndicator}"
-                    IsVisible="{Binding IsLoadingDataIndicator}"
-                    WidthRequest="25"
-                    Color="{StaticResource PrimaryColorText}" />
-
-            </Border>
-        </AbsoluteLayout>
 
         <ActivityIndicator
             Grid.RowSpan="2"
@@ -261,13 +226,13 @@
                         FontFamily="IconButtons"
                         FontSize="Large"
                         IsEnabled="{Binding IsNotBusy}"
-                        IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        IsVisible="{Binding IsExportBusy, Converter={StaticResource InverseBoolConverter}}"
                         Text="&#xE802;"
                         TextColor="{DynamicResource PrimaryColorText}" />
                     <ActivityIndicator
                         HeightRequest="25"
-                        IsRunning="{Binding IsBusy}"
-                        IsVisible="{Binding IsBusy}"
+                        IsRunning="{Binding IsExportBusy}"
+                        IsVisible="{Binding IsExportBusy}"
                         WidthRequest="25"
                         Color="{StaticResource PrimaryColorText}" />
                 </Grid>
